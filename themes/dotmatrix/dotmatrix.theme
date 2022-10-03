@@ -485,12 +485,13 @@ _lp_dotmatrix_theme_prompt() {
     __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_MARK[@]+"${DOTMATRIX_COLOR_MARK[@]}"}
     prompt+="${dotmatrix_sep}"
     lp_terminal_format ${DOTMATRIX_COLOR_MARK[@]+"${DOTMATRIX_COLOR_MARK[@]}"}
+    local mark_color="$lp_terminal_format"
 
     # No need to check LP_ENABLE_SHLVL, _lp_shell_level does it.
     if _lp_shell_level ; then
         local i
         for ((i=0; i < lp_shell_level-1; i++)); do
-            prompt+="${lp_terminal_format}${DOTMATRIX_MARK}"
+            prompt+="${mark_color}${DOTMATRIX_MARK}"
         done
     fi
 
@@ -500,13 +501,13 @@ _lp_dotmatrix_theme_prompt() {
     # No need to check LP_ENABLE_SUDO, _lp_sudo_active does it.
     _lp_sudo_active
     sudo="$?"
-    if [[ "$sudo" != 0 || "$user" == 2 ]] ; then
+    if [[ "$sudo" == 0 || "$user" == 2 ]] ; then
         local dcwfg="${DOTMATRIX_COLOR_WARN[_LP_FIRST_INDEX+1]}"
         [[ -z $dcwfg ]] && dcwfg=-1
         lp_terminal_format $dcwfg
         prompt+="${lp_terminal_format}${DOTMATRIX_MARK}"
     else
-        prompt+="${lp_terminal_format}${DOTMATRIX_MARK}"
+        prompt+="${mark_color}${DOTMATRIX_MARK}"
     fi
 
     prompt+="${NO_COL}"
