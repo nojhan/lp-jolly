@@ -96,11 +96,11 @@ For example:
 ```sh
 
    # Load Liquid Prompt.
-   source ~/.liquidprompt
+   source ~/liquidprompt/liquidprompt
    # Configure the desired variant.
    DOTMATRIX_VARIANT="chevron"
    # Load the theme.
-   source ~/code/liquidprompt/themes/dotmatrix/dotmatrix.theme && lp_theme dotmatrix
+   source ~/lp-dotmatrix/dotmatrix.theme && lp_theme dotmatrix
 ```
 
 NOTE: The recommended segment markers (the "chevron" variant) uses characters in the private section of unicode
