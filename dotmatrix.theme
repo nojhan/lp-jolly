@@ -19,7 +19,7 @@ _lp_dotmatrix_theme_activate() {
     # Sets of characters
     DOTMATRIX_VARIANT=${DOTMATRIX_VARIANT:-"dotmatrix"}
     if [[ "${DOTMATRIX_VARIANT}" == "dotmatrix" ]] ; then
-        DOTMATRIX_SPACED=${DOTMATRIX_SPACED:-0}
+        DOTMATRIX_SPACED=${DOTMATRIX_SPACED:-1}
 
         # Dotmatrix theme
         DOTMATRIX_HOST_LOCAL=${DOTMATRIX_HOST_LOCAL:-"⌂"}
@@ -109,7 +109,7 @@ _lp_dotmatrix_theme_activate() {
         DOTMATRIX_DANG=( ${DOTMATRIX_DANG[@]+"${DOTMATRIX_DANG[@]}"} )
         [[ ${#DOTMATRIX_DANG[@]} == 0 ]] && DOTMATRIX_DANG=("█" "" "")
         DOTMATRIX_ENDS=( ${DOTMATRIX_ENDS[@]+"${DOTMATRIX_ENDS[@]}"} )
-        [[ ${#DOTMATRIX_ENDS[@]} == 0 ]] && DOTMATRIX_ENDS=("" "")
+        [[ ${#DOTMATRIX_ENDS[@]} == 0 ]] && DOTMATRIX_ENDS=("" "")
         DOTMATRIX_ITEMS=( ${DOTMATRIX_ITEMS[@]+"${DOTMATRIX_ITEMS[@]}"} )
         [[ ${#DOTMATRIX_ITEMS[@]} == 0 ]] && DOTMATRIX_ITEMS=("" "┃" "")
 
@@ -364,7 +364,7 @@ _lp_dotmatrix_theme_prompt() {
 
     # Right-align the $side with spaces.
     _lp_fill "$header" "$side" " "
-    header="$lp_fill"
+    header="$lp_fill${NO_COL}"
 
     ####################################################################
     # IN LINE
@@ -513,7 +513,8 @@ _lp_dotmatrix_theme_prompt() {
     prompt+="${NO_COL}"
 
     # Assemble and setup
-    PS1="\n${header}\n${inline}\n${prompt} "
+    local n=$'\n'
+    PS1="${n}${header}${n}${inline}${n}${prompt} "
 }
 
 
@@ -661,7 +662,7 @@ __dotmatrix_activate_multiplexer() {
 ########################################################################
 
 __dotmatrix_directory_FS() {
-    local fs
+    local fs=
     if (( LP_ENABLE_PERM )); then
         if _lp_chroot ; then
             if [[ -w "$PWD" ]]; then
@@ -968,7 +969,7 @@ __dotmatrix_make_sep_link() { # color
 
     local dsfg="${DOTMATRIX_COLOR_SEP_FAIR[_LP_FIRST_INDEX]}"
     [[ -z $dsfg ]] && dsfg=-1
-    lp_terminal_format "$dsf" -1 0 0 -1 "$fbg"
+    lp_terminal_format "$dsfg" -1 0 0 -1 "$fbg"
     dotmatrix_sep+="${lp_terminal_format}${DOTMATRIX_LINK[_LP_FIRST_INDEX+1]}"
 
     lp_terminal_format "$fg" -1 0 0 -1 "$fbg"
