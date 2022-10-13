@@ -38,7 +38,7 @@ _lp_dotmatrix_theme_activate() {
         DOTMATRIX_DANG=( ${DOTMATRIX_DANG[@]+"${DOTMATRIX_DANG[@]}"} )
         [[ ${#DOTMATRIX_DANG[@]} == 0 ]] && DOTMATRIX_DANG=("▙" " □ " "▜")
         DOTMATRIX_ENDS=( ${DOTMATRIX_ENDS[@]+"${DOTMATRIX_ENDS[@]}"} )
-        [[ ${#DOTMATRIX_ENDS[@]} == 0 ]] && DOTMATRIX_ENDS=("▛▞▗ ▝" "▖ ▘▞▟")
+        [[ ${#DOTMATRIX_ENDS[@]} == 0 ]] && DOTMATRIX_ENDS=("▛" "▞▗ ▝" "▖ ▘▞▟")
         DOTMATRIX_ITEMS=( ${DOTMATRIX_ITEMS[@]+"${DOTMATRIX_ITEMS[@]}"} )
         [[ ${#DOTMATRIX_ITEMS[@]} == 0 ]] && DOTMATRIX_ITEMS=("┫" "┃" "┣")
 
@@ -62,7 +62,7 @@ _lp_dotmatrix_theme_activate() {
         DOTMATRIX_DANG=( ${DOTMATRIX_DANG[@]+"${DOTMATRIX_DANG[@]}"} )
         [[ ${#DOTMATRIX_DANG[@]} == 0 ]] && DOTMATRIX_DANG=("▌" "<<<" "▐")
         DOTMATRIX_ENDS=( ${DOTMATRIX_ENDS[@]+"${DOTMATRIX_ENDS[@]}"} )
-        [[ ${#DOTMATRIX_ENDS[@]} == 0 ]] && DOTMATRIX_ENDS=("▌···" "···▐")
+        [[ ${#DOTMATRIX_ENDS[@]} == 0 ]] && DOTMATRIX_ENDS=("▌" "···" "···▐")
         DOTMATRIX_ITEMS=( ${DOTMATRIX_ITEMS[@]+"${DOTMATRIX_ITEMS[@]}"} )
         [[ ${#DOTMATRIX_ITEMS[@]} == 0 ]] && DOTMATRIX_ITEMS=("┫" "┃" "┣")
 
@@ -86,7 +86,7 @@ _lp_dotmatrix_theme_activate() {
         DOTMATRIX_DANG=( ${DOTMATRIX_DANG[@]+"${DOTMATRIX_DANG[@]}"} )
         [[ ${#DOTMATRIX_DANG[@]} == 0 ]] && DOTMATRIX_DANG=("" "" "")
         DOTMATRIX_ENDS=( ${DOTMATRIX_ENDS[@]+"${DOTMATRIX_ENDS[@]}"} )
-        [[ ${#DOTMATRIX_ENDS[@]} == 0 ]] && DOTMATRIX_ENDS=("" "")
+        [[ ${#DOTMATRIX_ENDS[@]} == 0 ]] && DOTMATRIX_ENDS=("" "" "")
         DOTMATRIX_ITEMS=( ${DOTMATRIX_ITEMS[@]+"${DOTMATRIX_ITEMS[@]}"} )
         [[ ${#DOTMATRIX_ITEMS[@]} == 0 ]] && DOTMATRIX_ITEMS=("" "┃" "")
 
@@ -109,7 +109,7 @@ _lp_dotmatrix_theme_activate() {
         DOTMATRIX_DANG=( ${DOTMATRIX_DANG[@]+"${DOTMATRIX_DANG[@]}"} )
         [[ ${#DOTMATRIX_DANG[@]} == 0 ]] && DOTMATRIX_DANG=("█" "" "")
         DOTMATRIX_ENDS=( ${DOTMATRIX_ENDS[@]+"${DOTMATRIX_ENDS[@]}"} )
-        [[ ${#DOTMATRIX_ENDS[@]} == 0 ]] && DOTMATRIX_ENDS=("" "")
+        [[ ${#DOTMATRIX_ENDS[@]} == 0 ]] && DOTMATRIX_ENDS=("" "" "")
         DOTMATRIX_ITEMS=( ${DOTMATRIX_ITEMS[@]+"${DOTMATRIX_ITEMS[@]}"} )
         [[ ${#DOTMATRIX_ITEMS[@]} == 0 ]] && DOTMATRIX_ITEMS=("" "┃" "")
 
@@ -132,7 +132,7 @@ _lp_dotmatrix_theme_activate() {
         DOTMATRIX_DANG=( ${DOTMATRIX_DANG[@]+"${DOTMATRIX_DANG[@]}"} )
         [[ ${#DOTMATRIX_DANG[@]} == 0 ]] && DOTMATRIX_DANG=("" "" "")
         DOTMATRIX_ENDS=( ${DOTMATRIX_ENDS[@]+"${DOTMATRIX_ENDS[@]}"} )
-        [[ ${#DOTMATRIX_ENDS[@]} == 0 ]] && DOTMATRIX_ENDS=("" "")
+        [[ ${#DOTMATRIX_ENDS[@]} == 0 ]] && DOTMATRIX_ENDS=("" "/" "")
         DOTMATRIX_ITEMS=( ${DOTMATRIX_ITEMS[@]+"${DOTMATRIX_ITEMS[@]}"} )
         [[ ${#DOTMATRIX_ITEMS[@]} == 0 ]] && DOTMATRIX_ITEMS=("" "┃" "")
 
@@ -273,12 +273,11 @@ _lp_dotmatrix_theme_prompt() {
         lp_terminal_format ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
     fi
 
-    __dotmatrix_make_sep_last
-    header+="${dotmatrix_sep}"
-
     ####################################################################
     # HEADER SIDE (RIGHT)
     ####################################################################
+
+    local has_notes=0
 
     __dotmatrix_make_sep_side ""
     side="${dotmatrix_sep}"
@@ -291,18 +290,21 @@ _lp_dotmatrix_theme_prompt() {
     if _lp_battery ; then
         __dotmatrix_make_field "$lp_battery" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
         battery="${dotmatrix_field}${LP_MARK_BATTERY}"
+        has_notes=$((has_notes+1))
     fi
 
     local load=""
     if _lp_load ; then
         __dotmatrix_make_field "$lp_load" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
         load="${dotmatrix_field}${LP_MARK_LOAD}"
+        has_notes=$((has_notes+1))
     fi
 
     local temperature=""
     if _lp_temperature ; then
         __dotmatrix_make_field "$lp_temperature" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
         temperature="${dotmatrix_field}${LP_MARK_TEMP}"
+        has_notes=$((has_notes+1))
     fi
 
     __dotmatrix_make_sep_soft ${DOTMATRIX_COLOR_SEP_DARK[@]+"${DOTMATRIX_COLOR_SEP_DARK[@]}"}
@@ -323,6 +325,7 @@ _lp_dotmatrix_theme_prompt() {
         if [[ -n "${lp_detached_sessions}" && "${lp_detached_sessions}" -gt 0 ]] ; then
             __dotmatrix_make_field "${lp_detached_sessions}d" ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
             detached_sessions="${dotmatrix_field}"
+            has_notes=$((has_notes+1))
         fi
     fi
 
@@ -332,11 +335,13 @@ _lp_dotmatrix_theme_prompt() {
         if [[ -n "${lp_running_jobs}" && "${lp_running_jobs}" -gt 0  ]] ; then
             __dotmatrix_make_field "${lp_running_jobs}&" ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
             running_jobs="${dotmatrix_field}"
+            has_notes=$((has_notes+1))
         fi
 
         if [[ -n "${lp_stopped_jobs}" && "${lp_stopped_jobs}" -gt 0  ]] ; then
             __dotmatrix_make_field "${lp_stopped_jobs}z" ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
             stopped_jobs="${dotmatrix_field}"
+            has_notes=$((has_notes+1))
         fi
     fi
 
@@ -362,6 +367,10 @@ _lp_dotmatrix_theme_prompt() {
         fi
     fi
 
+    # Final assembling
+    __dotmatrix_make_sep_last "$has_notes"
+    header+="$dotmatrix_sep"
+
     # Right-align the $side with spaces.
     _lp_fill "$header" "$side" " "
     header="$lp_fill${NO_COL}"
@@ -370,7 +379,6 @@ _lp_dotmatrix_theme_prompt() {
     # IN LINE
     ####################################################################
 
-    local lp_terminal_format
     lp_terminal_format ${DOTMATRIX_COLOR_LINE[@]+"${DOTMATRIX_COLOR_LINE[@]}"}
 
     inline="${NO_COL}$LP_PS1_PREFIX${lp_terminal_format}"
@@ -1042,15 +1050,25 @@ __dotmatrix_make_sep_mid() { # color
 
 __dotmatrix_make_sep_last() { # no arg
     local lp_terminal_format
-    lp_terminal_format -3 -1 0 0 -3 -1
-    dotmatrix_sep="${lp_terminal_format}${DOTMATRIX_ENDS[_LP_FIRST_INDEX]}${NO_COL}"
+    local has_notes="${1:-0}"
+    if [[ $has_notes -gt 0 ]] ; then
+        lp_terminal_format -3 -1 0 0 -3 -1
+        dotmatrix_sep="${lp_terminal_format}${DOTMATRIX_ENDS[_LP_FIRST_INDEX+0]}${NO_COL}"
+        # Use the background of COLOR_NOTE as a foreground here.
+        lp_terminal_format ${DOTMATRIX_COLOR_NOTE[1]}
+        dotmatrix_sep+="${lp_terminal_format}${DOTMATRIX_ENDS[_LP_FIRST_INDEX+1]}${NO_COL}"
+    else
+        lp_terminal_format -3 -1 0 0 -3 -1
+        dotmatrix_sep="${lp_terminal_format}${DOTMATRIX_ENDS[_LP_FIRST_INDEX+0]}${DOTMATRIX_ENDS[_LP_FIRST_INDEX+1]}${NO_COL}"
+    fi
 }
 
 __dotmatrix_make_sep_side() { # no arg
     local lp_terminal_format
+    lp_terminal_format -3 -1 0 0 -3 -1 # Reset to no background.
     local dsf=(${DOTMATRIX_COLOR_SEP_FAIR[@]+"${DOTMATRIX_COLOR_SEP_FAIR[@]}"})
     [[ -z "${dsf[*]}" ]] && dsf=(-1)
     lp_terminal_format "${dsf[@]}"
-    dotmatrix_sep="${lp_terminal_format}${DOTMATRIX_ENDS[_LP_FIRST_INDEX+1]}"
+    dotmatrix_sep="${lp_terminal_format}${DOTMATRIX_ENDS[_LP_FIRST_INDEX+2]}"
 }
 
