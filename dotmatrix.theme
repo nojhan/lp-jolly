@@ -286,21 +286,21 @@ _lp_dotmatrix_theme_prompt() {
     __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
     local blt_plug="${dotmatrix_sep}"
 
-    local battery=""
+    local battery=
     if _lp_battery ; then
         __dotmatrix_make_field "$lp_battery" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
         battery="${dotmatrix_field}${LP_MARK_BATTERY}"
         has_notes=$((has_notes+1))
     fi
 
-    local load=""
+    local load=
     if _lp_load ; then
         __dotmatrix_make_field "$lp_load" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
         load="${dotmatrix_field}${LP_MARK_LOAD}"
         has_notes=$((has_notes+1))
     fi
 
-    local temperature=""
+    local temperature=
     if _lp_temperature ; then
         __dotmatrix_make_field "$lp_temperature" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
         temperature="${dotmatrix_field}${LP_MARK_TEMP}"
@@ -308,9 +308,12 @@ _lp_dotmatrix_theme_prompt() {
     fi
 
     __dotmatrix_make_sep_soft ${DOTMATRIX_COLOR_SEP_DARK[@]+"${DOTMATRIX_COLOR_SEP_DARK[@]}"}
-    __dotmatrix_join_fields "$dotmatrix_sep" "$battery" "$load" "$temperature"
-    if [[ -n "$dotmatrix_join_fields" ]] ; then
-        side+="${blt_plug}${dotmatrix_join_fields}"
+    declare -a blt=($battery $load $temperature)
+    if [[ ${#blt[@]} -gt 0 ]] ; then
+        _lp_join "$dotmatrix_sep" ${blt[@]}
+        if [[ -n "$lp_join" ]] ; then
+            side+="${blt_plug}${lp_join}"
+        fi
     else
         lp_terminal_format ${DOTMATRIX_COLOR_FAIR[@]+"${DOTMATRIX_COLOR_FAIR[@]}"}
         side+="${lp_terminal_format}"
@@ -320,7 +323,7 @@ _lp_dotmatrix_theme_prompt() {
     __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
     local djc_plug="${dotmatrix_sep}"
 
-    local detached_sessions=""
+    local detached_sessions=
     if _lp_detached_sessions ; then
         if [[ -n "${lp_detached_sessions}" && "${lp_detached_sessions}" -gt 0 ]] ; then
             __dotmatrix_make_field "${lp_detached_sessions}d" ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
@@ -329,8 +332,8 @@ _lp_dotmatrix_theme_prompt() {
         fi
     fi
 
-    local running_jobs=""
-    local stopped_jobs=""
+    local running_jobs=
+    local stopped_jobs=
     if _lp_jobcount ; then
         if [[ -n "${lp_running_jobs}" && "${lp_running_jobs}" -gt 0  ]] ; then
             __dotmatrix_make_field "${lp_running_jobs}&" ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
@@ -346,9 +349,12 @@ _lp_dotmatrix_theme_prompt() {
     fi
 
     __dotmatrix_make_sep_soft ${DOTMATRIX_COLOR_SEP_LITE[@]+"${DOTMATRIX_COLOR_SEP_LITE[@]}"}
-    __dotmatrix_join_fields "$dotmatrix_sep" "$detached_sessions" "$running_jobs" "$stopped_jobs"
-    if [[ -n "$dotmatrix_join_fields" ]] ; then
-        side+="${djc_plug}${dotmatrix_join_fields}"
+    declare -a drs=($detached_sessions $running_jobs $stopped_jobs)
+    if [[ ${#drs[@]} -gt 0 ]] ; then
+        _lp_join "$dotmatrix_sep" ${drs[@]}
+        if [[ -n "$lp_join" ]] ; then
+            side+="${djc_plug}${lp_join}"
+        fi
     else
         lp_terminal_format ${DOTMATRIX_COLOR_FAIR[@]+"${DOTMATRIX_COLOR_FAIR[@]}"}
         side+="${lp_terminal_format}"
@@ -417,6 +423,7 @@ _lp_dotmatrix_theme_prompt() {
         inline+="$d${lp_cmake_compiler}$I${lp_cmake_generator}$I${lp_cmake_buildtype}$b"
     fi
 
+    # FIXME use _lp_fill-like function to handle multi-character line?
     if ((DOTMATRIX_ENABLE_GRADIENT_LINE)); then
         # Fill up the center section with a line colored as a gradient.
         local ret
