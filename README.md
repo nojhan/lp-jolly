@@ -195,6 +195,28 @@ Example of a compact prompt:
 
 ![](dotmatrix-unspaced.png)
 
+#### Specific features
+
+
+**DOTMATRIX_ENABLE_HISTORY** *boolean = 1*
+
+Enable the history sections displayed on the right side of the middle line.
+
+
+**DOTMATRIX_HISTORY_MOST_BACK** *integer = 100*
+
+Number of the last history events to take into account when looking for the most used command.
+
+
+**DOTMATRIX_HISTORY_LAST_LEN** *integer = $((COLUMNS/4))*
+
+Maximum length of the *last* command used (counting the `DOTMATRIX_HISTORY_LAST_LEN_MARK` length).
+
+
+**DOTMATRIX_HISTORY_LAST_LEN_MARK** *integer = "[…]"*
+
+Mark to display when the last command string is shortened.
+
 
 #### Generic Markers
 
@@ -204,13 +226,13 @@ The following options configure some marks that will be used across all variants
 
 The marker used to indicates that the shell is in text mode,
 i.e. that does not have a graphical display
-(more rigorously: there is no X11 :envvar:`DISPLAY` environment variable).
+(more rigorously: there is no X11 `DISPLAY` environment variable).
 
 
 **DOTMATRIX_DISPLAY_X11** *string = "X"*
 
 The marker used to indicates that the shell does have access to a graphical server
-(more rigorously: there is a X11 :envvar:`DISPLAY` environment variable).
+(more rigorously: there is a X11 `DISPLAY` environment variable).
 
 
 **DOTMATRIX_HOST_LOCAL** *string = "⌂"*

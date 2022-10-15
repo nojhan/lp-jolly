@@ -16,6 +16,11 @@ _lp_dotmatrix_theme_activate() {
 
     DOTMATRIX_ENABLE_GRADIENT_LINE=${DOTMATRIX_ENABLE_GRADIENT_LINE:-0}
 
+    DOTMATRIX_ENABLE_HISTORY=${DOTMATRIX_ENABLE_HISTORY:-1}
+    DOTMATRIX_HISTORY_LAST_LEN=${DOTMATRIX_HISTORY_LAST_LEN:-$((COLUMNS/4))}
+    DOTMATRIX_HISTORY_LAST_LEN_MARK=${DOTMATRIX_HISTORY_LAST_LEN_MARK:-"[…]"}
+    DOTMATRIX_HISTORY_MOST_BACK=${DOTMATRIX_HISTORY_MOST_BACK:-100}
+
     # Sets of characters
     DOTMATRIX_VARIANT=${DOTMATRIX_VARIANT:-"dotmatrix"}
     if [[ "${DOTMATRIX_VARIANT}" == "dotmatrix" ]] ; then
@@ -30,7 +35,7 @@ _lp_dotmatrix_theme_activate() {
         DOTMATRIX_PLUG=${DOTMATRIX_PLUG:-"▛"}
         DOTMATRIX_SOFT=${DOTMATRIX_SOFT:-"╱"}
         DOTMATRIX_MEAN=${DOTMATRIX_MEAN:-"▞"}
-        # Separator arrays                                (left center right 
+        # Separator arrays                                (left center right)
         DOTMATRIX_LINK=( ${DOTMATRIX_LINK[@]+"${DOTMATRIX_LINK[@]}"} )
         [[ ${#DOTMATRIX_LINK[@]} == 0 ]] && DOTMATRIX_LINK=("▙" " "   "▜")
         DOTMATRIX_OPEN=( ${DOTMATRIX_OPEN[@]+"${DOTMATRIX_OPEN[@]}"} )
@@ -54,7 +59,7 @@ _lp_dotmatrix_theme_activate() {
         DOTMATRIX_PLUG=${DOTMATRIX_PLUG:-"▌"}
         DOTMATRIX_SOFT=${DOTMATRIX_SOFT:-"╱"}
         DOTMATRIX_MEAN=${DOTMATRIX_MEAN:-"┃"}
-        # Separator arrays                                (left center right 
+        # Separator arrays                                (left center right)
         DOTMATRIX_LINK=( ${DOTMATRIX_LINK[@]+"${DOTMATRIX_LINK[@]}"} )
         [[ ${#DOTMATRIX_LINK[@]} == 0 ]] && DOTMATRIX_LINK=("▌" "<"   "▐")
         DOTMATRIX_OPEN=( ${DOTMATRIX_OPEN[@]+"${DOTMATRIX_OPEN[@]}"} )
@@ -387,8 +392,9 @@ _lp_dotmatrix_theme_prompt() {
 
     lp_terminal_format ${DOTMATRIX_COLOR_LINE[@]+"${DOTMATRIX_COLOR_LINE[@]}"}
 
-    inline="${NO_COL}$LP_PS1_PREFIX${lp_terminal_format}"
+    local inline_left="${NO_COL}$LP_PS1_PREFIX${lp_terminal_format}"
 
+    # Dev env section.
     local ista="$_LP_FIRST_INDEX"
     local imid=$((_LP_FIRST_INDEX+1))
     local iend=$((_LP_FIRST_INDEX+2))
@@ -396,33 +402,46 @@ _lp_dotmatrix_theme_prompt() {
     local I="${DOTMATRIX_SPACE_LINE}${DOTMATRIX_ITEMS[imid]}${DOTMATRIX_SPACE_LINE}"
     local b="${DOTMATRIX_SPACE_LINE}${DOTMATRIX_ITEMS[iend]}"
     if _lp_software_collections ; then
-        inline+="$d${lp_software_collections}$b"
+        inline_left+="$d${lp_software_collections}$b"
     fi
     if _lp_python_env ; then
-        inline+="$d${lp_python_env}$b"
+        inline_left+="$d${lp_python_env}$b"
     fi
     if _lp_node_env ; then
-        inline+="$d${lp_node_env}$b"
+        inline_left+="$d${lp_node_env}$b"
     fi
     if _lp_ruby_env ; then
-        inline+="$d${lp_ruby_env}$b"
+        inline_left+="$d${lp_ruby_env}$b"
     fi
     if _lp_container ; then
-        inline+="$d${lp_container}$b"
+        inline_left+="$d${lp_container}$b"
     fi
     if _lp_kubernetes_context ; then
-        inline+="$d${lp_kubernetes_context}$b"
+        inline_left+="$d${lp_kubernetes_context}$b"
     fi
     if _lp_terraform_env ; then
-        inline+="$d${lp_terraform_env}$b"
+        inline_left+="$d${lp_terraform_env}$b"
     fi
     if _lp_aws_profile ; then
-        inline+="$d${lp_aws_profile}$b"
+        inline_left+="$d${lp_aws_profile}$b"
     fi
     if _lp_cmake ; then
-        inline+="$d${lp_cmake_compiler}$I${lp_cmake_generator}$I${lp_cmake_buildtype}$b"
+        inline_left+="$d${lp_cmake_compiler}$I${lp_cmake_generator}$I${lp_cmake_buildtype}$b"
     fi
 
+    # History section.
+    local inline_right=
+    if ((DOTMATRIX_ENABLE_HISTORY)) ; then
+        local hist_max=$((DOTMATRIX_HISTORY_LAST_LEN-${#DOTMATRIX_HISTORY_LAST_LEN_MARK}))
+        local hist_last=$(history | tail -n 1 | cut -d" " -f5-)
+        if [[ ${#hist_last} -gt $hist_max ]] ; then
+            hist_last="${hist_last:0:$hist_max}${DOTMATRIX_HISTORY_LAST_LEN_MARK}"
+        fi
+        local hist_most=$(history | tail -n ${DOTMATRIX_HISTORY_MOST_BACK} | awk '{print $4}' | sort  | uniq --count | sort --numeric-sort --reverse | head -n 1 | awk '{print $2}')
+        inline_right="$d${hist_most}$I${hist_last}$b"
+    fi
+
+    local inline
     # FIXME use _lp_fill-like function to handle multi-character line?
     if ((DOTMATRIX_ENABLE_GRADIENT_LINE)); then
         # Fill up the center section with a line colored as a gradient.
@@ -450,7 +469,7 @@ _lp_dotmatrix_theme_prompt() {
 
     else
         # Fill up the remaining space with a fixed-color line.
-        _lp_fill "$inline" "" "$DOTMATRIX_LINE"
+        _lp_fill "$inline_left" "$inline_right" "$DOTMATRIX_LINE"
         # Format here is DOTMATRIX_COLOR_LINE.
         inline="${lp_terminal_format}${lp_fill}${NO_COL}"
     fi
