@@ -195,8 +195,8 @@ Example of a compact prompt:
 
 ![](dotmatrix-unspaced.png)
 
-#### Specific features
 
+#### Specific features
 
 **DOTMATRIX_ENABLE_HISTORY** *boolean = 1*
 
@@ -216,6 +216,21 @@ Maximum length of the *last* command used (counting the `DOTMATRIX_HISTORY_LAST_
 **DOTMATRIX_HISTORY_LAST_LEN_MARK** *integer = "[…]"*
 
 Mark to display when the last command string is shortened.
+
+
+**DOTMATRIX_ENABLE_SHELL** *boolean = 0*
+
+Display the current shell in the top-right section.
+
+
+**DOTMATRIX_SHELL_ZSH** *string = "z"*
+
+The mark indicating a *zsh* shell.
+
+
+**DOTMATRIX_SHELL_BASH** *string = "b"*
+
+The mark indicating a *bash* shell.
 
 
 #### Generic Markers

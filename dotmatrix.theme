@@ -15,6 +15,10 @@ _lp_dotmatrix_theme_activate() {
     DOTMATRIX_DIFF=${DOTMATRIX_DIFF:-"≠"}
 
     DOTMATRIX_ENABLE_GRADIENT_LINE=${DOTMATRIX_ENABLE_GRADIENT_LINE:-0}
+    DOTMATRIX_ENABLE_SHELL=${DOTMATRIX_ENABLE_SHELL:-0}
+
+    DOTMATRIX_SHELL_ZSH=${DOTMATRIX_SHELL_ZSH:-"z"}
+    DOTMATRIX_SHELL_BASH=${DOTMATRIX_SHELL_BASH:-"b"}
 
     DOTMATRIX_ENABLE_HISTORY=${DOTMATRIX_ENABLE_HISTORY:-1}
     DOTMATRIX_HISTORY_LAST_LEN=${DOTMATRIX_HISTORY_LAST_LEN:-$((COLUMNS/4))}
@@ -227,7 +231,25 @@ _lp_dotmatrix_theme_activate() {
     [[ ${#DOTMATRIX_COLOR_SEP_LITE[@]} == 0 ]] && DOTMATRIX_COLOR_SEP_LITE=( 15 -2 0 0 15 -2)
 
 
+    # LP_COLORMAP=( ${LP_COLORMAP[@]+"${LP_COLORMAP[@]}"} )
+    # if [[ ${#LP_COLORMAP[@]} == 0 ]]; then
+        local lp_terminal_format
+        lp_terminal_format ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
+        local l1="$lp_terminal_format"
+        lp_terminal_format ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
+        local l2="$lp_terminal_format"
+        lp_terminal_format ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
+        local l3="$lp_terminal_format"
+        LP_COLORMAP=(
+            "" # l0
+            "$l1"
+            "$l2"
+            "$l3"
+        )
+    # fi
+
     __dotmatrix_activate_display
+    # __dotmatrix_activate_shell
     __dotmatrix_activate_connection
     __dotmatrix_activate_user
     __dotmatrix_activate_multiplexer
@@ -290,21 +312,21 @@ _lp_dotmatrix_theme_prompt() {
     local blt_plug="${dotmatrix_sep}"
 
     local battery=
-    if _lp_battery ; then
+    if _lp_battery_color ; then
         __dotmatrix_make_field "$lp_battery" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
         battery="${dotmatrix_field}${LP_MARK_BATTERY}"
         has_notes=$((has_notes+1))
     fi
 
     local load=
-    if _lp_load ; then
+    if _lp_load_color ; then
         __dotmatrix_make_field "$lp_load" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
         load="${dotmatrix_field}${LP_MARK_LOAD}"
         has_notes=$((has_notes+1))
     fi
 
     local temperature=
-    if _lp_temperature ; then
+    if _lp_temperature_color ; then
         __dotmatrix_make_field "$lp_temperature" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
         temperature="${dotmatrix_field}${LP_MARK_TEMP}"
         has_notes=$((has_notes+1))
@@ -363,6 +385,11 @@ _lp_dotmatrix_theme_prompt() {
         side+="${lp_terminal_format}"
     fi
 
+    # Called here for an easy access to the configured color.
+    if __dotmatrix_activate_shell ; then
+        side+="${_DOTMATRIX_SHELL}"
+    fi
+
     # clock
     if _lp_time ; then
         __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
@@ -398,7 +425,7 @@ _lp_dotmatrix_theme_prompt() {
 
     lp_terminal_format ${DOTMATRIX_COLOR_LINE[@]+"${DOTMATRIX_COLOR_LINE[@]}"}
 
-    local inline_left="${NO_COL}$LP_PS1_PREFIX${lp_terminal_format}"
+    local inline_left="${NO_COL}$LP_PS1_PREFIX${lp_terminal_format}${DOTMATRIX_LINE}"
 
     # Dev env section.
     local ista="$_LP_FIRST_INDEX"
@@ -446,6 +473,8 @@ _lp_dotmatrix_theme_prompt() {
         local hist_most=$(history | tail -n ${DOTMATRIX_HISTORY_MOST_BACK} | awk '{print $4}' | sort  | uniq --count | sort --numeric-sort --reverse | head -n 1 | awk '{print $2}')
         inline_right="$d${hist_most}$I${hist_last}$b"
     fi
+
+    inline_right+="${DOTMATRIX_LINE}"
 
     local inline
     # FIXME use _lp_fill-like function to handle multi-character line?
@@ -569,6 +598,20 @@ __dotmatrix_activate_display() {
     else
         __dotmatrix_make_field "$DOTMATRIX_DISPLAY_TEXT" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
         _DOTMATRIX_DISPLAY="$dotmatrix_field"
+    fi
+}
+
+__dotmatrix_activate_shell() {
+    ((DOTMATRIX_ENABLE_SHELL)) || return 2
+
+    if ((_LP_SHELL_zsh)) ; then
+        __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
+        __dotmatrix_make_field "$DOTMATRIX_SHELL_ZSH" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
+        _DOTMATRIX_SHELL="${dotmatrix_sep}${dotmatrix_field}"
+    else
+        __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
+        __dotmatrix_make_field "$DOTMATRIX_SHELL_BASH" ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
+        _DOTMATRIX_SHELL="${dotmatrix_sep}${dotmatrix_field}"
     fi
 }
 
