@@ -268,14 +268,12 @@ _lp_dotmatrix_theme_prompt() {
     header+="${_DOTMATRIX_PATH} "
 
     if _lp_dirstack; then
+        # Pseudo-recall the path section format.
+        lp_terminal_format ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
         __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
         header+="${dotmatrix_sep}"
         __dotmatrix_make_field "$lp_dirstack" ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
         header+="${dotmatrix_field}"
-    else
-        # Recall a dark format to correctly reset sections history
-        # to match the path's section colors.
-        lp_terminal_format ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
     fi
 
     ####################################################################
@@ -379,6 +377,14 @@ _lp_dotmatrix_theme_prompt() {
     fi
 
     # Final assembling
+    if _lp_dirstack; then
+        lp_terminal_format ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
+    else
+        # Recall a dark format to correctly reset sections history
+        # to match the path's section colors.
+        lp_terminal_format ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
+    fi
+
     __dotmatrix_make_sep_last "$has_notes"
     header+="$dotmatrix_sep"
 
