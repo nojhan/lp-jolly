@@ -459,7 +459,9 @@ _lp_dotmatrix_theme_prompt() {
         inline_left+="$d${lp_aws_profile}$b"
     fi
     if _lp_cmake ; then
-        inline_left+="$d${lp_cmake_compiler}$I${lp_cmake_generator}$I${lp_cmake_buildtype}$b"
+        local lp_join
+        _lp_join "$I" ${lp_cmake_c_compiler} ${lp_cmake_cxx_compiler} ${lp_cmake_generator} ${lp_cmake_buildtype}
+        inline_left+="$d${lp_join}$b"
     fi
 
     # History section.
