@@ -198,6 +198,21 @@ Example of a compact prompt:
 
 #### Specific features
 
+**DOTMATRIX_VCS_AHEAD_THRESHOLD** *integer = 5*
+
+Number of unpushed local commits above which the prompt should use the warning color to display the "push" section.
+
+
+**DOTMATRIX_VCS_BEHIND_THRESHOLD** *integer = 5*
+
+Number of unpulled remote commits above which the prompt should use the warning color to display the "pull" section.
+
+
+**DOTMATRIX_VCS_DIFF_THRESHOLD** *integer = 300*
+
+Number of modified lines above which the prompt should use the warning color to display the "commit" section.
+
+
 **DOTMATRIX_ENABLE_HISTORY** *boolean = 1*
 
 Enable the history sections displayed on the right side of the middle line.
