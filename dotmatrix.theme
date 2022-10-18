@@ -828,7 +828,7 @@ __dotmatrix_prompt_vcs() {
                     color=${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
                 fi
                 if (( LP_ENABLE_VCS_DIFFSTATS )) ; then
-                    __dotmatrix_make_field "${DOTMATRIX_VCS}${lp_smart_mark} +${lp_vcs_commit_behind}" ${color[@]}
+                    __dotmatrix_make_field "${DOTMATRIX_VCS}${lp_smart_mark} ${lp_vcs_commit_behind}" ${color[@]}
                     _DOTMATRIX_VCS+="$dotmatrix_field"
                 else
                     __dotmatrix_make_field "${DOTMATRIX_VCS}${lp_smart_mark} ${DOTMATRIX_DIFF}" ${color[@]}
@@ -855,7 +855,7 @@ __dotmatrix_prompt_vcs() {
                     color=${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
                 fi
                 if (( LP_ENABLE_VCS_DIFFSTATS )) ; then
-                    __dotmatrix_make_field "+$lp_vcs_commit_ahead" ${color[@]}
+                    __dotmatrix_make_field "$lp_vcs_commit_ahead" ${color[@]}
                     _DOTMATRIX_VCS+="$dotmatrix_field"
                 else
                     __dotmatrix_make_field "$DOTMATRIX_DIFF" ${color[@]}
