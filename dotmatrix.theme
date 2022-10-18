@@ -30,6 +30,8 @@ _lp_dotmatrix_theme_activate() {
     DOTMATRIX_VCS_BEHIND_THRESHOLD=${DOTMATRIX_VCS_BEHIND_THRESHOLD:-5}
     DOTMATRIX_VCS_DIFF_THRESHOLD=${DOTMATRIX_VCS_DIFF_THRESHOLD:-300}
 
+    DOTMATRIX_MARK_ERROR=${DOTMATRIX_MARK_ERROR:-⚠}
+
     # Sets of characters
     DOTMATRIX_VARIANT=${DOTMATRIX_VARIANT:-"dotmatrix"}
     if [[ "${DOTMATRIX_VARIANT}" == "dotmatrix" ]] ; then
@@ -554,7 +556,7 @@ _lp_dotmatrix_theme_prompt() {
 
     if _lp_error ; then
         __dotmatrix_make_sep_link ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
-        __dotmatrix_make_field "${lp_error}" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
+        __dotmatrix_make_field "${DOTMATRIX_MARK_ERROR}${lp_error}" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
         prompt+="${dotmatrix_sep}${dotmatrix_field}"
     fi
 

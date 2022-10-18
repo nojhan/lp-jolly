@@ -312,6 +312,11 @@ interpolated from `DOTMATRIX_COLOR_LINE_START`
 to `DOTMATRIX_COLOR_LINE_END`.
 
 
+**DOTMATRIX_MARK_ERROR** *string = " "*
+
+Icon displayed in front of the last exit error code.
+
+
 #### Variant Markers
 
 These options are the one used to actually define the theme variants.
