@@ -30,7 +30,16 @@ _lp_dotmatrix_theme_activate() {
     DOTMATRIX_VCS_BEHIND_THRESHOLD=${DOTMATRIX_VCS_BEHIND_THRESHOLD:-5}
     DOTMATRIX_VCS_DIFF_THRESHOLD=${DOTMATRIX_VCS_DIFF_THRESHOLD:-300}
 
-    DOTMATRIX_MARK_ERROR=${DOTMATRIX_MARK_ERROR:-⚠}
+    DOTMATRIX_DETACHED_THRESHOLD=${DOTMATRIX_DETACHED_THRESHOLD:-3}
+    DOTMATRIX_RUNNING_THRESHOLD=${DOTMATRIX_RUNNING_THRESHOLD:-3}
+    DOTMATRIX_STOPPED_THRESHOLD=${DOTMATRIX_STOPPED_THRESHOLD:-3}
+
+    DOTMATRIX_BATTERY_THRESHOLD=${DOTMATRIX_BATTERY_THRESHOLD:-$((LP_BATTERY_THRESHOLD/2))}
+    DOTMATRIX_TEMP_THRESHOLD=${DOTMATRIX_TEMP_THRESHOLD:-$((LP_TEMP_THRESHOLD*2))}
+    # Use prefixed _LP_* variables, which are integers.
+    DOTMATRIX_LOAD_THRESHOLD=${DOTMATRIX_LOAD_THRESHOLD:-$((_LP_LOAD_THRESHOLD+(_LP_LOAD_CAP-_LP_LOAD_THRESHOLD)/2))}
+
+    DOTMATRIX_MARK_ERROR=${DOTMATRIX_MARK_ERROR:-" "}
 
     # Sets of characters
     DOTMATRIX_VARIANT=${DOTMATRIX_VARIANT:-"dotmatrix"}
@@ -310,6 +319,7 @@ _lp_dotmatrix_theme_prompt() {
     ####################################################################
 
     local has_notes=0
+    local has_warns=0
 
     __dotmatrix_make_sep_side ""
     side="${dotmatrix_sep}"
@@ -320,23 +330,41 @@ _lp_dotmatrix_theme_prompt() {
 
     local battery=
     if _lp_battery_color ; then
-        __dotmatrix_make_field "$lp_battery" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
-        battery="${dotmatrix_field}${LP_MARK_BATTERY}"
-        has_notes=$((has_notes+1))
+        if [[ $lp_battery -le "$DOTMATRIX_BATTERY_THRESHOLD" ]]; then
+            __dotmatrix_make_field "$lp_battery" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
+            battery="${dotmatrix_field}${LP_MARK_BATTERY}"
+            has_warns=$((has_warns+1))
+        else
+            __dotmatrix_make_field "$lp_battery" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
+            battery="${dotmatrix_field}${LP_MARK_BATTERY}"
+            has_notes=$((has_notes+1))
+        fi
     fi
 
     local load=
     if _lp_load_color ; then
-        __dotmatrix_make_field "$lp_load" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
-        load="${dotmatrix_field}${LP_MARK_LOAD}"
-        has_notes=$((has_notes+1))
+        if [[ $lp_load -ge "$DOTMATRIX_LOAD_THRESHOLD" ]]; then
+            __dotmatrix_make_field "$lp_load" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
+            load="${dotmatrix_field}${LP_MARK_LOAD}"
+            has_warns=$((has_warns+1))
+        else
+            __dotmatrix_make_field "$lp_load" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
+            load="${dotmatrix_field}${LP_MARK_LOAD}"
+            has_notes=$((has_notes+1))
+        fi
     fi
 
     local temperature=
     if _lp_temperature_color ; then
-        __dotmatrix_make_field "$lp_temperature" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
-        temperature="${dotmatrix_field}${LP_MARK_TEMP}"
-        has_notes=$((has_notes+1))
+        if [[ $lp_temperature -ge "$DOTMATRIX_TEMP_THRESHOLD" ]]; then
+            __dotmatrix_make_field "$lp_temperature" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
+            temperature="${dotmatrix_field}${LP_MARK_TEMP}"
+            has_warns=$((has_warns+1))
+        else
+            __dotmatrix_make_field "$lp_temperature" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
+            temperature="${dotmatrix_field}${LP_MARK_TEMP}"
+            has_notes=$((has_notes+1))
+        fi
     fi
 
     __dotmatrix_make_sep_soft ${DOTMATRIX_COLOR_SEP_DARK[@]+"${DOTMATRIX_COLOR_SEP_DARK[@]}"}
@@ -352,15 +380,19 @@ _lp_dotmatrix_theme_prompt() {
     fi
 
     # jobs: detached / running / stopped
-    __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
-    local djc_plug="${dotmatrix_sep}"
 
     local detached_sessions=
     if _lp_detached_sessions ; then
         if [[ -n "${lp_detached_sessions}" && "${lp_detached_sessions}" -gt 0 ]] ; then
-            __dotmatrix_make_field "${lp_detached_sessions}d" ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
-            detached_sessions="${dotmatrix_field}"
-            has_notes=$((has_notes+1))
+            if [[ "${lp_detached_sessions}" -ge "${DOTMATRIX_DETACHED_THRESHOLD}" ]]; then
+                __dotmatrix_make_field "${lp_detached_sessions}d" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
+                detached_sessions="${dotmatrix_field}"
+                has_warns=$((has_warns+1))
+            else
+                __dotmatrix_make_field "${lp_detached_sessions}d" ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
+                detached_sessions="${dotmatrix_field}"
+                has_notes=$((has_notes+1))
+            fi
         fi
     fi
 
@@ -368,17 +400,37 @@ _lp_dotmatrix_theme_prompt() {
     local stopped_jobs=
     if _lp_jobcount ; then
         if [[ -n "${lp_running_jobs}" && "${lp_running_jobs}" -gt 0  ]] ; then
-            __dotmatrix_make_field "${lp_running_jobs}&" ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
-            running_jobs="${dotmatrix_field}"
-            has_notes=$((has_notes+1))
+            if [[ "${lp_running_jobs}" -ge "${DOTMATRIX_RUNNING_THRESHOLD}" ]]; then
+                __dotmatrix_make_field "${lp_running_jobs}&" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
+                running_jobs="${dotmatrix_field}"
+                has_warns=$((has_warns+1))
+            else
+                __dotmatrix_make_field "${lp_running_jobs}&" ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
+                running_jobs="${dotmatrix_field}"
+                has_notes=$((has_notes+1))
+            fi
         fi
 
         if [[ -n "${lp_stopped_jobs}" && "${lp_stopped_jobs}" -gt 0  ]] ; then
-            __dotmatrix_make_field "${lp_stopped_jobs}z" ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
-            stopped_jobs="${dotmatrix_field}"
-            has_notes=$((has_notes+1))
+            if [[ "${lp_stopped_jobs}" -ge "${DOTMATRIX_STOPPED_THRESHOLD}" ]]; then
+                __dotmatrix_make_field "${lp_stopped_jobs}z" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
+                stopped_jobs="${dotmatrix_field}"
+                has_warns=$((has_warns+1))
+            else
+                __dotmatrix_make_field "${lp_stopped_jobs}z" ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
+                stopped_jobs="${dotmatrix_field}"
+                has_notes=$((has_notes+1))
+            fi
         fi
     fi
+
+    lp_terminal_format ${DOTMATRIX_COLOR_FAIR[@]+"${DOTMATRIX_COLOR_FAIR[@]}"}
+    if [[ $has_warns -gt 0 ]]; then
+        __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
+    else
+        __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
+    fi
+    local djc_plug="${dotmatrix_sep}"
 
     __dotmatrix_make_sep_soft ${DOTMATRIX_COLOR_SEP_LITE[@]+"${DOTMATRIX_COLOR_SEP_LITE[@]}"}
     declare -a drs=($detached_sessions $running_jobs $stopped_jobs)
@@ -419,7 +471,7 @@ _lp_dotmatrix_theme_prompt() {
         lp_terminal_format ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
     fi
 
-    __dotmatrix_make_sep_last "$has_notes"
+    __dotmatrix_make_sep_last "$has_warns" "$has_notes"
     header+="$dotmatrix_sep"
 
     # Right-align the $side with spaces.
@@ -1155,16 +1207,22 @@ __dotmatrix_make_sep_mid() { # color
 
 __dotmatrix_make_sep_last() { # no arg
     local lp_terminal_format
-    local has_notes="${1:-0}"
-    if [[ $has_notes -gt 0 ]] ; then
-        lp_terminal_format -3 -1 0 0 -3 -1
-        dotmatrix_sep="${lp_terminal_format}${DOTMATRIX_ENDS[_LP_FIRST_INDEX+0]}${NO_COL}"
+    local has_warns="${1:-0}"
+    local has_notes="${2:-0}"
+    lp_terminal_format -3 -1 0 0 -3 -1
+    dotmatrix_sep="${lp_terminal_format}${DOTMATRIX_ENDS[_LP_FIRST_INDEX+0]}${NO_COL}"
+    if [[ $has_warns -eq 0 && $has_notes -gt 0 ]] ; then
         # Use the background of COLOR_NOTE as a foreground here.
         lp_terminal_format ${DOTMATRIX_COLOR_NOTE[1]}
         dotmatrix_sep+="${lp_terminal_format}${DOTMATRIX_ENDS[_LP_FIRST_INDEX+1]}${NO_COL}"
     else
-        lp_terminal_format -3 -1 0 0 -3 -1
-        dotmatrix_sep="${lp_terminal_format}${DOTMATRIX_ENDS[_LP_FIRST_INDEX+0]}${DOTMATRIX_ENDS[_LP_FIRST_INDEX+1]}${NO_COL}"
+        if [[ $has_warns -gt 0 ]]; then
+            # Use the background of COLOR_WARN as a foreground here.
+            lp_terminal_format ${DOTMATRIX_COLOR_WARN[1]}
+            dotmatrix_sep+="${lp_terminal_format}${DOTMATRIX_ENDS[_LP_FIRST_INDEX+1]}${DOTMATRIX_ENDS[_LP_FIRST_INDEX+1]}${NO_COL}"
+        else
+            dotmatrix_sep="${lp_terminal_format}${DOTMATRIX_ENDS[_LP_FIRST_INDEX+0]}${NO_COL}"
+        fi
     fi
 }
 

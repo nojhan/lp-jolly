@@ -213,6 +213,36 @@ Number of unpulled remote commits above which the prompt should use the warning 
 Number of modified lines above which the prompt should use the warning color to display the "commit" section.
 
 
+**DOTMATRIX_DETACHED_THRESHOLD** *integer = 3*
+
+Number of detached jobs above which the prompt should use the warning color.
+
+
+**DOTMATRIX_RUNNING_THRESHOLD** *integer = 3*
+
+Number of running jobs above which the prompt should use the warning color.
+
+
+**DOTMATRIX_STOPPED_THRESHOLD** *integer = 3*
+
+Number of stopped jobs above which the prompt should use the warning color.
+
+
+**DOTMATRIX_BATTERY_THRESHOLD** *integer = $((LP_BATTERY_THRESHOLD/2))*
+
+Percentage below which the prompt should use the warning color.
+
+
+**DOTMATRIX_TEMP_THRESHOLD** *integer = $((LP_TEMP_THRESHOLD*2))*
+
+Temperature above which the prompt should use the warning color.
+
+
+**DOTMATRIX_LOAD_THRESHOLD** *integer = $((_LP_LOAD_THRESHOLD+(_LP_LOAD_CAP-_LP_LOAD_THRESHOLD)/2))*
+
+Load percentage above which the prompt should use the warning color.
+
+
 **DOTMATRIX_ENABLE_HISTORY** *boolean = 1*
 
 Enable the history sections displayed on the right side of the middle line.
