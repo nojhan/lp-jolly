@@ -343,7 +343,8 @@ _lp_dotmatrix_theme_prompt() {
 
     local load=
     if _lp_load_color ; then
-        if [[ $lp_load -ge "$DOTMATRIX_LOAD_THRESHOLD" ]]; then
+
+        if [[ $lp_load_adjusted -ge "$DOTMATRIX_LOAD_THRESHOLD" ]]; then
             __dotmatrix_make_field "$lp_load" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
             load="${dotmatrix_field}${LP_MARK_LOAD}"
             has_warns=$((has_warns+1))
