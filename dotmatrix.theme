@@ -530,7 +530,11 @@ _lp_dotmatrix_theme_prompt() {
         local hist_max=$((DOTMATRIX_HISTORY_LAST_LEN-${#DOTMATRIX_HISTORY_LAST_LEN_MARK}))
         local hist_last=$(history | tail -n 1 | cut -d" " -f5-)
         if [[ ${#hist_last} -gt $hist_max ]] ; then
-            hist_last="${hist_last:0:$hist_max}${DOTMATRIX_HISTORY_LAST_LEN_MARK}"
+            if (( _LP_SHELL_zsh )) ; then
+                hist_last="${hist_last[1,$hist_max]}${DOTMATRIX_HISTORY_LAST_LEN_MARK}"
+            else # bash
+                hist_last="${hist_last:0:$hist_max}${DOTMATRIX_HISTORY_LAST_LEN_MARK}"
+            fi
         fi
         local hist_most=$(history | tail -n ${DOTMATRIX_HISTORY_MOST_BACK} | awk '{print $4}' | sort  | uniq --count | sort --numeric-sort --reverse | head -n 1 | awk '{print $2}')
         inline_right="$d${hist_last}$I${hist_most}$b"
