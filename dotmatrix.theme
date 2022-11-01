@@ -623,7 +623,7 @@ _lp_dotmatrix_theme_prompt() {
             error_msg="${lp_error}"
         fi
         __dotmatrix_make_sep_link ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
-        __dotmatrix_make_field "${DOTMATRIX_MARK_ERROR}${error_msg}" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
+        __dotmatrix_make_field "${DOTMATRIX_MARK_ERROR}${DOTMATRIX_SPACE_VOID}${error_msg}" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
         prompt+="${dotmatrix_sep}${dotmatrix_field}"
     fi
 
