@@ -39,7 +39,7 @@ _lp_dotmatrix_theme_activate() {
     # Use prefixed _LP_* variables, which are integers.
     DOTMATRIX_LOAD_THRESHOLD=${DOTMATRIX_LOAD_THRESHOLD:-$((_LP_LOAD_THRESHOLD+(_LP_LOAD_CAP-_LP_LOAD_THRESHOLD)/2))}
 
-    DOTMATRIX_MARK_ERROR=${DOTMATRIX_MARK_ERROR:-" "}
+    DOTMATRIX_MARK_ERROR=${DOTMATRIX_MARK_ERROR:-""}
 
     # Sets of characters
     DOTMATRIX_VARIANT=${DOTMATRIX_VARIANT:-"dotmatrix"}
@@ -612,8 +612,14 @@ _lp_dotmatrix_theme_prompt() {
     fi
 
     if _lp_error ; then
+        local error_msg=
+        if _lp_error_meaning; then
+            error_msg="${lp_error_meaning}"
+        else
+            error_msg="${lp_error}"
+        fi
         __dotmatrix_make_sep_link ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
-        __dotmatrix_make_field "${DOTMATRIX_MARK_ERROR}${lp_error}" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
+        __dotmatrix_make_field "${DOTMATRIX_MARK_ERROR}${error_msg}" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
         prompt+="${dotmatrix_sep}${dotmatrix_field}"
     fi
 
