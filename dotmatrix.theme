@@ -537,7 +537,11 @@ _lp_dotmatrix_theme_prompt() {
             fi
         fi
         local hist_most=$(history | tail -n ${DOTMATRIX_HISTORY_MOST_BACK} | awk '{print $4}' | sort  | uniq --count | sort --numeric-sort --reverse | head -n 1 | awk '{print $2}')
-        inline_right="$d${hist_last}$I${hist_most}$b"
+        __lp_escape "$hist_last"
+        local hlast="$ret"
+        __lp_escape "$hist_most"
+        local hmost="$ret"
+        inline_right="$d${hlast}$I${hmost}$b"
     fi
 
     inline_right+="${DOTMATRIX_LINE}"
