@@ -14,6 +14,9 @@ Has such, you may find it a little bit disconcerting at first.
 But we believe that the advantages of this design makes it worth the effort.
 
 
+NOTE: as of now, DotMatrix only work for Bash (> 3.2), but not for Zsh. That will hopefully change in the future.
+
+
 Preview
 -------
 
