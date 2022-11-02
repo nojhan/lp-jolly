@@ -910,9 +910,9 @@ __dotmatrix_prompt_vcs() {
                 _DOTMATRIX_VCS+="$dotmatrix_field"
             fi
             if [[ "$lp_vcs_commit_ahead" -ge "${DOTMATRIX_VCS_AHEAD_THRESHOLD}" ]]; then
-                color=${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
+                color=(${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"})
             else
-                color=${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
+                color=(${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"})
             fi
             __dotmatrix_make_sep_link "${color[@]}"
             _DOTMATRIX_VCS+="$dotmatrix_sep"
