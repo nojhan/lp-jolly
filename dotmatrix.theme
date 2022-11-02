@@ -370,7 +370,7 @@ _lp_dotmatrix_theme_prompt() {
     fi
 
     __dotmatrix_make_sep_soft ${DOTMATRIX_COLOR_SEP_DARK[@]+"${DOTMATRIX_COLOR_SEP_DARK[@]}"}
-    declare -a blt=("$battery" "$load" "$temperature")
+    declare -a blt=($battery $load $temperature) # Unquoted on purpose.
     if [[ ${#blt[@]} -gt 0 ]] ; then
         _lp_join "$dotmatrix_sep" "${blt[@]}"
         if [[ -n "$lp_join" ]] ; then
@@ -435,7 +435,7 @@ _lp_dotmatrix_theme_prompt() {
     local djc_plug="${dotmatrix_sep}"
 
     __dotmatrix_make_sep_soft ${DOTMATRIX_COLOR_SEP_LITE[@]+"${DOTMATRIX_COLOR_SEP_LITE[@]}"}
-    declare -a drs=("$detached_sessions" "$running_jobs" "$stopped_jobs")
+    declare -a drs=($detached_sessions $running_jobs $stopped_jobs) # Unquoted on purpose.
     if [[ ${#drs[@]} -gt 0 ]] ; then
         _lp_join "$dotmatrix_sep" "${drs[@]}"
         if [[ -n "$lp_join" ]] ; then
