@@ -5,6 +5,10 @@
 
 _lp_dotmatrix_theme_activate() {
 
+    LP_ENABLE_VCS_DIFFSTATS=${LP_ENABLE_VCS_DIFFSTATS:-1}
+    _LP_LOAD_THRESHOLD=${_LP_LOAD_THRESHOLD:-80}
+    _LP_LOAD_CAP=${_LP_LOAD_CAP:-100}
+
     DOTMATRIX_DISPLAY_TEXT=${DOTMATRIX_DISPLAY_TEXT:-"T"}
     DOTMATRIX_DISPLAY_X11=${DOTMATRIX_DISPLAY_X11:-"X"}
     DOTMATRIX_HOST_LOCAL=${DOTMATRIX_HOST_LOCAL:-"⌂"}
@@ -1003,8 +1007,10 @@ __dotmatrix_prompt_vcs() {
                 fi
 
             elif (( ret == 1 )); then
-                __dotmatrix_make_field "±0" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
-                has_lines="+${dotmatrix_field}"
+                # Maybe just removed a file, in which case no line is reported to be impacted,
+                # but this is still a change.
+                __dotmatrix_make_field "±0" ${DOTMATRIX_COLOR_DARK[@]+"${color[@]}"}
+                has_lines="${dotmatrix_field}"
             else
                 if [[ "$lp_vcs_uncommitted_i_lines" == "$lp_vcs_uncommitted_d_lines" ]] ; then
                     __dotmatrix_make_field "±$lp_vcs_uncommitted_i_lines" "${color[@]}"
@@ -1133,7 +1139,7 @@ __dotmatrix_make_sep_plug() { # color
         sep="${DOTMATRIX_MEAN}"
     fi
 
-    lp_terminal_format -3 "$bg" 0 0 -1 "$fbg"
+    lp_terminal_format -3 "$bg" 0 0 -3 "$fbg"
     dotmatrix_sep="${DOTMATRIX_SPACE_VOID}${lp_terminal_format}${sep}${DOTMATRIX_SPACE_VOID}"
 }
 
