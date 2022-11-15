@@ -326,13 +326,11 @@ _lp_dotmatrix_theme_prompt() {
     local has_notes=0
     local has_warns=0
 
+    # DOTMATRIX_COLOR_SEP_FAIR
     __dotmatrix_make_sep_side ""
     side="${dotmatrix_sep}"
 
     # battery / load / temperature
-    __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
-    local blt_plug="${dotmatrix_sep}"
-
     local battery=
     if _lp_battery_color ; then
         if [[ $lp_battery -le "$DOTMATRIX_BATTERY_THRESHOLD" ]]; then
@@ -378,7 +376,15 @@ _lp_dotmatrix_theme_prompt() {
     if [[ ${#blt[@]} -gt 0 ]] ; then
         _lp_join "$dotmatrix_sep" "${blt[@]}"
         if [[ -n "$lp_join" ]] ; then
-            side+="${blt_plug}${lp_join}"
+
+            # Match the side sep
+            local  fg="${DOTMATRIX_COLOR_SEP_FAIR[0]}"
+            local ffg="${DOTMATRIX_COLOR_SEP_FAIR[4]}"
+            lp_terminal_format "$fg" -2 0 0 "$ffg" -2
+            # No space before sep.
+            dotmatrix_sep="${lp_terminal_format}${sep}${DOTMATRIX_SPACE_VOID}"
+
+            side+="${dotmatrix_sep}${lp_join}"
         fi
     else
         lp_terminal_format ${DOTMATRIX_COLOR_FAIR[@]+"${DOTMATRIX_COLOR_FAIR[@]}"}
