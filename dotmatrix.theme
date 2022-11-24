@@ -620,8 +620,9 @@ _lp_dotmatrix_theme_prompt() {
         dotmatrix_prompt+="${dotmatrix_sep}"
     fi
 
-    __dotmatrix_prompt_vcs
-    dotmatrix_prompt+="${_DOTMATRIX_VCS}"
+    if __dotmatrix_prompt_vcs; then
+        dotmatrix_prompt+="${_DOTMATRIX_VCS}"
+    fi
 
     if _lp_runtime_format ; then
         __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
@@ -1091,10 +1092,10 @@ __dotmatrix_prompt_vcs() {
                 fi
             fi
         fi # stash
-        return 1
+        return 0
     else
         _DOTMATRIX_VCS=""
-        return 0
+        return 1
     fi # find_vcs
 }
 
