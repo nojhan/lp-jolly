@@ -46,126 +46,28 @@ _lp_dotmatrix_theme_activate() {
     DOTMATRIX_MARK_ERROR=${DOTMATRIX_MARK_ERROR:-""}
 
     # Sets of characters
-    DOTMATRIX_VARIANT=${DOTMATRIX_VARIANT:-"dotmatrix"}
-    if [[ "${DOTMATRIX_VARIANT}" == "dotmatrix" ]] ; then
-        DOTMATRIX_SPACED=${DOTMATRIX_SPACED:-1}
+    # Dotmatrix theme
+    DOTMATRIX_HOST_LOCAL=${DOTMATRIX_HOST_LOCAL:-"⌂"}
+    DOTMATRIX_USER_LOCAL=${DOTMATRIX_USER_LOCAL:-"♟"}
+    DOTMATRIX_VCS=${DOTMATRIX_VCS:-"╟┘"}
+    DOTMATRIX_MARK=${DOTMATRIX_MARK:-"■"}
+    DOTMATRIX_LINE=${DOTMATRIX_LINE:-"━"}
+    DOTMATRIX_PLUG=${DOTMATRIX_PLUG:-"▛"}
+    DOTMATRIX_SOFT=${DOTMATRIX_SOFT:-"╱"}
+    DOTMATRIX_MEAN=${DOTMATRIX_MEAN:-"▞"}
+    # Separator arrays                                (left center right)
+    DOTMATRIX_LINK=( ${DOTMATRIX_LINK[@]+"${DOTMATRIX_LINK[@]}"} )
+    [[ ${#DOTMATRIX_LINK[@]} == 0 ]] && DOTMATRIX_LINK=("▙" " "   "▜")
+    DOTMATRIX_OPEN=( ${DOTMATRIX_OPEN[@]+"${DOTMATRIX_OPEN[@]}"} )
+    [[ ${#DOTMATRIX_OPEN[@]} == 0 ]] && DOTMATRIX_OPEN=("▙" " ▚ " "▜")
+    DOTMATRIX_DANG=( ${DOTMATRIX_DANG[@]+"${DOTMATRIX_DANG[@]}"} )
+    [[ ${#DOTMATRIX_DANG[@]} == 0 ]] && DOTMATRIX_DANG=("▙" " □ " "▜")
+    DOTMATRIX_ENDS=( ${DOTMATRIX_ENDS[@]+"${DOTMATRIX_ENDS[@]}"} )
+    [[ ${#DOTMATRIX_ENDS[@]} == 0 ]] && DOTMATRIX_ENDS=("▛" "▞▗ ▝" "▖ ▘▞▟")
+    DOTMATRIX_ITEMS=( ${DOTMATRIX_ITEMS[@]+"${DOTMATRIX_ITEMS[@]}"} )
+    [[ ${#DOTMATRIX_ITEMS[@]} == 0 ]] && DOTMATRIX_ITEMS=("┫" "┃" "┣")
 
-        # Dotmatrix theme
-        DOTMATRIX_HOST_LOCAL=${DOTMATRIX_HOST_LOCAL:-"⌂"}
-        DOTMATRIX_USER_LOCAL=${DOTMATRIX_USER_LOCAL:-"♟"}
-        DOTMATRIX_VCS=${DOTMATRIX_VCS:-"╟┘"}
-        DOTMATRIX_MARK=${DOTMATRIX_MARK:-"■"}
-        DOTMATRIX_LINE=${DOTMATRIX_LINE:-"━"}
-        DOTMATRIX_PLUG=${DOTMATRIX_PLUG:-"▛"}
-        DOTMATRIX_SOFT=${DOTMATRIX_SOFT:-"╱"}
-        DOTMATRIX_MEAN=${DOTMATRIX_MEAN:-"▞"}
-        # Separator arrays                                (left center right)
-        DOTMATRIX_LINK=( ${DOTMATRIX_LINK[@]+"${DOTMATRIX_LINK[@]}"} )
-        [[ ${#DOTMATRIX_LINK[@]} == 0 ]] && DOTMATRIX_LINK=("▙" " "   "▜")
-        DOTMATRIX_OPEN=( ${DOTMATRIX_OPEN[@]+"${DOTMATRIX_OPEN[@]}"} )
-        [[ ${#DOTMATRIX_OPEN[@]} == 0 ]] && DOTMATRIX_OPEN=("▙" " ▚ " "▜")
-        DOTMATRIX_DANG=( ${DOTMATRIX_DANG[@]+"${DOTMATRIX_DANG[@]}"} )
-        [[ ${#DOTMATRIX_DANG[@]} == 0 ]] && DOTMATRIX_DANG=("▙" " □ " "▜")
-        DOTMATRIX_ENDS=( ${DOTMATRIX_ENDS[@]+"${DOTMATRIX_ENDS[@]}"} )
-        [[ ${#DOTMATRIX_ENDS[@]} == 0 ]] && DOTMATRIX_ENDS=("▛" "▞▗ ▝" "▖ ▘▞▟")
-        DOTMATRIX_ITEMS=( ${DOTMATRIX_ITEMS[@]+"${DOTMATRIX_ITEMS[@]}"} )
-        [[ ${#DOTMATRIX_ITEMS[@]} == 0 ]] && DOTMATRIX_ITEMS=("┫" "┃" "┣")
-
-    elif [[ "${DOTMATRIX_VARIANT}" == "text" ]] ; then
-        DOTMATRIX_SPACED=${DOTMATRIX_SPACED:-0}
-
-        # Dotmatrix theme
-        DOTMATRIX_HOST_LOCAL=${DOTMATRIX_HOST_LOCAL:-"lcl"}
-        DOTMATRIX_USER_LOCAL=${DOTMATRIX_USER_LOCAL:-"me"}
-        DOTMATRIX_VCS=${DOTMATRIX_VCS:-"VCS"}
-        DOTMATRIX_MARK=${DOTMATRIX_MARK:-">"}
-        DOTMATRIX_LINE=${DOTMATRIX_LINE:-"━"}
-        DOTMATRIX_PLUG=${DOTMATRIX_PLUG:-"▌"}
-        DOTMATRIX_SOFT=${DOTMATRIX_SOFT:-"╱"}
-        DOTMATRIX_MEAN=${DOTMATRIX_MEAN:-"┃"}
-        # Separator arrays                                (left center right)
-        DOTMATRIX_LINK=( ${DOTMATRIX_LINK[@]+"${DOTMATRIX_LINK[@]}"} )
-        [[ ${#DOTMATRIX_LINK[@]} == 0 ]] && DOTMATRIX_LINK=("▌" "<"   "▐")
-        DOTMATRIX_OPEN=( ${DOTMATRIX_OPEN[@]+"${DOTMATRIX_OPEN[@]}"} )
-        [[ ${#DOTMATRIX_OPEN[@]} == 0 ]] && DOTMATRIX_OPEN=("▌" "<<" "▐")
-        DOTMATRIX_DANG=( ${DOTMATRIX_DANG[@]+"${DOTMATRIX_DANG[@]}"} )
-        [[ ${#DOTMATRIX_DANG[@]} == 0 ]] && DOTMATRIX_DANG=("▌" "<<<" "▐")
-        DOTMATRIX_ENDS=( ${DOTMATRIX_ENDS[@]+"${DOTMATRIX_ENDS[@]}"} )
-        [[ ${#DOTMATRIX_ENDS[@]} == 0 ]] && DOTMATRIX_ENDS=("▌" "···" "···▐")
-        DOTMATRIX_ITEMS=( ${DOTMATRIX_ITEMS[@]+"${DOTMATRIX_ITEMS[@]}"} )
-        [[ ${#DOTMATRIX_ITEMS[@]} == 0 ]] && DOTMATRIX_ITEMS=("┫" "┃" "┣")
-
-
-    elif [[ "${DOTMATRIX_VARIANT}" == "chevron"  ]] ; then
-        DOTMATRIX_SPACED=${DOTMATRIX_SPACED:-1}
-
-        # Powerline chevron theme
-        DOTMATRIX_HOST_LOCAL=${DOTMATRIX_HOST_LOCAL:-""}
-        DOTMATRIX_USER_LOCAL=${DOTMATRIX_USER_LOCAL:-""}
-        DOTMATRIX_VCS=${DOTMATRIX_VCS:-""}
-        DOTMATRIX_MARK=${DOTMATRIX_MARK:-""}
-        DOTMATRIX_LINE=${DOTMATRIX_LINE:-"━"}
-        DOTMATRIX_PLUG=${DOTMATRIX_PLUG:-""}
-        DOTMATRIX_SOFT=${DOTMATRIX_SOFT:-"╱"}
-        DOTMATRIX_MEAN=${DOTMATRIX_MEAN:-""}
-        DOTMATRIX_LINK=( ${DOTMATRIX_LINK[@]+"${DOTMATRIX_LINK[@]}"} )
-        [[ ${#DOTMATRIX_LINK[@]} == 0 ]] && DOTMATRIX_LINK=("" ""   "")
-        DOTMATRIX_OPEN=( ${DOTMATRIX_OPEN[@]+"${DOTMATRIX_OPEN[@]}"} )
-        [[ ${#DOTMATRIX_OPEN[@]} == 0 ]] && DOTMATRIX_OPEN=("" ""  "")
-        DOTMATRIX_DANG=( ${DOTMATRIX_DANG[@]+"${DOTMATRIX_DANG[@]}"} )
-        [[ ${#DOTMATRIX_DANG[@]} == 0 ]] && DOTMATRIX_DANG=("" "" "")
-        DOTMATRIX_ENDS=( ${DOTMATRIX_ENDS[@]+"${DOTMATRIX_ENDS[@]}"} )
-        [[ ${#DOTMATRIX_ENDS[@]} == 0 ]] && DOTMATRIX_ENDS=("" "" "")
-        DOTMATRIX_ITEMS=( ${DOTMATRIX_ITEMS[@]+"${DOTMATRIX_ITEMS[@]}"} )
-        [[ ${#DOTMATRIX_ITEMS[@]} == 0 ]] && DOTMATRIX_ITEMS=("" "┃" "")
-
-    elif [[ "${DOTMATRIX_VARIANT}" == "round"  ]] ; then
-        DOTMATRIX_SPACED=${DOTMATRIX_SPACED:-1}
-
-        # Powerline round theme
-        DOTMATRIX_HOST_LOCAL=${DOTMATRIX_HOST_LOCAL:-""}
-        DOTMATRIX_USER_LOCAL=${DOTMATRIX_USER_LOCAL:-""}
-        DOTMATRIX_VCS=${DOTMATRIX_VCS:-""}
-        DOTMATRIX_MARK=${DOTMATRIX_MARK:-""}
-        DOTMATRIX_LINE=${DOTMATRIX_LINE:-"━"}
-        DOTMATRIX_PLUG=${DOTMATRIX_PLUG:-""}
-        DOTMATRIX_SOFT=${DOTMATRIX_SOFT:-"╱"}
-        DOTMATRIX_MEAN=${DOTMATRIX_MEAN:-""}
-        DOTMATRIX_LINK=( ${DOTMATRIX_LINK[@]+"${DOTMATRIX_LINK[@]}"} )
-        [[ ${#DOTMATRIX_LINK[@]} == 0 ]] && DOTMATRIX_LINK=("█" "" "")
-        DOTMATRIX_OPEN=( ${DOTMATRIX_OPEN[@]+"${DOTMATRIX_OPEN[@]}"} )
-        [[ ${#DOTMATRIX_OPEN[@]} == 0 ]] && DOTMATRIX_OPEN=("█" "" "")
-        DOTMATRIX_DANG=( ${DOTMATRIX_DANG[@]+"${DOTMATRIX_DANG[@]}"} )
-        [[ ${#DOTMATRIX_DANG[@]} == 0 ]] && DOTMATRIX_DANG=("█" "" "")
-        DOTMATRIX_ENDS=( ${DOTMATRIX_ENDS[@]+"${DOTMATRIX_ENDS[@]}"} )
-        [[ ${#DOTMATRIX_ENDS[@]} == 0 ]] && DOTMATRIX_ENDS=("" "" "")
-        DOTMATRIX_ITEMS=( ${DOTMATRIX_ITEMS[@]+"${DOTMATRIX_ITEMS[@]}"} )
-        [[ ${#DOTMATRIX_ITEMS[@]} == 0 ]] && DOTMATRIX_ITEMS=("" "┃" "")
-
-    elif [[ "${DOTMATRIX_VARIANT}" == "slant"  ]] ; then
-        DOTMATRIX_SPACED=${DOTMATRIX_SPACED:-1}
-
-        # Powerline slanted theme
-        DOTMATRIX_HOST_LOCAL=${DOTMATRIX_HOST_LOCAL:-""}
-        DOTMATRIX_USER_LOCAL=${DOTMATRIX_USER_LOCAL:-""}
-        DOTMATRIX_VCS=${DOTMATRIX_VCS:-""}
-        DOTMATRIX_MARK=${DOTMATRIX_MARK:-""}
-        DOTMATRIX_LINE=${DOTMATRIX_LINE:-"━"}
-        DOTMATRIX_PLUG=${DOTMATRIX_PLUG:-""}
-        DOTMATRIX_SOFT=${DOTMATRIX_SOFT:-"╱"}
-        DOTMATRIX_MEAN=${DOTMATRIX_MEAN:-""}
-        DOTMATRIX_LINK=( ${DOTMATRIX_LINK[@]+"${DOTMATRIX_LINK[@]}"} )
-        [[ ${#DOTMATRIX_LINK[@]} == 0 ]] && DOTMATRIX_LINK=("" "" "")
-        DOTMATRIX_OPEN=( ${DOTMATRIX_OPEN[@]+"${DOTMATRIX_OPEN[@]}"} )
-        [[ ${#DOTMATRIX_OPEN[@]} == 0 ]] && DOTMATRIX_OPEN=("" "" "")
-        DOTMATRIX_DANG=( ${DOTMATRIX_DANG[@]+"${DOTMATRIX_DANG[@]}"} )
-        [[ ${#DOTMATRIX_DANG[@]} == 0 ]] && DOTMATRIX_DANG=("" "" "")
-        DOTMATRIX_ENDS=( ${DOTMATRIX_ENDS[@]+"${DOTMATRIX_ENDS[@]}"} )
-        [[ ${#DOTMATRIX_ENDS[@]} == 0 ]] && DOTMATRIX_ENDS=("" "/" "")
-        DOTMATRIX_ITEMS=( ${DOTMATRIX_ITEMS[@]+"${DOTMATRIX_ITEMS[@]}"} )
-        [[ ${#DOTMATRIX_ITEMS[@]} == 0 ]] && DOTMATRIX_ITEMS=("" "┃" "")
-
-    fi
+    DOTMATRIX_SPACED=${DOTMATRIX_SPACED:-1}
 
     # Number of spaces to add
     if [[ ${DOTMATRIX_SPACED} == 0 ]] ; then

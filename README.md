@@ -98,7 +98,7 @@ For example:
    # Load Liquid Prompt.
    source ~/liquidprompt/liquidprompt
    # Configure the desired variant.
-   DOTMATRIX_VARIANT="chevron"
+   source ~/lp-dotmatrix/presets/variant-chevron.conf
    # Load the theme.
    source ~/lp-dotmatrix/dotmatrix.theme && lp_theme dotmatrix
 ```
@@ -165,22 +165,30 @@ The following options are **not honored**:
 
 ### Theme Configuration
 
+#### Presets
+
+Some example configurations are provided in the `/presets/` directory.
+
+Note: the order in which you load the presets may be important.
+When changing the colors of the first line, presets needs to be loaded
+from your shell configuration and not just sourced in the prompt.
+
+A first set is are called "variants" and mainly change the segment joints,
+but can also impact the icons on some variants:
+
+- `source presets/variant-chevron.conf" (the *recommended*, need a Nerd-fonts font),
+- `source presets/variant-slant.conf" (need a Nerd-fonts font),
+- `source presets/variant-round.conf" (need a Nerd-fonts font),
+- `source presets/variant-text.conf" (the one that works anywhere).
+
+A second set changes the colors:
+
+- `source presets/colors_green-red.conf` (warning in red, notes in green),
+- `source presets/colors_cyan-magenta.conf` (warning in magenta, notes in cyan),
+- `source presets/colors_high-contrast.conf` (segments are very white and very black instead of slightly grayish),
+
+
 #### High-level
-
-**DOTMATRIX_VARIANT** *string = "dotmatrix"*
-
-The variant of the theme.
-This mainly change the segments separation style,
-but can also impact the icons on some variants.
-
-Allowed values:
-
-- "dotmatrix" (the *default*),
-- "chevron" (the *recommended*, need a Nerd-fonts font),
-- "slant" (need a Nerd-fonts font),
-- "round" (need a Nerd-fonts font),
-- "text" (the one that works anywhere).
-
 
 **DOTMATRIX_SPACED** *boolean = 1*
 
