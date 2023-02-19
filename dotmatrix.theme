@@ -493,25 +493,24 @@ _lp_dotmatrix_theme_prompt() {
     ####################################################################
     # IN LINE
     ####################################################################
-    local color_line
+    local color_line_end=""
     if (( LP_ENABLE_SSH_COLORS )); then
         local lp_hostname_hash
         __lp_hostname_hash
         __lp_foreground_color "$(( 1 + lp_hostname_hash % 6 ))"
-        color_line="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
-    else
-        lp_terminal_format ${DOTMATRIX_COLOR_LINE[@]+"${DOTMATRIX_COLOR_LINE[@]}"}
-        color_line="$lp_terminal_format"
+        color_line_end="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
     fi
-    local inline_left="${NO_COL}$LP_PS1_PREFIX${color_line}${DOTMATRIX_LINE}"
+    lp_terminal_format ${DOTMATRIX_COLOR_LINE[@]+"${DOTMATRIX_COLOR_LINE[@]}"}
+    color_line_start="$lp_terminal_format"
+    local inline_left="${NO_COL}$LP_PS1_PREFIX${lp_terminal_format}${DOTMATRIX_LINE}"
 
     # Dev env section.
     local ista="$_LP_FIRST_INDEX"
     local imid=$((_LP_FIRST_INDEX+1))
     local iend=$((_LP_FIRST_INDEX+2))
-    local d="${DOTMATRIX_ITEMS[ista]}${DOTMATRIX_SPACE_LINE}${NO_COL}"
-    local I="${color_line}${DOTMATRIX_SPACE_LINE}${DOTMATRIX_ITEMS[imid]}${DOTMATRIX_SPACE_LINE}${NO_COL}"
-    local b="${color_line}${DOTMATRIX_SPACE_LINE}${DOTMATRIX_ITEMS[iend]}"
+    local d="${color_line_start}${DOTMATRIX_ITEMS[ista]}${DOTMATRIX_SPACE_LINE}"
+    local I="${color_line_start}${DOTMATRIX_SPACE_LINE}${DOTMATRIX_ITEMS[imid]}${DOTMATRIX_SPACE_LINE}"
+    local b="${color_line_start}${DOTMATRIX_SPACE_LINE}${DOTMATRIX_ITEMS[iend]}${color_line_end}"
     if _lp_software_collections ; then
         inline_left+="$d${lp_software_collections}$b"
     fi
@@ -538,7 +537,7 @@ _lp_dotmatrix_theme_prompt() {
     fi
     if _lp_cmake ; then
         local lp_join
-        _lp_join "$I" "${lp_cmake_c_compiler}" "${lp_cmake_cxx_compiler}" "${lp_cmake_generator}" "${lp_cmake_buildtype}"
+        _lp_join "$I" ${lp_cmake_c_compiler} ${lp_cmake_cxx_compiler} ${lp_cmake_generator} ${lp_cmake_buildtype}
         inline_left+="$d${lp_join}$b"
     fi
 
