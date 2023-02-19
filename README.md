@@ -20,20 +20,20 @@ Preview
 If there is nothing special about the current context, the appearance of
 DotMatrix might be as simple as this:
 
-![](dotmatrix-short-chevron.png)
+![](screenshots/dotmatrix-short-chevron.png)
 
 A typical display of a slightly complex session would look like this:
 
-![](dotmatrix-med-chevron.png)
+![](screenshots/dotmatrix-med-chevron.png)
 
 The DotMatrix theme also comes as several variants, changing the shape of the segments separators,
 like the (default) "dotmatrix" pixels:
 
-![](dotmatrix-short-dots.png)
+![](screenshots/dotmatrix-short-dots.png)
 
 or the "slant" variant:
 
-![](dotmatrix-med-slant.png)
+![](screenshots/dotmatrix-med-slant.png)
 
 
 Design
@@ -72,7 +72,7 @@ For instance, in the following prompt, you can see that the user is in a Git rep
 - the rightmost blue "≠" indicates that there are some modifications waiting to be commited (hence the directional hint, from a diff to the branch).
 - the leftmost blue segment indicates that there are some commits that may be pushed to the remote (hence the directional hint, from the branch to the VCS symbol).
 
-![](dotmatrix-intro-chevron.png)
+![](screenshots/dotmatrix-intro-chevron.png)
 
 The screenshot also shows that the last command ended in an error, hence the red-over-yellow error code.
 
@@ -117,25 +117,25 @@ Variants needing a Nerd-fonts font:
 
 - "chevron" (the recommended one):
 
-![](dotmatrix-short-chevron.png)
+![](screenshots/dotmatrix-short-chevron.png)
 
 - "round":
 
-![](dotmatrix-short-round.png)
+![](screenshots/dotmatrix-short-round.png)
 
 - "slant":
 
-![](dotmatrix-short-slant.png)
+![](screenshots/dotmatrix-short-slant.png)
 
 Variants available with a regular font:
 
 - "dotmatrix" (the default):
 
-![](dotmatrix-short-dots.png)
+![](screenshots/dotmatrix-short-dots.png)
 
 - "text" (using only common characters):
 
-![](dotmatrix-short-text.png)
+![](screenshots/dotmatrix-short-text.png)
 
 
 Configuration
@@ -189,11 +189,11 @@ showing segments without extra spaces around their joints.
 
 Example of a spaced prompt:
 
-![](dotmatrix-spaced.png)
+![](screenshots/dotmatrix-spaced.png)
 
 Example of a compact prompt:
 
-![](dotmatrix-unspaced.png)
+![](screenshots/dotmatrix-unspaced.png)
 
 
 #### Specific features
