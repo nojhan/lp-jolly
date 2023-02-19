@@ -1,7 +1,7 @@
 DotMatrix — A Liquid Prompt Theme
 =================================
 
-Neon is a theme for [Liquid Prompt](https://github.com/nojhan/liquidprompt).
+DotMatrix is a theme for [Liquid Prompt](https://github.com/nojhan/liquidprompt).
 
 It is an original prompt design, very carefully designed,
 that will completely changes the way you imagine the prompt.
