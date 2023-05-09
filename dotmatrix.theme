@@ -442,6 +442,15 @@ _lp_dotmatrix_theme_prompt() {
         _lp_join "$I" ${lp_cmake_c_compiler} ${lp_cmake_cxx_compiler} ${lp_cmake_generator} ${lp_cmake_buildtype}
         inline_left+="$d${lp_join}$b"
     fi
+    if _lp_container; then
+        inline_left+="$d$lp_container$b"
+    fi
+    if _lp_os; then
+        inline_left+="$d$lp_os$b"
+    fi
+    if _lp_modules; then
+        inline_left+="$d$lp_modules$b"
+    fi
 
     # History section.
     local inline_right=
