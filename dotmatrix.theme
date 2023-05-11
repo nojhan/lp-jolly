@@ -449,7 +449,9 @@ _lp_dotmatrix_theme_prompt() {
         inline_left+="$d$lp_os$b"
     fi
     if _lp_modules; then
-        inline_left+="$d$lp_modules$b"
+        inline_left+="$d"
+        _lp_join "$I" "${lp_modules[@]}"
+        inline_left+="${lp_join}$b"
     fi
 
     # History section.
