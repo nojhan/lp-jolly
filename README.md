@@ -44,7 +44,7 @@ Design
 The DotMatrix theme use a couple of design principles:
 
 * It is accessible to colorblind people, hence it uses:
-    * only four colors: dark grey, white, blue and yellow.
+    * only four colors: dark grey, white, blue and yellow (different color pairs are available as presets for people having blue-yellow colorblindess).
     * At least a text item for each segment,
     * or a blank space between segments.
 * The blue colors means that the user is probably expected to perform some task.
@@ -55,7 +55,7 @@ The DotMatrix theme use a couple of design principles:
     * Important states are denoted by text.
     * Ancillary states can be shown with a single character/icon.
     * States appearing from a user action can be shown by "detaching" two segments usually joined.
-      When possible, this added space is shown as having a right-to-left direction.
+      By default, this added space is shown as having a right-to-left direction.
 
 The prompt itself is designed in three lines:
 
@@ -82,9 +82,12 @@ for the default login user ("", a figure), on localhost ("", an island), i
 
 ### Full description
 
-The following diagram shows almost all the possible states of a DotMatrix Liquid Prompt:
+The following diagram shows almost all the possible states of a DotMatrix Liquid Prompt
 
-![](liquidprompt_dotmatrix_design.svg)
+![](liquidprompt_dotmatrix_design.png)
+
+The diagram is available [in a vector format](liquidprompt_dotmatrix_design.svg) (note: you need a browser/viewer configured to use a [nerd-font](https://www.nerdfonts.com) to see it correctly).
+
 
 
 Setup
@@ -97,7 +100,7 @@ For example:
 
    # Load Liquid Prompt.
    source ~/liquidprompt/liquidprompt
-   # Configure the desired variant.
+   # Configure the desired variant (or colors, etc.).
    source ~/lp-dotmatrix/presets/variant-chevron.conf
    # Load the theme.
    source ~/lp-dotmatrix/dotmatrix.theme && lp_theme dotmatrix
@@ -110,8 +113,14 @@ You will either need a compatible font, or use a variant that does not need them
 See the [Nerd-fonts Fonts installation docs](https://www.nerdfonts.com) for help on installing this kind of fonts.
 
 
-Variants
+Presets
 --------
+
+The `presets` directory contains configurations changing several variables at once.
+It contains configuration files for changing the color pair (e.g. green/red instead of blue/yellow)
+and the segments shape (see below).
+
+### Variants
 
 Variants needing a Nerd-fonts font:
 
