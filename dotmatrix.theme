@@ -998,7 +998,7 @@ __dotmatrix_prompt_vcs() {
         if [[ -n "$stash" || -n "$untracked" || -n "$head" ]] ; then
             if [[ -z $has_lines ]] ; then
                 __dotmatrix_make_sep_mid ${DOTMATRIX_COLOR_SEP_FAIR[@]+"${DOTMATRIX_COLOR_SEP_FAIR[@]}"}
-                _DOTMATRIX_VCS+=" ${dotmatrix_sep} "
+                _DOTMATRIX_VCS+="$dotmatrix_sep"
             else
                 __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
                 _DOTMATRIX_VCS+="$dotmatrix_sep"
