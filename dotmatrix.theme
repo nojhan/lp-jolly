@@ -58,6 +58,8 @@ _lp_dotmatrix_theme_activate() {
     # Separator arrays                                (left center right)
     DOTMATRIX_LINK=( ${DOTMATRIX_LINK[@]+"${DOTMATRIX_LINK[@]}"} )
     [[ ${#DOTMATRIX_LINK[@]} == 0 ]] && DOTMATRIX_LINK=("▙" " "   "▜")
+    DOTMATRIX_LINK_R=( ${DOTMATRIX_LINK_R[@]+"${DOTMATRIX_LINK_R[@]}"} )
+    [[ ${#DOTMATRIX_LINK_R[@]} == 0 ]] && DOTMATRIX_LINK_R=("▛" " " "▟")
     DOTMATRIX_OPEN=( ${DOTMATRIX_OPEN[@]+"${DOTMATRIX_OPEN[@]}"} )
     [[ ${#DOTMATRIX_OPEN[@]} == 0 ]] && DOTMATRIX_OPEN=("▙" " ▚ " "▜")
     DOTMATRIX_DANG=( ${DOTMATRIX_DANG[@]+"${DOTMATRIX_DANG[@]}"} )
@@ -820,7 +822,7 @@ __dotmatrix_directory_path() {
 
 __dotmatrix_prompt_vcs() {
     if _lp_find_vcs ; then
-        declare -a color
+        declare -a color color_behind color_ahead
 
         _lp_smart_mark
 
@@ -832,15 +834,15 @@ __dotmatrix_prompt_vcs() {
             # Remote segment.
             if [[ "$lp_vcs_commit_behind" -ne "0" ]]; then # NOTE remote segment.
                 if [[ "$lp_vcs_commit_behind" -ge "${DOTMATRIX_VCS_BEHIND_THRESHOLD}" ]]; then
-                    color=(${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"})
+                    color_behind=(${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"})
                 else
-                    color=(${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"})
+                    color_behind=(${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"})
                 fi
                 if (( LP_ENABLE_VCS_DIFFSTATS )) ; then
-                    __dotmatrix_make_field "${DOTMATRIX_VCS}${lp_smart_mark} ${lp_vcs_commit_behind}" "${color[@]}"
+                    __dotmatrix_make_field "${DOTMATRIX_VCS}${lp_smart_mark} ${lp_vcs_commit_behind}" "${color_behind[@]}"
                     _DOTMATRIX_VCS+="$dotmatrix_field"
                 else
-                    __dotmatrix_make_field "${DOTMATRIX_VCS}${lp_smart_mark} ${DOTMATRIX_DIFF}" "${color[@]}"
+                    __dotmatrix_make_field "${DOTMATRIX_VCS}${lp_smart_mark} ${DOTMATRIX_DIFF}" "${color_behind[@]}"
                     _DOTMATRIX_VCS+="$dotmatrix_field"
                 fi
 
@@ -848,33 +850,45 @@ __dotmatrix_prompt_vcs() {
                 __dotmatrix_make_field "${DOTMATRIX_VCS}${lp_smart_mark}" ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
                 _DOTMATRIX_VCS+="$dotmatrix_field"
             fi
-            if [[ "$lp_vcs_commit_ahead" -ge "${DOTMATRIX_VCS_AHEAD_THRESHOLD}" ]]; then
-                color=(${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"})
-            else
-                color=(${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"})
+
+            # Link between remote and local.
+            # We already have `color_behind`.
+            if [[ "$lp_vcs_commit_ahead" -ne "0" ]]; then # NOTE local segment.
+                if [[ "$lp_vcs_commit_ahead" -ge "${DOTMATRIX_VCS_AHEAD_THRESHOLD}" ]]; then
+                    color_ahead=(${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"})
+                else
+                    color_ahead=(${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"})
+                fi
+            else # No commit ahead.
+                color_ahead=(${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"})
             fi
-            __dotmatrix_make_sep_link "${color[@]}"
+
+            # Choice of link type.
+            # Both remote and local have commits.
+            if [[ "$lp_vcs_commit_behind" -ne "0" && "$lp_vcs_commit_ahead" -ne "0" ]]; then
+                __dotmatrix_make_sep_link_opposed "${color_ahead[@]}"
+            # Only remote have commit.
+            elif [[ "$lp_vcs_commit_behind" -ne "0" && "$lp_vcs_commit_ahead" -eq "0" ]]; then
+                __dotmatrix_make_sep_link_reverse "${color_ahead[@]}"
+            # Only local have commits.
+            else
+                __dotmatrix_make_sep_link "${color_ahead[@]}"
+            fi
             _DOTMATRIX_VCS+="$dotmatrix_sep"
 
             # Local segment.
             if [[ "$lp_vcs_commit_ahead" -ne "0" ]]; then # NOTE local segment.
-                if [[ "$lp_vcs_commit_ahead" -ge "${DOTMATRIX_VCS_AHEAD_THRESHOLD}" ]]; then
-                    color=(${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"})
-                else
-                    color=(${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"})
-                fi
+                # We already have `color_ahead`.
                 if (( LP_ENABLE_VCS_DIFFSTATS )) ; then
-                    __dotmatrix_make_field "$lp_vcs_commit_ahead" "${color[@]}"
+                    __dotmatrix_make_field "$lp_vcs_commit_ahead" "${color_ahead[@]}"
                     _DOTMATRIX_VCS+="$dotmatrix_field"
                 else
-                    __dotmatrix_make_field "$DOTMATRIX_DIFF" "${color[@]}"
+                    __dotmatrix_make_field "$DOTMATRIX_DIFF" "${color_ahead[@]}"
                     _DOTMATRIX_VCS+="$dotmatrix_field"
                 fi
                 __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
                 _DOTMATRIX_VCS+="$dotmatrix_sep"
-            else # 0 commit ahead => LITE local segment.
-                __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
-                _DOTMATRIX_VCS+="$dotmatrix_sep"
+            # else # 0 commit ahead => direct segment.
             fi
 
         else # No commits off remote => There is no space between remote and branch.
@@ -1098,6 +1112,49 @@ __dotmatrix_make_sep_link() { # color
     lp_terminal_format "$fg" -1 0 0 -1 "$fbg"
     dotmatrix_sep+="${lp_terminal_format}${DOTMATRIX_LINK[_LP_FIRST_INDEX+2]}${DOTMATRIX_SPACE_FILL}"
 }
+
+__dotmatrix_make_sep_link_reverse() { # color
+    local lp_terminal_format
+    dotmatrix_sep=""
+
+    local fg="${2-}"
+    [[ -z $fg ]] && fg=-1
+    local fbg="${6-}"
+    [[ -z $fbg ]] && fbg=-1
+
+    lp_terminal_format -3 -1 0 0 -1 "$fbg"
+    dotmatrix_sep+="${DOTMATRIX_SPACE_VOID}${lp_terminal_format}${DOTMATRIX_LINK_R[_LP_FIRST_INDEX]}"
+
+    local dsfg="${DOTMATRIX_COLOR_SEP_FAIR[_LP_FIRST_INDEX]}"
+    [[ -z $dsfg ]] && dsfg=-1
+    lp_terminal_format "$dsfg" -1 0 0 -1 "$fbg"
+    dotmatrix_sep+="${lp_terminal_format}${DOTMATRIX_LINK_R[_LP_FIRST_INDEX+1]}"
+
+    lp_terminal_format "$fg" -1 0 0 -1 "$fbg"
+    dotmatrix_sep+="${lp_terminal_format}${DOTMATRIX_LINK_R[_LP_FIRST_INDEX+2]}${DOTMATRIX_SPACE_FILL}"
+}
+
+__dotmatrix_make_sep_link_opposed() { # color
+    local lp_terminal_format
+    dotmatrix_sep=""
+
+    local fg="${2-}"
+    [[ -z $fg ]] && fg=-1
+    local fbg="${6-}"
+    [[ -z $fbg ]] && fbg=-1
+
+    lp_terminal_format -3 -1 0 0 -1 "$fbg"
+    dotmatrix_sep+="${DOTMATRIX_SPACE_VOID}${lp_terminal_format}${DOTMATRIX_LINK_R[_LP_FIRST_INDEX]}"
+
+    local dsfg="${DOTMATRIX_COLOR_SEP_FAIR[_LP_FIRST_INDEX]}"
+    [[ -z $dsfg ]] && dsfg=-1
+    lp_terminal_format "$dsfg" -1 0 0 -1 "$fbg"
+    dotmatrix_sep+="${lp_terminal_format}${DOTMATRIX_LINK[_LP_FIRST_INDEX+1]}"
+
+    lp_terminal_format "$fg" -1 0 0 -1 "$fbg"
+    dotmatrix_sep+="${lp_terminal_format}${DOTMATRIX_LINK[_LP_FIRST_INDEX+2]}${DOTMATRIX_SPACE_FILL}"
+}
+
 
 __dotmatrix_make_sep_open() { # color
     local lp_terminal_format
