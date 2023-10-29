@@ -867,6 +867,7 @@ __dotmatrix_prompt_vcs() {
 
         # Mark & commits off remote
         if _lp_vcs_commits_off_remote; then # There is remote-space-[local].
+            _lp_vcs_remote # Get remote name.
 
             # Remote segment.
             if [[ "$lp_vcs_commit_behind" -ne "0" ]]; then # NOTE remote segment.
@@ -876,15 +877,27 @@ __dotmatrix_prompt_vcs() {
                     color_behind=(${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"})
                 fi
                 if (( LP_ENABLE_VCS_DIFFSTATS )) ; then
-                    __dotmatrix_make_field "${DOTMATRIX_VCS}${lp_smart_mark} ${lp_vcs_commit_behind}" "${color_behind[@]}"
+                    __dotmatrix_make_field "${lp_smart_mark}" "${color_behind[@]}"
+                    _DOTMATRIX_VCS+="$dotmatrix_field"
+                    __dotmatrix_make_sep_soft ${DOTMATRIX_COLOR_SEP_LITE[@]+"${DOTMATRIX_COLOR_SEP_LITE[@]}"}
+                    _DOTMATRIX_VCS+="$dotmatrix_sep"
+                    __dotmatrix_make_field "${lp_vcs_remote} ${lp_vcs_commit_behind}" "${color_behind[@]}"
                     _DOTMATRIX_VCS+="$dotmatrix_field"
                 else
-                    __dotmatrix_make_field "${DOTMATRIX_VCS}${lp_smart_mark} ${DOTMATRIX_DIFF}" "${color_behind[@]}"
+                    __dotmatrix_make_field "${lp_smart_mark}" "${color_behind[@]}"
+                    _DOTMATRIX_VCS+="$dotmatrix_field"
+                    __dotmatrix_make_sep_soft ${DOTMATRIX_COLOR_SEP_LITE[@]+"${DOTMATRIX_COLOR_SEP_LITE[@]}"}
+                    _DOTMATRIX_VCS+="$dotmatrix_sep"
+                    __dotmatrix_make_field "${lp_vcs_remote} ${DOTMATRIX_DIFF}" "${color_behind[@]}"
                     _DOTMATRIX_VCS+="$dotmatrix_field"
                 fi
 
             else # LITE remote segment.
-                __dotmatrix_make_field "${DOTMATRIX_VCS}${lp_smart_mark}" ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
+                __dotmatrix_make_field "${lp_smart_mark}" ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
+                _DOTMATRIX_VCS+="$dotmatrix_field"
+                __dotmatrix_make_sep_soft ${DOTMATRIX_COLOR_SEP_LITE[@]+"${DOTMATRIX_COLOR_SEP_LITE[@]}"}
+                _DOTMATRIX_VCS+="$dotmatrix_sep"
+                __dotmatrix_make_field "${lp_vcs_remote}" ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
                 _DOTMATRIX_VCS+="$dotmatrix_field"
             fi
 
@@ -928,8 +941,8 @@ __dotmatrix_prompt_vcs() {
             # else # 0 commit ahead => direct segment.
             fi
 
-        else # No commits off remote => There is no space between remote and branch.
-            __dotmatrix_make_field "${DOTMATRIX_VCS}${lp_smart_mark}" ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
+        else # No commits off remote => There is no space between remote and branch, and no remote name.
+            __dotmatrix_make_field "${lp_smart_mark}" ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
             _DOTMATRIX_VCS+="$dotmatrix_field"
             __dotmatrix_make_sep_mid ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
             _DOTMATRIX_VCS+="$dotmatrix_sep"
