@@ -39,6 +39,8 @@ _lp_dotmatrix_theme_activate() {
     DOTMATRIX_STOPPED_THRESHOLD=${DOTMATRIX_STOPPED_THRESHOLD:-3}
 
     DOTMATRIX_BATTERY_THRESHOLD=${DOTMATRIX_BATTERY_THRESHOLD:-$((LP_BATTERY_THRESHOLD/2))}
+    DOTMATRIX_RAM_THRESHOLD=${DOTMATRIX_RAM_THRESHOLD:-$((LP_RAM_THRESHOLD/2))}
+    DOTMATRIX_DISK_THRESHOLD=${DOTMATRIX_DISK_THRESHOLD:-$((LP_DISK_THRESHOLD/2))}
     DOTMATRIX_TEMP_THRESHOLD=${DOTMATRIX_TEMP_THRESHOLD:-$((LP_TEMP_THRESHOLD*2))}
     # Use prefixed _LP_* variables, which are integers.
     DOTMATRIX_LOAD_THRESHOLD=${DOTMATRIX_LOAD_THRESHOLD:-$((_LP_LOAD_THRESHOLD+(_LP_LOAD_CAP-_LP_LOAD_THRESHOLD)/2))}
@@ -154,6 +156,11 @@ _lp_dotmatrix_theme_activate() {
     DOTMATRIX_COLOR_SEP_LITE=( ${DOTMATRIX_COLOR_SEP_LITE[@]+"${DOTMATRIX_COLOR_SEP_LITE[@]}"} )
     [[ ${#DOTMATRIX_COLOR_SEP_LITE[@]} == 0 ]] && DOTMATRIX_COLOR_SEP_LITE=( 15 -2 0 0 15 -2)
 
+    # Default line color for unset variables.
+    LP_COLOR_ENV_VARS_UNSET=${LP_COLOR_ENV_VARS_UNSET:-""}
+    # Use the background of notes as a foreground for set variables.
+    lp_terminal_format "${DOTMATRIX_COLOR_NOTE[1]}"
+    LP_COLOR_ENV_VARS_SET=${LP_COLOR_ENV_VARS_SET:-"$lp_terminal_format"}
 
     # LP_COLORMAP=( ${LP_COLORMAP[@]+"${LP_COLORMAP[@]}"} )
     # if [[ ${#LP_COLORMAP[@]} == 0 ]]; then
@@ -238,11 +245,11 @@ _lp_dotmatrix_theme_prompt() {
     local battery=
     if _lp_battery_color ; then
         if [[ $lp_battery -le "$DOTMATRIX_BATTERY_THRESHOLD" ]]; then
-            __dotmatrix_make_field "$lp_battery" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
+            __dotmatrix_make_field "$lp_battery$_LP_PERCENT" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
             battery="${dotmatrix_field}${LP_MARK_BATTERY}"
             has_warns=$((has_warns+1))
         else
-            __dotmatrix_make_field "$lp_battery" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
+            __dotmatrix_make_field "$lp_battery$_LP_PERCENT" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
             battery="${dotmatrix_field}${LP_MARK_BATTERY}"
             has_notes=$((has_notes+1))
         fi
@@ -250,7 +257,6 @@ _lp_dotmatrix_theme_prompt() {
 
     local load=
     if _lp_load_color ; then
-
         if [[ $lp_load_adjusted -ge "$DOTMATRIX_LOAD_THRESHOLD" ]]; then
             __dotmatrix_make_field "$lp_load" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
             load="${dotmatrix_field}${LP_MARK_LOAD}"
@@ -258,6 +264,32 @@ _lp_dotmatrix_theme_prompt() {
         else
             __dotmatrix_make_field "$lp_load" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
             load="${dotmatrix_field}${LP_MARK_LOAD}"
+            has_notes=$((has_notes+1))
+        fi
+    fi
+
+    local ram=
+    if _lp_ram_color ; then
+        if [[ $lp_ram_perc -le "$DOTMATRIX_RAM_THRESHOLD" ]]; then
+            __dotmatrix_make_field "$lp_ram_perc$_LP_PERCENT" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
+            ram="${dotmatrix_field}${LP_MARK_RAM}"
+            has_warns=$((has_warns+1))
+        else
+            __dotmatrix_make_field "$lp_ram_perc$_LP_PERCENT" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
+            ram="${dotmatrix_field}${LP_MARK_RAM}"
+            has_notes=$((has_notes+1))
+        fi
+    fi
+
+    local disk=
+    if _lp_disk_color ; then
+        if [[ $lp_disk_perc -le "$DOTMATRIX_DISK_THRESHOLD" ]]; then
+            __dotmatrix_make_field "$lp_disk_perc$_LP_PERCENT" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
+            disk="${dotmatrix_field}${LP_MARK_DISK}"
+            has_warns=$((has_warns+1))
+        else
+            __dotmatrix_make_field "$lp_disk_perc$_LP_PERCENT" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
+            disk="${dotmatrix_field}${LP_MARK_DISK}"
             has_notes=$((has_notes+1))
         fi
     fi
@@ -276,7 +308,7 @@ _lp_dotmatrix_theme_prompt() {
     fi
 
     __dotmatrix_make_sep_soft ${DOTMATRIX_COLOR_SEP_DARK[@]+"${DOTMATRIX_COLOR_SEP_DARK[@]}"}
-    declare -a blt=($battery $load $temperature) # Unquoted on purpose.
+    declare -a blt=($battery $load $ram $disk $temperature) # Unquoted on purpose.
     if [[ ${#blt[@]} -gt 0 ]] ; then
         _lp_join "$dotmatrix_sep" "${blt[@]}"
         if [[ -n "$lp_join" ]] ; then
@@ -415,6 +447,11 @@ _lp_dotmatrix_theme_prompt() {
     local d="${color_line_start}${DOTMATRIX_ITEMS[ista]}${DOTMATRIX_SPACE_LINE}"
     local I="${color_line_start}${DOTMATRIX_SPACE_LINE}${DOTMATRIX_ITEMS[imid]}${DOTMATRIX_SPACE_LINE}"
     local b="${color_line_start}${DOTMATRIX_SPACE_LINE}${DOTMATRIX_ITEMS[iend]}${color_line_end}"
+    if _lp_env_vars "${LP_COLOR_ENV_VARS_SET}" "${LP_COLOR_ENV_VARS_UNSET}"; then
+        local lp_join
+        _lp_join "$I" ${lp_env_vars[@]}
+        inline_left+="$d${lp_join}$b"
+    fi
     if _lp_software_collections ; then
         inline_left+="$d${lp_software_collections}$b"
     fi
@@ -1220,7 +1257,7 @@ __dotmatrix_make_sep_mid() { # color
     dotmatrix_sep="${lp_terminal_format}${DOTMATRIX_SPACE_VOID}${DOTMATRIX_MEAN}${DOTMATRIX_SPACE_VOID}"
 }
 
-__dotmatrix_make_sep_last() { # no arg
+__dotmatrix_make_sep_last() { # [has_warns [has_notes]]
     local lp_terminal_format
     local has_warns="${1:-0}"
     local has_notes="${2:-0}"
