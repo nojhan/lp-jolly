@@ -5,6 +5,11 @@
 
 _lp_dotmatrix_theme_activate() {
 
+    if ! _lp_version_greatereq 2 2 0 ; then
+        _lp_join "." ${_LP_VERSION[@]}
+        printf "WARNING: the DotMatrix theme requires Liquid Prompt >= 2.2.0, but you have version $lp_join, some features will not work and the prompt may crash.\n"
+    fi
+
     LP_ENABLE_VCS_DIFFSTATS=${LP_ENABLE_VCS_DIFFSTATS:-1}
     _LP_LOAD_THRESHOLD=${_LP_LOAD_THRESHOLD:-80}
     _LP_LOAD_CAP=${_LP_LOAD_CAP:-100}
