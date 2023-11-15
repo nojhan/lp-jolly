@@ -17,23 +17,14 @@ But we believe that the advantages of this design makes it worth the effort.
 Preview
 -------
 
-If there is nothing special about the current context, the appearance of
-DotMatrix might be as simple as this:
+Using the (recommended) "chevron" preset:
 
-![](screenshots/dotmatrix-short-chevron.png)
-
-A typical display of a slightly complex session would look like this:
-
-![](screenshots/dotmatrix-med-chevron.png)
+![](screenshots/variant-chevron.png)
 
 The DotMatrix theme also comes as several variants, changing the shape of the segments separators,
-like the (default) "dotmatrix" pixels:
+like the "slant" variant:
 
-![](screenshots/dotmatrix-short-dots.png)
-
-or the "slant" variant:
-
-![](screenshots/dotmatrix-med-slant.png)
+![](screenshots/variant-slant.png)
 
 
 Design
@@ -72,7 +63,7 @@ For instance, in the following prompt, you can see that the user is in a Git rep
 - the rightmost blue "≠" indicates that there are some modifications waiting to be commited (hence the directional hint, from a diff to the branch).
 - the leftmost blue segment indicates that there are some commits that may be pushed to the remote (hence the directional hint, from the branch to the VCS symbol).
 
-![](screenshots/dotmatrix-intro-chevron.png)
+![](screenshots/variant-chevron.png)
 
 The screenshot also shows that the last command ended in an error, hence the red-over-yellow error code.
 
@@ -126,25 +117,25 @@ Variants needing a Nerd-fonts font:
 
 - "chevron" (the recommended one):
 
-![](screenshots/dotmatrix-short-chevron.png)
+![](screenshots/varint-chevron.png)
 
 - "round":
 
-![](screenshots/dotmatrix-short-round.png)
+![](screenshots/variant-round.png)
 
 - "slant":
 
-![](screenshots/dotmatrix-short-slant.png)
+![](screenshots/variant-slant.png)
 
 Variants available with a regular font:
 
 - "dotmatrix" (the default):
 
-![](screenshots/dotmatrix-short-dots.png)
+![](screenshots/variant-dots.png)
 
 - "text" (using only common characters):
 
-![](screenshots/dotmatrix-short-text.png)
+![](screenshots/variant-text.png)
 
 
 Configuration
@@ -203,14 +194,6 @@ A second set changes the colors:
 
 If set to false, this flag will configure a compact prompt,
 showing segments without extra spaces around their joints.
-
-Example of a spaced prompt:
-
-![](screenshots/dotmatrix-spaced.png)
-
-Example of a compact prompt:
-
-![](screenshots/dotmatrix-unspaced.png)
 
 
 #### Specific features
