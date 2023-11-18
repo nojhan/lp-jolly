@@ -489,9 +489,6 @@ _lp_dotmatrix_theme_prompt() {
     if _lp_container; then
         inline_left+="$d$lp_container$b"
     fi
-    if _lp_os; then
-        inline_left+="$d$lp_os$b"
-    fi
     if _lp_modules; then
         inline_left+="$d"
         _lp_join "$I" "${lp_modules[@]}"
@@ -500,6 +497,10 @@ _lp_dotmatrix_theme_prompt() {
 
     # History section.
     local inline_right=
+    if _lp_os; then
+        _lp_join "$I" ${lp_os_arch} ${lp_os_family} ${lp_os_kernel} ${lp_os_distrib} ${lp_os_version}
+        inline_right+="$d${lp_join}$b"
+    fi
     if ((DOTMATRIX_ENABLE_HISTORY)) ; then
         local hist_max
         hist_max=$((DOTMATRIX_HISTORY_LAST_LEN-${#DOTMATRIX_HISTORY_LAST_LEN_MARK}))
