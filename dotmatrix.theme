@@ -759,8 +759,12 @@ __dotmatrix_activate_hostname() {
                 hostname="$lp_hostname"
             fi
             # If we want a different color for each host
-            (( LP_ENABLE_SSH_COLORS )) && LP_COLOR_SSH="$LP_COLOR_HOST_HASH"
-            hostname="${LP_COLOR_SSH}${hostname}"
+            if (( LP_ENABLE_SSH_COLORS )); then
+                LP_COLOR_SSH="$LP_COLOR_HOST_HASH"
+                hostname="${LP_COLOR_SSH}${hostname}"
+            else
+                hostname="${hostname}"
+            fi
             ;;
         tel)
             hostname="${lp_hostname}"
