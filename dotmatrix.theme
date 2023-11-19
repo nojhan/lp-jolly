@@ -315,7 +315,7 @@ _lp_dotmatrix_theme_prompt() {
     __dotmatrix_make_sep_soft ${DOTMATRIX_COLOR_SEP_DARK[@]+"${DOTMATRIX_COLOR_SEP_DARK[@]}"}
     declare -a blt=($battery $load $ram $disk $temperature) # Unquoted on purpose.
     if [[ ${#blt[@]} -gt 0 ]] ; then
-        _lp_join "$dotmatrix_sep" "${blt[@]}"
+        _lp_join "$dotmatrix_sep" ${blt[@]}
         if [[ -n "$lp_join" ]] ; then
 
             # Match the side sep
@@ -323,9 +323,10 @@ _lp_dotmatrix_theme_prompt() {
             local ffg="${DOTMATRIX_COLOR_SEP_FAIR[4]}"
             lp_terminal_format "$fg" -2 0 0 "$ffg" -2
             # No space before sep.
-            dotmatrix_sep="${lp_terminal_format}${dotmatrix_sep}${DOTMATRIX_SPACE_VOID}"
+            # dotmatrix_sep="${lp_terminal_format}${dotmatrix_sep}${DOTMATRIX_SPACE_VOID}"
+            # side+="${dotmatrix_sep}${lp_join}"
+            side+="${lp_terminal_format}${DOTMATRIX_SPACE_VOID}${lp_join}"
 
-            side+="${dotmatrix_sep}${lp_join}"
         fi
     else
         lp_terminal_format ${DOTMATRIX_COLOR_FAIR[@]+"${DOTMATRIX_COLOR_FAIR[@]}"}
