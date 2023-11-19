@@ -323,7 +323,7 @@ _lp_dotmatrix_theme_prompt() {
             local ffg="${DOTMATRIX_COLOR_SEP_FAIR[4]}"
             lp_terminal_format "$fg" -2 0 0 "$ffg" -2
             # No space before sep.
-            dotmatrix_sep="${lp_terminal_format}${sep}${DOTMATRIX_SPACE_VOID}"
+            dotmatrix_sep="${lp_terminal_format}${dotmatrix_sep}${DOTMATRIX_SPACE_VOID}"
 
             side+="${dotmatrix_sep}${lp_join}"
         fi
