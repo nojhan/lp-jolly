@@ -117,7 +117,7 @@ _lp_dotmatrix_theme_activate() {
     [[ ${#DOTMATRIX_COLOR_LITE[@]} == 0 ]] && DOTMATRIX_COLOR_LITE=(239 252 0 0   0  15)
 
     DOTMATRIX_COLOR_GLOW=( ${DOTMATRIX_COLOR_GLOW[@]+"${DOTMATRIX_COLOR_GLOW[@]}"} )
-    [[ ${#DOTMATRIX_COLOR_GLOW[@]} == 0 ]] && DOTMATRIX_COLOR_GLOW=(  0 252 1 0   0  15)
+    [[ ${#DOTMATRIX_COLOR_GLOW[@]} == 0 ]] && DOTMATRIX_COLOR_GLOW=(  255 239 1 0   0  15)
 
     DOTMATRIX_COLOR_NOTE=( ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"} )
     [[ ${#DOTMATRIX_COLOR_NOTE[@]} == 0 ]] && DOTMATRIX_COLOR_NOTE=( 15  33 0 0  15  12)
@@ -921,7 +921,7 @@ __dotmatrix_prompt_vcs() {
                     color_ahead=(${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"})
                 fi
             else # No commit ahead.
-                color_ahead=(${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"})
+                color_ahead=(${DOTMATRIX_COLOR_GLOW[@]+"${DOTMATRIX_COLOR_GLOW[@]}"})
             fi
 
             # Choice of link type.
@@ -947,7 +947,7 @@ __dotmatrix_prompt_vcs() {
                     __dotmatrix_make_field "$DOTMATRIX_DIFF" "${color_ahead[@]}"
                     _DOTMATRIX_VCS+="$dotmatrix_field"
                 fi
-                __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
+                __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_GLOW[@]+"${DOTMATRIX_COLOR_GLOW[@]}"}
                 _DOTMATRIX_VCS+="$dotmatrix_sep"
             # else # 0 commit ahead => direct segment.
             fi
@@ -955,7 +955,7 @@ __dotmatrix_prompt_vcs() {
         else # No commits off remote => There is no space between remote and branch, and no remote name.
             __dotmatrix_make_field "${lp_smart_mark}" ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
             _DOTMATRIX_VCS+="$dotmatrix_field"
-            __dotmatrix_make_sep_mid ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
+            __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_GLOW[@]+"${DOTMATRIX_COLOR_GLOW[@]}"}
             _DOTMATRIX_VCS+="$dotmatrix_sep"
             # No local commit segment.
         fi
@@ -966,12 +966,12 @@ __dotmatrix_prompt_vcs() {
             _DOTMATRIX_VCS+="$dotmatrix_field"
 
             if _lp_vcs_bookmark; then
-                __dotmatrix_make_field ":${lp_vcs_bookmark}" ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
+                __dotmatrix_make_field ":${lp_vcs_bookmark}" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
                 _DOTMATRIX_VCS+="$dotmatrix_field"
             fi
             if _lp_vcs_tag; then
-                __dotmatrix_make_sep_soft ${DOTMATRIX_COLOR_SEP_LITE[@]+"${DOTMATRIX_COLOR_SEP_LITE[@]}"}
-                __dotmatrix_make_field "$lp_vcs_tag" ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
+                __dotmatrix_make_sep_soft ${DOTMATRIX_COLOR_SEP_DARK[@]+"${DOTMATRIX_COLOR_SEP_DARK[@]}"}
+                __dotmatrix_make_field "$lp_vcs_tag" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
                 _DOTMATRIX_VCS+="${dotmatrix_sep}${dotmatrix_field}"
             fi
 
@@ -1057,13 +1057,8 @@ __dotmatrix_prompt_vcs() {
             # fi
         fi
         if [[ -n "$stash" || -n "$untracked" || -n "$head" ]] ; then
-            if [[ -z $has_lines ]] ; then
-                __dotmatrix_make_sep_mid ${DOTMATRIX_COLOR_SEP_FAIR[@]+"${DOTMATRIX_COLOR_SEP_FAIR[@]}"}
-                _DOTMATRIX_VCS+="$dotmatrix_sep"
-            else
-                __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
-                _DOTMATRIX_VCS+="$dotmatrix_sep"
-            fi
+            __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
+            _DOTMATRIX_VCS+="$dotmatrix_sep"
         fi
 
         if [[ -n "$stash" ]] ; then
