@@ -326,10 +326,15 @@ The marker used to indicate that there is some change in the VCS state
 The marker used to indicate that there is a VCS involved in the current directory.
 
 
-**DOTMATRIX_MARK** *string = "■"*
+**DOTMATRIX_MARK** *string = "⯀"*
 
 The actual prompt marker, right where the user type text.
 
+
+**DOTMATRIX_MARK_SUDO** *string = "⋮"*
+
+An additional character displayed before the last prompt mark
+when the user has sudo rights.
 
 **DOTMATRIX_ENABLE_GRADIENT_LINE** *boolean = 0*
 

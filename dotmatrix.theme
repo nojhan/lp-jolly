@@ -57,7 +57,8 @@ _lp_dotmatrix_theme_activate() {
     DOTMATRIX_HOST_LOCAL=${DOTMATRIX_HOST_LOCAL:-"⌂"}
     DOTMATRIX_USER_LOCAL=${DOTMATRIX_USER_LOCAL:-"♟"}
     DOTMATRIX_VCS=${DOTMATRIX_VCS:-"╟┘"}
-    DOTMATRIX_MARK=${DOTMATRIX_MARK:-"■"}
+    DOTMATRIX_MARK=${DOTMATRIX_MARK:-"⯀"}
+    DOTMATRIX_MARK_SUDO=${DOTMATRIX_MARK_SUDO:-"⋮"}
     DOTMATRIX_LINE=${DOTMATRIX_LINE:-"━"}
     DOTMATRIX_PLUG=${DOTMATRIX_PLUG:-"▛"}
     DOTMATRIX_SOFT=${DOTMATRIX_SOFT:-"╱"}
@@ -630,7 +631,7 @@ _lp_dotmatrix_theme_prompt() {
         local dcwfg="${DOTMATRIX_COLOR_WARN[_LP_FIRST_INDEX+1]}"
         [[ -z $dcwfg ]] && dcwfg=-1
         lp_terminal_format $dcwfg
-        dotmatrix_prompt+="${lp_terminal_format}${DOTMATRIX_MARK}"
+        dotmatrix_prompt+="${lp_terminal_format}${DOTMATRIX_MARK_SUDO}${DOTMATRIX_MARK}"
     else
         dotmatrix_prompt+="${mark_color}${DOTMATRIX_MARK}"
     fi
