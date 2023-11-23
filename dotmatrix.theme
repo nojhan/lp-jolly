@@ -27,6 +27,8 @@ _lp_dotmatrix_theme_activate() {
     DOTMATRIX_SHELL_ZSH=${DOTMATRIX_SHELL_ZSH:-"z"}
     DOTMATRIX_SHELL_BASH=${DOTMATRIX_SHELL_BASH:-"b"}
 
+    DOTMATRIX_VCS_REMOTE_ORIGIN=${DOTMATRIX_VCS_REMOTE_ORIGIN:-"🖈"}
+
     DOTMATRIX_ENABLE_HISTORY=${DOTMATRIX_ENABLE_HISTORY:-0}
     DOTMATRIX_HISTORY_LAST_LEN=${DOTMATRIX_HISTORY_LAST_LEN:-$((COLUMNS/4))}
     DOTMATRIX_HISTORY_LAST_LEN_MARK=${DOTMATRIX_HISTORY_LAST_LEN_MARK:-"[…]"}
@@ -880,6 +882,9 @@ __dotmatrix_prompt_vcs() {
         # Mark & commits off remote
         if _lp_vcs_commits_off_remote; then # There is remote-space-[local].
             _lp_vcs_remote # Get remote name.
+            if [[ "$lp_vcs_remote" == "origin" ]]; then
+                lp_vcs_remote="$DOTMATRIX_VCS_REMOTE_ORIGIN"
+            fi
 
             # Remote segment.
             if [[ "$lp_vcs_commit_behind" -ne "0" ]]; then # NOTE remote segment.

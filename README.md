@@ -212,6 +212,9 @@ Number of unpulled remote commits above which the prompt should use the warning 
 
 Number of modified lines above which the prompt should use the warning color to display the "commit" section.
 
+**DOTMATRIX_VCS_REMOTE_ORIGIN** *string* = "🖈"
+
+String used as a shorten VCS remote name, if it is "origin".
 
 **DOTMATRIX_DETACHED_THRESHOLD** *integer = 3*
 
