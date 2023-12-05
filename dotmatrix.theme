@@ -203,9 +203,7 @@ _lp_dotmatrix_theme_directory() {
 }
 
 
-_lp_dotmatrix_theme_prompt() {
-
-    local header inline dotmatrix_prompt
+_lp_dotmatrix_make_header() {
 
     # Arguments: fg, bg, bold, underline, fallback_fg, fallback_bg
     # Color codes can be any integer in 256 XTerm's system colors in [0–255].
@@ -219,31 +217,33 @@ _lp_dotmatrix_theme_prompt() {
     # HEADER (LEFT)
     ####################################################################
 
-    # PS1="headering> "
-    header=""
-    header+="${_DOTMATRIX_DISPLAY}"
-    header+="${_DOTMATRIX_CONNECTION}"
-    header+="${_DOTMATRIX_USER}"
-    header+="${_DOTMATRIX_MULTIPLEXER}"
-    header+="${_DOTMATRIX_HOSTNAME}"
-    header+="${_DOTMATRIX_FS}"
-    header+="${_DOTMATRIX_PATH} "
+    _lp_dotmatrix_make_header=""
+    _lp_dotmatrix_make_header+="${_DOTMATRIX_DISPLAY}"
+    _lp_dotmatrix_make_header+="${_DOTMATRIX_CONNECTION}"
+    _lp_dotmatrix_make_header+="${_DOTMATRIX_USER}"
+    _lp_dotmatrix_make_header+="${_DOTMATRIX_MULTIPLEXER}"
+    _lp_dotmatrix_make_header+="${_DOTMATRIX_HOSTNAME}"
+    _lp_dotmatrix_make_header+="${_DOTMATRIX_FS}"
+    _lp_dotmatrix_make_header+="${_DOTMATRIX_PATH} "
 
     if _lp_dirstack; then
         # Pseudo-recall the path section format.
         lp_terminal_format ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
         __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
-        header+="${dotmatrix_sep}"
+        _lp_dotmatrix_make_header+="${dotmatrix_sep}"
         __dotmatrix_make_field "$lp_dirstack" ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
-        header+="${dotmatrix_field}"
+        _lp_dotmatrix_make_header+="${dotmatrix_field}"
     fi
+}
+
+_lp_dotmatrix_make_side() {
 
     ####################################################################
     # HEADER SIDE (RIGHT)
     ####################################################################
 
-    local has_notes=0
-    local has_warns=0
+    local _lp_dotmatrix_has_notes=0
+    local _lp_dotmatrix_has_warns=0
 
     # DOTMATRIX_COLOR_SEP_FAIR
     __dotmatrix_make_sep_side ""
@@ -255,11 +255,11 @@ _lp_dotmatrix_theme_prompt() {
         if [[ $lp_battery -le "$DOTMATRIX_BATTERY_THRESHOLD" ]]; then
             __dotmatrix_make_field "$lp_battery$_LP_PERCENT" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
             battery="${dotmatrix_field}${LP_MARK_BATTERY}"
-            has_warns=$((has_warns+1))
+            _lp_dotmatrix_has_warns=$((_lp_dotmatrix_has_warns+1))
         else
             __dotmatrix_make_field "$lp_battery$_LP_PERCENT" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
             battery="${dotmatrix_field}${LP_MARK_BATTERY}"
-            has_notes=$((has_notes+1))
+            _lp_dotmatrix_has_notes=$((_lp_dotmatrix_has_notes+1))
         fi
     fi
 
@@ -268,11 +268,11 @@ _lp_dotmatrix_theme_prompt() {
         if [[ $lp_load_adjusted -ge "$DOTMATRIX_LOAD_THRESHOLD" ]]; then
             __dotmatrix_make_field "$lp_load" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
             load="${dotmatrix_field}${LP_MARK_LOAD}"
-            has_warns=$((has_warns+1))
+            _lp_dotmatrix_has_warns=$((_lp_dotmatrix_has_warns+1))
         else
             __dotmatrix_make_field "$lp_load" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
             load="${dotmatrix_field}${LP_MARK_LOAD}"
-            has_notes=$((has_notes+1))
+            _lp_dotmatrix_has_notes=$((_lp_dotmatrix_has_notes+1))
         fi
     fi
 
@@ -281,11 +281,11 @@ _lp_dotmatrix_theme_prompt() {
         if [[ $lp_ram_perc -le "$DOTMATRIX_RAM_THRESHOLD" ]]; then
             __dotmatrix_make_field "$lp_ram_perc$_LP_PERCENT" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
             ram="${dotmatrix_field}${LP_MARK_RAM}"
-            has_warns=$((has_warns+1))
+            _lp_dotmatrix_has_warns=$((_lp_dotmatrix_has_warns+1))
         else
             __dotmatrix_make_field "$lp_ram_perc$_LP_PERCENT" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
             ram="${dotmatrix_field}${LP_MARK_RAM}"
-            has_notes=$((has_notes+1))
+            _lp_dotmatrix_has_notes=$((_lp_dotmatrix_has_notes+1))
         fi
     fi
 
@@ -294,11 +294,11 @@ _lp_dotmatrix_theme_prompt() {
         if [[ $lp_disk_perc -le "$DOTMATRIX_DISK_THRESHOLD" ]]; then
             __dotmatrix_make_field "$lp_disk_perc$_LP_PERCENT" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
             disk="${dotmatrix_field}${LP_MARK_DISK}"
-            has_warns=$((has_warns+1))
+            _lp_dotmatrix_has_warns=$((_lp_dotmatrix_has_warns+1))
         else
             __dotmatrix_make_field "$lp_disk_perc$_LP_PERCENT" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
             disk="${dotmatrix_field}${LP_MARK_DISK}"
-            has_notes=$((has_notes+1))
+            _lp_dotmatrix_has_notes=$((_lp_dotmatrix_has_notes+1))
         fi
     fi
 
@@ -307,11 +307,11 @@ _lp_dotmatrix_theme_prompt() {
         if [[ $lp_temperature -ge "$DOTMATRIX_TEMP_THRESHOLD" ]]; then
             __dotmatrix_make_field "$lp_temperature" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
             temperature="${dotmatrix_field}${LP_MARK_TEMP}"
-            has_warns=$((has_warns+1))
+            _lp_dotmatrix_has_warns=$((_lp_dotmatrix_has_warns+1))
         else
             __dotmatrix_make_field "$lp_temperature" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
             temperature="${dotmatrix_field}${LP_MARK_TEMP}"
-            has_notes=$((has_notes+1))
+            _lp_dotmatrix_has_notes=$((_lp_dotmatrix_has_notes+1))
         fi
     fi
 
@@ -344,11 +344,11 @@ _lp_dotmatrix_theme_prompt() {
             if [[ "${lp_detached_sessions}" -ge "${DOTMATRIX_DETACHED_THRESHOLD}" ]]; then
                 __dotmatrix_make_field "${lp_detached_sessions}d" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
                 detached_sessions="${dotmatrix_field}"
-                has_warns=$((has_warns+1))
+                _lp_dotmatrix_has_warns=$((_lp_dotmatrix_has_warns+1))
             else
                 __dotmatrix_make_field "${lp_detached_sessions}d" ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
                 detached_sessions="${dotmatrix_field}"
-                has_notes=$((has_notes+1))
+                _lp_dotmatrix_has_notes=$((_lp_dotmatrix_has_notes+1))
             fi
         fi
     fi
@@ -360,11 +360,11 @@ _lp_dotmatrix_theme_prompt() {
             if [[ "${lp_running_jobs}" -ge "${DOTMATRIX_RUNNING_THRESHOLD}" ]]; then
                 __dotmatrix_make_field "${lp_running_jobs}&" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
                 running_jobs="${dotmatrix_field}"
-                has_warns=$((has_warns+1))
+                _lp_dotmatrix_has_warns=$((_lp_dotmatrix_has_warns+1))
             else
                 __dotmatrix_make_field "${lp_running_jobs}&" ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
                 running_jobs="${dotmatrix_field}"
-                has_notes=$((has_notes+1))
+                _lp_dotmatrix_has_notes=$((_lp_dotmatrix_has_notes+1))
             fi
         fi
 
@@ -372,17 +372,17 @@ _lp_dotmatrix_theme_prompt() {
             if [[ "${lp_stopped_jobs}" -ge "${DOTMATRIX_STOPPED_THRESHOLD}" ]]; then
                 __dotmatrix_make_field "${lp_stopped_jobs}z" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
                 stopped_jobs="${dotmatrix_field}"
-                has_warns=$((has_warns+1))
+                _lp_dotmatrix_has_warns=$((_lp_dotmatrix_has_warns+1))
             else
                 __dotmatrix_make_field "${lp_stopped_jobs}z" ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
                 stopped_jobs="${dotmatrix_field}"
-                has_notes=$((has_notes+1))
+                _lp_dotmatrix_has_notes=$((_lp_dotmatrix_has_notes+1))
             fi
         fi
     fi
 
     lp_terminal_format ${DOTMATRIX_COLOR_FAIR[@]+"${DOTMATRIX_COLOR_FAIR[@]}"}
-    if [[ $has_warns -gt 0 ]]; then
+    if [[ $_lp_dotmatrix_has_warns -gt 0 ]]; then
         __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
     else
         __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
@@ -418,26 +418,13 @@ _lp_dotmatrix_theme_prompt() {
             side+="$dotmatrix_field"
         fi
     fi
+}
 
-    # Final assembling
-    if _lp_dirstack; then
-        lp_terminal_format ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
-    else
-        # Recall a dark format to correctly reset sections history
-        # to match the path's section colors.
-        lp_terminal_format ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
-    fi
-
-    __dotmatrix_make_sep_last "$has_warns" "$has_notes"
-    header+="$dotmatrix_sep"
-
-    # Right-align the $side with spaces.
-    _lp_fill "$header" "$side" " "
-    header="$lp_fill${NO_COL}"
-
+_lp_dotmatrix_make_line() {
     ####################################################################
     # IN LINE
     ####################################################################
+
     local color_line_end=""
     if (( LP_ENABLE_SSH_COLORS )); then
         local lp_hostname_hash
@@ -528,16 +515,16 @@ _lp_dotmatrix_theme_prompt() {
 
     inline_right+="${DOTMATRIX_LINE}"
 
-    local inline=
+    local _lp_dotmatrix_make_line=
     # FIXME use _lp_fill-like function to handle multi-character line?
     if ((DOTMATRIX_ENABLE_GRADIENT_LINE)); then
         # Fill up the center section with a line colored as a gradient.
         local ret
-        __lp_strip_escapes "$inline"
+        __lp_strip_escapes "$_lp_dotmatrix_make_line"
         local left_as_text="$ret"
         local line_width=$((${COLUMNS:-80}-${#left_as_text}))
 
-        local line="$inline"
+        local line="$_lp_dotmatrix_make_line"
         local i c f a b j
         for ((i=0; i < line_width; i++)); do # For each character in the line.
             local dash_colors=()
@@ -552,50 +539,52 @@ _lp_dotmatrix_theme_prompt() {
             # line+="${lp_terminal_format}${i}(${dash_colors[@]}) "
         done
 
-        inline="${line}${NO_COL}"
+        _lp_dotmatrix_make_line="${line}${NO_COL}"
 
     else
         # Fill up the remaining space with a fixed-color line.
         _lp_fill "$inline_left" "$inline_right" "$DOTMATRIX_LINE"
         # Format here is DOTMATRIX_COLOR_LINE.
-        inline="${lp_terminal_format}${lp_fill}${NO_COL}"
+        _lp_dotmatrix_make_line="${lp_terminal_format}${lp_fill}${NO_COL}"
     fi
+}
 
+_lp_dotmatrix_make_input() {
 
     ####################################################################
     # PROMPT LINE
     ####################################################################
 
-    dotmatrix_prompt=""
+    _lp_dotmatrix_make_input=""
     lp_terminal_format ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
 
     if (( LP_ENABLE_WIFI_STRENGTH )) ; then
         if _lp_wifi_signal_strength ; then
             lp_terminal_format ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
-            dotmatrix_prompt+="${lp_terminal_format}${LP_MARK_WIFI}"
+            _lp_dotmatrix_make_input+="${lp_terminal_format}${LP_MARK_WIFI}"
         else
-            dotmatrix_prompt+="${lp_terminal_format}${LP_MARK_WIFI}"
+            _lp_dotmatrix_make_input+="${lp_terminal_format}${LP_MARK_WIFI}"
         fi
     else
-        dotmatrix_prompt+="${lp_terminal_format}·"
+        _lp_dotmatrix_make_input+="${lp_terminal_format}·"
     fi
 
     if _lp_http_proxy ; then
         __dotmatrix_make_sep_link ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
-        dotmatrix_prompt+="${dotmatrix_sep}"
+        _lp_dotmatrix_make_input+="${dotmatrix_sep}"
     else
         __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
-        dotmatrix_prompt+="${dotmatrix_sep}"
+        _lp_dotmatrix_make_input+="${dotmatrix_sep}"
     fi
 
     if __dotmatrix_prompt_vcs; then
-        dotmatrix_prompt+="${_DOTMATRIX_VCS}"
+        _lp_dotmatrix_make_input+="${_DOTMATRIX_VCS}"
     fi
 
     if _lp_runtime_format ; then
         __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
         __dotmatrix_make_field "${lp_runtime_format}" ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
-        dotmatrix_prompt+="${dotmatrix_sep}${dotmatrix_field}"
+        _lp_dotmatrix_make_input+="${dotmatrix_sep}${dotmatrix_field}"
     fi
 
     if _lp_error ; then
@@ -607,11 +596,11 @@ _lp_dotmatrix_theme_prompt() {
         fi
         __dotmatrix_make_sep_link ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
         __dotmatrix_make_field "${DOTMATRIX_MARK_ERROR}${DOTMATRIX_SPACE_VOID}${error_msg}" ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
-        dotmatrix_prompt+="${dotmatrix_sep}${dotmatrix_field}"
+        _lp_dotmatrix_make_input+="${dotmatrix_sep}${dotmatrix_field}"
     fi
 
     __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_MARK[@]+"${DOTMATRIX_COLOR_MARK[@]}"}
-    dotmatrix_prompt+="${dotmatrix_sep}"
+    _lp_dotmatrix_make_input+="${dotmatrix_sep}"
     lp_terminal_format ${DOTMATRIX_COLOR_MARK[@]+"${DOTMATRIX_COLOR_MARK[@]}"}
     local mark_color="$lp_terminal_format"
 
@@ -619,11 +608,11 @@ _lp_dotmatrix_theme_prompt() {
     if _lp_shell_level ; then
         local i
         for ((i=0; i < lp_shell_level-1; i++)); do
-            dotmatrix_prompt+="${mark_color}${DOTMATRIX_MARK}"
+            _lp_dotmatrix_make_input+="${mark_color}${DOTMATRIX_MARK}"
         done
     fi
 
-    # Warning dotmatrix_prompt mark if either root or sudo.
+    # Warning _lp_dotmatrix_make_input mark if either root or sudo.
     _lp_user
     user="$?"
     # No need to check LP_ENABLE_SUDO, _lp_sudo_active does it.
@@ -633,12 +622,45 @@ _lp_dotmatrix_theme_prompt() {
         local dcwfg="${DOTMATRIX_COLOR_WARN[_LP_FIRST_INDEX+1]}"
         [[ -z $dcwfg ]] && dcwfg=-1
         lp_terminal_format $dcwfg
-        dotmatrix_prompt+="${lp_terminal_format}${DOTMATRIX_MARK_SUDO}${DOTMATRIX_MARK}"
+        _lp_dotmatrix_make_input+="${lp_terminal_format}${DOTMATRIX_MARK_SUDO}${DOTMATRIX_MARK}"
     else
-        dotmatrix_prompt+="${mark_color}${DOTMATRIX_MARK}"
+        _lp_dotmatrix_make_input+="${mark_color}${DOTMATRIX_MARK}"
     fi
 
-    dotmatrix_prompt+="${NO_COL}"
+    _lp_dotmatrix_make_input+="${NO_COL}"
+}
+
+_lp_dotmatrix_theme_prompt() {
+
+    local header side inline dotmatrix_prompt
+
+    _lp_dotmatrix_make_header
+    header+="$_lp_dotmatrix_make_header"
+
+    _lp_dotmatrix_make_side
+    side="$_lp_dotmatrix_make_side"
+
+    # Final assembling
+    if _lp_dirstack; then
+        lp_terminal_format ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
+    else
+        # Recall a dark format to correctly reset sections history
+        # to match the path's section colors.
+        lp_terminal_format ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
+    fi
+
+    __dotmatrix_make_sep_last "$_lp_dotmatrix_has_warns" "$_lp_dotmatrix_has_notes"
+    header+="$dotmatrix_sep"
+
+    # Right-align the $side with spaces.
+    _lp_fill "$header$NO_COL" "$side" " "
+    header="$lp_fill${NO_COL}"
+
+    _lp_dotmatrix_make_line
+    inline="$_lp_dotmatrix_make_line"
+
+    _lp_dotmatrix_make_input
+    dotmatrix_prompt="$_lp_dotmatrix_make_input"
 
     # Assemble and setup
     local n=$'\n'
