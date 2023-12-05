@@ -420,7 +420,7 @@ _lp_dotmatrix_make_side() {
     fi
 }
 
-_lp_dotmatrix_make_line() {
+_lp_dotmatrix_make_env() {
     ####################################################################
     # IN LINE
     ####################################################################
@@ -434,7 +434,7 @@ _lp_dotmatrix_make_line() {
     fi
     lp_terminal_format ${DOTMATRIX_COLOR_LINE[@]+"${DOTMATRIX_COLOR_LINE[@]}"}
     color_line_start="$lp_terminal_format"
-    local inline_left="${NO_COL}$LP_PS1_PREFIX${lp_terminal_format}${DOTMATRIX_LINE}"
+    _lp_dotmatrix_make_env_inline_left="${NO_COL}$LP_PS1_PREFIX${lp_terminal_format}${DOTMATRIX_LINE}"
 
     # Dev env section.
     local ista="$_LP_FIRST_INDEX"
@@ -446,51 +446,51 @@ _lp_dotmatrix_make_line() {
     if _lp_env_vars "${LP_COLOR_ENV_VARS_SET}" "${LP_COLOR_ENV_VARS_UNSET}"; then
         local lp_join
         _lp_join "$I" ${lp_env_vars[@]}
-        inline_left+="$d${lp_join}$b"
+        _lp_dotmatrix_make_env_inline_left+="$d${lp_join}$b"
     fi
     if _lp_software_collections ; then
-        inline_left+="$d${lp_software_collections}$b"
+        _lp_dotmatrix_make_env_inline_left+="$d${lp_software_collections}$b"
     fi
     if _lp_python_env ; then
-        inline_left+="$d${lp_python_env}$b"
+        _lp_dotmatrix_make_env_inline_left+="$d${lp_python_env}$b"
     fi
     if _lp_node_env ; then
-        inline_left+="$d${lp_node_env}$b"
+        _lp_dotmatrix_make_env_inline_left+="$d${lp_node_env}$b"
     fi
     if _lp_ruby_env ; then
-        inline_left+="$d${lp_ruby_env}$b"
+        _lp_dotmatrix_make_env_inline_left+="$d${lp_ruby_env}$b"
     fi
     if _lp_container ; then
-        inline_left+="$d${lp_container}$b"
+        _lp_dotmatrix_make_env_inline_left+="$d${lp_container}$b"
     fi
     if _lp_kubernetes_context ; then
-        inline_left+="$d${lp_kubernetes_context}$b"
+        _lp_dotmatrix_make_env_inline_left+="$d${lp_kubernetes_context}$b"
     fi
     if _lp_terraform_env ; then
-        inline_left+="$d${lp_terraform_env}$b"
+        _lp_dotmatrix_make_env_inline_left+="$d${lp_terraform_env}$b"
     fi
     if _lp_aws_profile ; then
-        inline_left+="$d${lp_aws_profile}$b"
+        _lp_dotmatrix_make_env_inline_left+="$d${lp_aws_profile}$b"
     fi
     if _lp_cmake ; then
         local lp_join
         _lp_join "$I" ${lp_cmake_c_compiler} ${lp_cmake_cxx_compiler} ${lp_cmake_generator} ${lp_cmake_buildtype}
-        inline_left+="$d${lp_join}$b"
+        _lp_dotmatrix_make_env_inline_left+="$d${lp_join}$b"
     fi
     if _lp_container; then
-        inline_left+="$d$lp_container$b"
+        _lp_dotmatrix_make_env_inline_left+="$d$lp_container$b"
     fi
     if _lp_modules; then
-        inline_left+="$d"
+        _lp_dotmatrix_make_env_inline_left+="$d"
         _lp_join "$I" "${lp_modules[@]}"
-        inline_left+="${lp_join}$b"
+        _lp_dotmatrix_make_env_inline_left+="${lp_join}$b"
     fi
 
     # History section.
-    local inline_right=
+    local _lp_dotmatrix_make_env_inline_right=
     if _lp_os; then
         _lp_join "$I" ${lp_os_arch} ${lp_os_family} ${lp_os_kernel} ${lp_os_distrib} ${lp_os_version}
-        inline_right+="$d${lp_join}$b"
+        _lp_dotmatrix_make_env_inline_right+="$d${lp_join}$b"
     fi
     if ((DOTMATRIX_ENABLE_HISTORY)) ; then
         local hist_max
@@ -510,76 +510,44 @@ _lp_dotmatrix_make_line() {
         local hlast="$ret"
         __lp_escape "$hist_most"
         local hmost="$ret"
-        inline_right="$d${hlast}$I${hmost}$b"
-    fi
-
-    inline_right+="${DOTMATRIX_LINE}"
-
-    local _lp_dotmatrix_make_line=
-    # FIXME use _lp_fill-like function to handle multi-character line?
-    if ((DOTMATRIX_ENABLE_GRADIENT_LINE)); then
-        # Fill up the center section with a line colored as a gradient.
-        local ret
-        __lp_strip_escapes "$_lp_dotmatrix_make_line"
-        local left_as_text="$ret"
-        local line_width=$((${COLUMNS:-80}-${#left_as_text}))
-
-        local line="$_lp_dotmatrix_make_line"
-        local i c f a b j
-        for ((i=0; i < line_width; i++)); do # For each character in the line.
-            local dash_colors=()
-            for ((c=_LP_FIRST_INDEX; c < 6+_LP_FIRST_INDEX; c++)); do # For each color parameter.
-                a="${DOTMATRIX_COLOR_LINE_START[c]}"
-                b="${DOTMATRIX_COLOR_LINE_END[c]}"
-                j=$((a+(b-a)*i/line_width))
-                dash_colors+=("$j")
-            done
-            lp_terminal_format "${dash_colors[@]}"
-            line+="${lp_terminal_format}${DOTMATRIX_LINE}"
-            # line+="${lp_terminal_format}${i}(${dash_colors[@]}) "
-        done
-
-        _lp_dotmatrix_make_line="${line}${NO_COL}"
-
-    else
-        # Fill up the remaining space with a fixed-color line.
-        _lp_fill "$inline_left" "$inline_right" "$DOTMATRIX_LINE"
-        # Format here is DOTMATRIX_COLOR_LINE.
-        _lp_dotmatrix_make_line="${lp_terminal_format}${lp_fill}${NO_COL}"
+        _lp_dotmatrix_make_env_inline_right="$d${hlast}$I${hmost}$b"
     fi
 }
 
-_lp_dotmatrix_make_input() {
+_lp_dotmatrix_make_vcs() {
 
-    ####################################################################
-    # PROMPT LINE
-    ####################################################################
-
-    _lp_dotmatrix_make_input=""
+    _lp_dotmatrix_make_vcs=""
     lp_terminal_format ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
 
     if (( LP_ENABLE_WIFI_STRENGTH )) ; then
         if _lp_wifi_signal_strength ; then
             lp_terminal_format ${DOTMATRIX_COLOR_WARN[@]+"${DOTMATRIX_COLOR_WARN[@]}"}
-            _lp_dotmatrix_make_input+="${lp_terminal_format}${LP_MARK_WIFI}"
+            _lp_dotmatrix_make_vcs+="${lp_terminal_format}${LP_MARK_WIFI}"
         else
-            _lp_dotmatrix_make_input+="${lp_terminal_format}${LP_MARK_WIFI}"
+            _lp_dotmatrix_make_vcs+="${lp_terminal_format}${LP_MARK_WIFI}"
         fi
     else
-        _lp_dotmatrix_make_input+="${lp_terminal_format}·"
+        _lp_dotmatrix_make_vcs+="${lp_terminal_format}·"
     fi
 
     if _lp_http_proxy ; then
         __dotmatrix_make_sep_link ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
-        _lp_dotmatrix_make_input+="${dotmatrix_sep}"
+        _lp_dotmatrix_make_vcs+="${dotmatrix_sep}"
     else
         __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
-        _lp_dotmatrix_make_input+="${dotmatrix_sep}"
+        _lp_dotmatrix_make_vcs+="${dotmatrix_sep}"
     fi
 
     if __dotmatrix_prompt_vcs; then
-        _lp_dotmatrix_make_input+="${_DOTMATRIX_VCS}"
+        _lp_dotmatrix_make_vcs+="${_DOTMATRIX_VCS}"
     fi
+}
+
+_lp_dotmatrix_make_input() {
+    ####################################################################
+    # PROMPT LINE
+    ####################################################################
+    _lp_dotmatrix_make_input=
 
     if _lp_runtime_format ; then
         __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_NOTE[@]+"${DOTMATRIX_COLOR_NOTE[@]}"}
@@ -640,7 +608,7 @@ _lp_dotmatrix_theme_prompt() {
     _lp_dotmatrix_make_side
     side="$_lp_dotmatrix_make_side"
 
-    # Final assembling
+    # header/side assembling
     if _lp_dirstack; then
         lp_terminal_format ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
     else
@@ -656,15 +624,128 @@ _lp_dotmatrix_theme_prompt() {
     _lp_fill "$header$NO_COL" "$side" " "
     header="$lp_fill${NO_COL}"
 
-    _lp_dotmatrix_make_line
-    inline="$_lp_dotmatrix_make_line"
+    _lp_dotmatrix_make_env
+    local inline_left="$_lp_dotmatrix_make_env_inline_left"
+    local inline_right="$_lp_dotmatrix_make_env_inline_right"
+
+    _lp_dotmatrix_inline_right+="${DOTMATRIX_LINE}"
+
+    inline=
+    # FIXME deprecated
+    # # FIXME use _lp_fill-like function to handle multi-character line?
+    # if ((DOTMATRIX_ENABLE_GRADIENT_LINE)); then
+    #     # Fill up the center section with a line colored as a gradient.
+    #     local ret
+    #     __lp_strip_escapes "$_lp_dotmatrix_make_env_inline_left"
+    #     local left_as_text="$ret"
+    #     local line_width=$((${COLUMNS:-80}-${#left_as_text}))
+
+    #     local line="$_lp_dotmatrix_make_env"
+    #     local i c f a b j
+    #     for ((i=0; i < line_width; i++)); do # For each character in the line.
+    #         local dash_colors=()
+    #         for ((c=_LP_FIRST_INDEX; c < 6+_LP_FIRST_INDEX; c++)); do # For each color parameter.
+    #             a="${DOTMATRIX_COLOR_LINE_START[c]}"
+    #             b="${DOTMATRIX_COLOR_LINE_END[c]}"
+    #             j=$((a+(b-a)*i/line_width))
+    #             dash_colors+=("$j")
+    #         done
+    #         lp_terminal_format "${dash_colors[@]}"
+    #         line+="${lp_terminal_format}${DOTMATRIX_LINE}"
+    #         # line+="${lp_terminal_format}${i}(${dash_colors[@]}) "
+    #     done
+
+    #     _lp_dotmatrix_make_env="${line}${NO_COL}"
+
+    # else
+        # Fill up the remaining space with a fixed-color line.
+        _lp_fill "$inline_left" "$inline_right" "$DOTMATRIX_LINE"
+        # Format here is DOTMATRIX_COLOR_LINE.
+        inline="${lp_terminal_format}${lp_fill}${NO_COL}"
+    # fi
+
+    _lp_dotmatrix_make_vcs
+    dotmatrix_prompt="$_lp_dotmatrix_make_vcs"
 
     _lp_dotmatrix_make_input
-    dotmatrix_prompt="$_lp_dotmatrix_make_input"
+    dotmatrix_prompt+="$_lp_dotmatrix_make_input"
 
     # Assemble and setup
     local n=$'\n'
     PS1="${n}${header}${n}${inline}${n}${dotmatrix_prompt} "
+}
+
+
+
+########################################################################
+# DotVector theme
+########################################################################
+
+_lp_dotvector_theme_activate() {
+    _lp_dotmatrix_theme_activate
+}
+
+_lp_dotvector_theme_directory() {
+    _lp_dotmatrix_theme_directory
+}
+
+_lp_dotvector_theme_prompt() {
+    local header side inline input vcs main
+
+    _lp_dotmatrix_make_header
+    header+="$_lp_dotmatrix_make_header"
+
+    _lp_dotmatrix_make_side
+    side="$_lp_dotmatrix_make_side"
+
+    # header/side assembling
+    if _lp_dirstack; then
+        lp_terminal_format ${DOTMATRIX_COLOR_LITE[@]+"${DOTMATRIX_COLOR_LITE[@]}"}
+    else
+        # Recall a dark format to correctly reset sections history
+        # to match the path's section colors.
+        lp_terminal_format ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
+    fi
+
+    __dotmatrix_make_sep_last "$_lp_dotmatrix_has_warns" "$_lp_dotmatrix_has_notes"
+    header+="$dotmatrix_sep"
+
+    _lp_dotmatrix_make_vcs
+
+    lp_terminal_format -3 -1
+    local last_color="$lp_terminal_format"
+
+    lp_terminal_format ${DOTMATRIX_COLOR_LINE[@]}
+    local line_color="$lp_terminal_format"
+    lp_terminal_format ${DOTMATRIX_COLOR_LITE[_LP_FIRST_INDEX+0]} -1 0 0
+    local before="${line_color}${DOTMATRIX_LINE}${lp_terminal_format}${DOTMATRIX_LINK[_LP_FIRST_INDEX+2]}"
+
+    local after="${DOTMATRIX_SPACE_VOID}${last_color}${DOTMATRIX_LINK_R[_LP_FIRST_INDEX+0]}"
+
+    vcs="${before}${_lp_dotmatrix_make_vcs}${after}"
+
+    # Right-align the $side with spaces.
+    # _lp_fill "$header$NO_COL" "$side" " "
+    # header="$lp_fill${NO_COL}"
+
+    _lp_dotmatrix_make_env
+    local inline_left="$_lp_dotmatrix_make_env_inline_left"
+    local inline_right="$_lp_dotmatrix_make_env_inline_right"
+
+    _lp_dotmatrix_inline_right+="${DOTMATRIX_LINE}"
+
+    _lp_fill "${header}${vcs}${inline_left}" "${inline_right}${side}" "$DOTMATRIX_LINE"
+    main="${lp_terminal_format}${lp_fill}${NO_COL}"
+
+    lp_terminal_format ${DOTMATRIX_COLOR_LITE[@]}
+    local start="${lp_terminal_format}"
+
+    _lp_dotmatrix_make_input
+    input="$start$_lp_dotmatrix_make_input"
+
+    # Assemble and setup
+    local n=$'\n'
+    PS1="${n}${main}${n}${input} "
 }
 
 
