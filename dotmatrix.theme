@@ -247,7 +247,7 @@ _lp_dotmatrix_make_side() {
 
     # DOTMATRIX_COLOR_SEP_FAIR
     __dotmatrix_make_sep_side ""
-    side="${dotmatrix_sep}"
+    _lp_dotmatrix_make_side="${dotmatrix_sep}"
 
     # battery / load / temperature
     local battery=
@@ -326,14 +326,12 @@ _lp_dotmatrix_make_side() {
             local ffg="${DOTMATRIX_COLOR_SEP_FAIR[4]}"
             lp_terminal_format "$fg" -2 0 0 "$ffg" -2
             # No space before sep.
-            # dotmatrix_sep="${lp_terminal_format}${dotmatrix_sep}${DOTMATRIX_SPACE_VOID}"
-            # side+="${dotmatrix_sep}${lp_join}"
-            side+="${lp_terminal_format}${DOTMATRIX_SPACE_VOID}${lp_join}"
+            _lp_dotmatrix_make_side+="${lp_terminal_format}${DOTMATRIX_SPACE_VOID}${lp_join}"
 
         fi
     else
         lp_terminal_format ${DOTMATRIX_COLOR_FAIR[@]+"${DOTMATRIX_COLOR_FAIR[@]}"}
-        side+="${lp_terminal_format}"
+        _lp_dotmatrix_make_side+="${lp_terminal_format}"
     fi
 
     # jobs: detached / running / stopped
@@ -394,28 +392,28 @@ _lp_dotmatrix_make_side() {
     if [[ ${#drs[@]} -gt 0 ]] ; then
         _lp_join "$dotmatrix_sep" "${drs[@]}"
         if [[ -n "$lp_join" ]] ; then
-            side+="${djc_plug}${lp_join}"
+            _lp_dotmatrix_make_side+="${djc_plug}${lp_join}"
         fi
     else
         lp_terminal_format ${DOTMATRIX_COLOR_FAIR[@]+"${DOTMATRIX_COLOR_FAIR[@]}"}
-        side+="${lp_terminal_format}"
+        _lp_dotmatrix_make_side+="${lp_terminal_format}"
     fi
 
     # Called here for an easy access to the configured color.
     if __dotmatrix_activate_shell ; then
-        side+="${_DOTMATRIX_SHELL}"
+        _lp_dotmatrix_make_side+="${_DOTMATRIX_SHELL}"
     fi
 
     # clock
     if _lp_time ; then
         __dotmatrix_make_sep_plug ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
-        side+="${dotmatrix_sep}"
+        _lp_dotmatrix_make_side+="${dotmatrix_sep}"
         if _lp_analog_time ; then
             __dotmatrix_make_field "$lp_analog_time" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
-            side+="$dotmatrix_field"
+            _lp_dotmatrix_make_side+="$dotmatrix_field"
         else
             __dotmatrix_make_field "$lp_time" ${DOTMATRIX_COLOR_DARK[@]+"${DOTMATRIX_COLOR_DARK[@]}"}
-            side+="$dotmatrix_field"
+            _lp_dotmatrix_make_side+="$dotmatrix_field"
         fi
     fi
 }
