@@ -149,7 +149,6 @@ except for the ones defining colors, specific marks and disabling some features.
 The following options are honored:
 
 - [`LP_ENABLE_PERM`](https://liquidprompt.readthedocs.io/en/stable/config.html#LP_ENABLE_PERM),
-- [`LP_ENABLE_UNCOMMITED`](https://liquidprompt.readthedocs.io/en/stable/config.html#LP_ENABLE_UNCOMMITED),
 - [`LP_MARK_BATTERY`](https://liquidprompt.readthedocs.io/en/stable/config.html#LP_MARK_BATTERY),
 - [`LP_MARK_LOAD`](https://liquidprompt.readthedocs.io/en/stable/config.html#LP_MARK_LOAD),
 - [`LP_MARK_TEMP`](https://liquidprompt.readthedocs.io/en/stable/config.html#LP_MARK_TEMP),
