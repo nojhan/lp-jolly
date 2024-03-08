@@ -171,7 +171,7 @@ Note: the order in which you load the presets may be important.
 When changing the colors of the first line, presets needs to be loaded
 from your shell configuration and not just sourced in the prompt.
 
-A first set is are called "variants" and mainly change the segment joints,
+A first set is called "variants" and mainly change the segment joints,
 but can also impact the icons on some variants:
 
 - `source presets/variant-chevron.conf" (the *recommended*, need a Nerd-fonts font),
