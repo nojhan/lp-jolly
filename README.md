@@ -174,10 +174,10 @@ from your shell configuration and not just sourced in the prompt.
 A first set is called "variants" and mainly change the segment joints,
 but can also impact the icons on some variants:
 
-- `source presets/variant-chevron.conf" (the *recommended*, need a Nerd-fonts font),
-- `source presets/variant-slant.conf" (need a Nerd-fonts font),
-- `source presets/variant-round.conf" (need a Nerd-fonts font),
-- `source presets/variant-text.conf" (the one that works anywhere).
+- `source presets/variant-chevron.conf` (the *recommended*, need a Nerd-fonts font),
+- `source presets/variant-slant.conf` (need a Nerd-fonts font),
+- `source presets/variant-round.conf` (need a Nerd-fonts font),
+- `source presets/variant-text.conf` (the one that works anywhere).
 
 A second set changes the colors:
 
