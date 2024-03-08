@@ -513,7 +513,7 @@ The color for light separators.
 The color starting the gradient of the line of the middle section.
 Default is white.
 
-Valus being linearly interpolated up to `DOTMATRIX_COLOR_LINE_END`,
+Values being linearly interpolated up to `DOTMATRIX_COLOR_LINE_END`,
 it is recommended to stick to aligned ANSI values (i.e. greys)
 
 
@@ -522,7 +522,7 @@ it is recommended to stick to aligned ANSI values (i.e. greys)
 The color ending the gradient of the line of the middle section.
 Default is black.
 
-Valus being linearly interpolated from `DOTMATRIX_COLOR_LINE_START`,
+Values being linearly interpolated from `DOTMATRIX_COLOR_LINE_START`,
 it is recommended to stick to aligned ANSI values (i.e. greys).
 
 
