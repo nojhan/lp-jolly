@@ -7,7 +7,7 @@ It is an original prompt design, very carefully designed,
 that will completely changes the way you imagine the prompt.
 
 It is focused on *improving the user experience*,
-by vastly improving the ability of the user to immediatly spot
+by vastly improving the ability of the user to immediately spot
 what she should do following her system's state changes.
 
 Has such, you may find it a little bit disconcerting at first.
@@ -60,7 +60,7 @@ The prompt itself is designed in three lines:
 ### Example
 
 For instance, in the following prompt, you can see that the user is in a Git repository and has some action waiting to be done:
-- the rightmost blue "≠" indicates that there are some modifications waiting to be commited (hence the directional hint, from a diff to the branch).
+- the rightmost blue "≠" indicates that there are some modifications waiting to be committed (hence the directional hint, from a diff to the branch).
 - the leftmost blue segment indicates that there are some commits that may be pushed to the remote (hence the directional hint, from the branch to the VCS symbol).
 
 ![](screenshots/variant-chevron.png)
@@ -97,7 +97,7 @@ For example:
    source ~/lp-dotmatrix/dotmatrix.theme && lp_theme dotmatrix
 ```
 
-NOTE: The recommended segment markers (the "chevron" variant) uses characters in the private section of unicode
+NOTE: The recommended segment markers (the "chevron" variant) uses characters in the private section of Unicode
 that are defined by the "Nerd-fonts" project.
 You will either need a compatible font, or use a variant that does not need them, like "text" and "dotmatrix".
 
