@@ -485,7 +485,7 @@ _lp_dotmatrix_make_env() {
     fi
 
     # History section.
-    local _lp_dotmatrix_make_env_inline_right=
+    _lp_dotmatrix_make_env_inline_right=
     if _lp_os; then
         _lp_join "$I" ${lp_os_arch} ${lp_os_family} ${lp_os_kernel} ${lp_os_distrib} ${lp_os_version}
         _lp_dotmatrix_make_env_inline_right+="$d${lp_join}$b"
