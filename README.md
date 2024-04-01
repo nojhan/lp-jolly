@@ -14,6 +14,9 @@ Has such, you may find it a little bit disconcerting at first.
 But we believe that the advantages of this design makes it worth the effort.
 
 
+![A ship with black sails, three of which are printed with the symbols "~", "$", and ">"; going out of a circling boat wheel with sun rays in her back; and navigating a blue wave with froth going over a banner that reads "Liquid Prompt". A large black flag is attached to the front shroud, showing a skull and two crossed bones, on top of a legend reading "jolly roger".](docs/jolly_emblem.svg)
+
+
 Preview
 -------
 
