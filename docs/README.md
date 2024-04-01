@@ -204,6 +204,8 @@ To ease the visual browsing of those segments, it uses the visual separators int
 
 > While Jolly can theoretically use many of the "powerline" characters as separators, it recommends using the "arrow" one, which fits better the *semantic sequence* principle.
 
+![](../screenshots/variant-round.png)
+
 
 ## Semantic Sequences
 
@@ -214,6 +216,8 @@ For instance from the more generic to the more specific, from a natural order of
 > The VCS section displays elements from the more remote to the more local.
 > Spaced reverse arrows in the VCS sections actually show the direction of the expected action
 > (e.g. "to be pushed" = local-to-remote = right-to-left).
+
+![](../screenshots/git_commits.png)
 
 
 ## Semantic Spaces
@@ -242,6 +246,8 @@ Important information may be displayed using two other colors: one for informati
 > Jolly allows the user to select whatever pair of colors fits their colorblindness issues, and comes with several presets.
 > Its default is set to blue/yellow, following the most classical recommendation to bypass the most common colorblindness issues.
 > The basic segments use tones of dark and light greys with AAA contrast between them, appearing as black and white on many classical terminal backgrounds.
+
+![](../screenshots/variant-chevron_colors-cyan-magenta.png)
 
 
 ## Semantic Thresholds
