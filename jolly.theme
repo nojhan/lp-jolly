@@ -1,0 +1,1415 @@
+
+########################################################################
+# API
+########################################################################
+
+_lp_jolly_theme_activate() {
+
+    if ! _lp_version_greatereq 2 2 0 ; then
+        _lp_join "." ${_LP_VERSION[@]}
+        printf "WARNING: the Jolly theme requires Liquid Prompt >= 2.2.0, but you have version $lp_join, some features will not work and the prompt may crash.\n"
+    fi
+
+    LP_ENABLE_VCS_DIFFSTATS=${LP_ENABLE_VCS_DIFFSTATS:-1}
+    _LP_LOAD_THRESHOLD=${_LP_LOAD_THRESHOLD:-80}
+    _LP_LOAD_CAP=${_LP_LOAD_CAP:-100}
+
+    JOLLY_DISPLAY_TEXT=${JOLLY_DISPLAY_TEXT:-"T"}
+    JOLLY_DISPLAY_X11=${JOLLY_DISPLAY_X11:-"X"}
+    JOLLY_HOST_LOCAL=${JOLLY_HOST_LOCAL:-"⌂"}
+    JOLLY_MARK_STASH=${JOLLY_MARK_STASH:-"✝"}
+    JOLLY_MARK_UNTRACKED=${JOLLY_MARK_UNTRACKED:-"?"} # ⛶
+    JOLLY_DIFF=${JOLLY_DIFF:-"≠"}
+
+    JOLLY_ENABLE_GRADIENT_LINE=${JOLLY_ENABLE_GRADIENT_LINE:-0}
+    JOLLY_ENABLE_SHELL=${JOLLY_ENABLE_SHELL:-0}
+
+    JOLLY_SHELL_ZSH=${JOLLY_SHELL_ZSH:-"z"}
+    JOLLY_SHELL_BASH=${JOLLY_SHELL_BASH:-"b"}
+
+    JOLLY_VCS_REMOTE_ORIGIN=${JOLLY_VCS_REMOTE_ORIGIN:-"🖈"}
+
+    JOLLY_ENABLE_HISTORY=${JOLLY_ENABLE_HISTORY:-0}
+    JOLLY_HISTORY_LAST_LEN=${JOLLY_HISTORY_LAST_LEN:-$((COLUMNS/4))}
+    JOLLY_HISTORY_LAST_LEN_MARK=${JOLLY_HISTORY_LAST_LEN_MARK:-"[…]"}
+    JOLLY_HISTORY_MOST_BACK=${JOLLY_HISTORY_MOST_BACK:-100}
+
+    # Thresholds based on 75th quantile for:
+    # nb of commits in PR on Github and added+removed lines.
+    # See: https://promyze.com/observations-on-10000-pull-requests-on-github/
+    JOLLY_VCS_AHEAD_THRESHOLD=${JOLLY_VCS_AHEAD_THRESHOLD:-5}
+    JOLLY_VCS_BEHIND_THRESHOLD=${JOLLY_VCS_BEHIND_THRESHOLD:-5}
+    JOLLY_VCS_DIFF_THRESHOLD=${JOLLY_VCS_DIFF_THRESHOLD:-300}
+
+    JOLLY_DETACHED_THRESHOLD=${JOLLY_DETACHED_THRESHOLD:-3}
+    JOLLY_RUNNING_THRESHOLD=${JOLLY_RUNNING_THRESHOLD:-3}
+    JOLLY_STOPPED_THRESHOLD=${JOLLY_STOPPED_THRESHOLD:-3}
+
+    JOLLY_BATTERY_THRESHOLD=${JOLLY_BATTERY_THRESHOLD:-$((LP_BATTERY_THRESHOLD/2))}
+    JOLLY_RAM_THRESHOLD=${JOLLY_RAM_THRESHOLD:-$((LP_RAM_THRESHOLD/2))}
+    JOLLY_DISK_THRESHOLD=${JOLLY_DISK_THRESHOLD:-$((LP_DISK_THRESHOLD/2))}
+    JOLLY_TEMP_THRESHOLD=${JOLLY_TEMP_THRESHOLD:-$((LP_TEMP_THRESHOLD*2))}
+    # Use prefixed _LP_* variables, which are integers.
+    JOLLY_LOAD_THRESHOLD=${JOLLY_LOAD_THRESHOLD:-$((_LP_LOAD_THRESHOLD+(_LP_LOAD_CAP-_LP_LOAD_THRESHOLD)/2))}
+
+    JOLLY_MARK_ERROR=${JOLLY_MARK_ERROR:-""}
+
+    # Sets of characters
+    # "dotmatrix" variant by default (non-patched font)
+    JOLLY_HOST_LOCAL=${JOLLY_HOST_LOCAL:-"⌂"}
+    JOLLY_USER_LOCAL=${JOLLY_USER_LOCAL:-"♟"}
+    JOLLY_VCS=${JOLLY_VCS:-"╟┘"}
+    JOLLY_MARK=${JOLLY_MARK:-"⯀"}
+    JOLLY_MARK_SUDO=${JOLLY_MARK_SUDO:-"⋮"}
+    JOLLY_LINE=${JOLLY_LINE:-"━"}
+    JOLLY_PLUG=${JOLLY_PLUG:-"▛"}
+    JOLLY_SOFT=${JOLLY_SOFT:-"╱"}
+    JOLLY_MEAN=${JOLLY_MEAN:-"▞"}
+    # Separator arrays                                (left center right)
+    JOLLY_LINK=( ${JOLLY_LINK[@]+"${JOLLY_LINK[@]}"} )
+    [[ ${#JOLLY_LINK[@]} == 0 ]] && JOLLY_LINK=("▙" " "   "▜")
+    JOLLY_LINK_R=( ${JOLLY_LINK_R[@]+"${JOLLY_LINK_R[@]}"} )
+    [[ ${#JOLLY_LINK_R[@]} == 0 ]] && JOLLY_LINK_R=("▛" " " "▟")
+    JOLLY_OPEN=( ${JOLLY_OPEN[@]+"${JOLLY_OPEN[@]}"} )
+    [[ ${#JOLLY_OPEN[@]} == 0 ]] && JOLLY_OPEN=("▙" " ▚ " "▜")
+    JOLLY_DANG=( ${JOLLY_DANG[@]+"${JOLLY_DANG[@]}"} )
+    [[ ${#JOLLY_DANG[@]} == 0 ]] && JOLLY_DANG=("▙" " □ " "▜")
+    JOLLY_ENDS=( ${JOLLY_ENDS[@]+"${JOLLY_ENDS[@]}"} )
+    [[ ${#JOLLY_ENDS[@]} == 0 ]] && JOLLY_ENDS=("▛" "▞▗ ▝" "▖ ▘▞▟")
+    JOLLY_ITEMS=( ${JOLLY_ITEMS[@]+"${JOLLY_ITEMS[@]}"} )
+    [[ ${#JOLLY_ITEMS[@]} == 0 ]] && JOLLY_ITEMS=("┫" "┃" "┣")
+
+    JOLLY_SPACED=${JOLLY_SPACED:-1}
+
+    # Number of spaces to add
+    if [[ ${JOLLY_SPACED} == 0 ]] ; then
+        JOLLY_SPACE_VOID=""
+        JOLLY_SPACE_FILL=""
+        JOLLY_SPACE_PATH=${JOLLY_SPACE_PATH:-""}
+        JOLLY_SPACE_FIELD=${JOLLY_SPACE_FIELD:-""}
+        JOLLY_SPACE_LINE=${JOLLY_SPACE_LINE:-""}
+
+    elif [[ ${JOLLY_SPACED} == 1 ]] ; then
+        JOLLY_SPACE_VOID=" "
+        JOLLY_SPACE_FILL="█"
+        JOLLY_SPACE_PATH=${JOLLY_SPACE_PATH:-" "}
+        JOLLY_SPACE_FIELD=${JOLLY_SPACE_FIELD:-""}
+        JOLLY_SPACE_LINE=${JOLLY_SPACE_LINE:-" "}
+    else
+        local n="${JOLLY_SPACED:-1}"
+        [[ $n -lt 0 ]] && n=1
+        local i
+        JOLLY_SPACE_VOID=""
+        JOLLY_SPACE_FILL=""
+        for ((i=0; i < n; i++)); do
+            JOLLY_SPACE_VOID+=" " # Regular space
+            JOLLY_SPACE_FILL+="█" # Inverted space
+        done
+
+        JOLLY_SPACE_PATH=${JOLLY_SPACE_PATH:-"${JOLLY_SPACE_VOID}"}
+        JOLLY_SPACE_FIELD=${JOLLY_SPACE_FIELD:-""}
+        JOLLY_SPACE_LINE=${JOLLY_SPACE_LINE:-""}
+    fi
+
+
+    # Color arrays defaults                                          fg bg b u ffg fbg
+    JOLLY_COLOR_DARK=( ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"} )
+    [[ ${#JOLLY_COLOR_DARK[@]} == 0 ]] && JOLLY_COLOR_DARK=(252 239 0 0  15   0)
+
+    JOLLY_COLOR_LITE=( ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"} )
+    [[ ${#JOLLY_COLOR_LITE[@]} == 0 ]] && JOLLY_COLOR_LITE=(239 252 0 0   0  15)
+
+    JOLLY_COLOR_GLOW=( ${JOLLY_COLOR_GLOW[@]+"${JOLLY_COLOR_GLOW[@]}"} )
+    [[ ${#JOLLY_COLOR_GLOW[@]} == 0 ]] && JOLLY_COLOR_GLOW=(  255 239 1 0   0  15)
+
+    JOLLY_COLOR_NOTE=( ${JOLLY_COLOR_NOTE[@]+"${JOLLY_COLOR_NOTE[@]}"} )
+    [[ ${#JOLLY_COLOR_NOTE[@]} == 0 ]] && JOLLY_COLOR_NOTE=( 15  33 0 0  15  12)
+
+    JOLLY_COLOR_WARN=( ${JOLLY_COLOR_WARN[@]+"${JOLLY_COLOR_WARN[@]}"} )
+    [[ ${#JOLLY_COLOR_WARN[@]} == 0 ]] && JOLLY_COLOR_WARN=(196 220 1 0   0  11)
+
+    JOLLY_COLOR_FAIR=( ${JOLLY_COLOR_FAIR[@]+"${JOLLY_COLOR_FAIR[@]}"} )
+    [[ ${#JOLLY_COLOR_FAIR[@]} == 0 ]] && JOLLY_COLOR_FAIR=(  0 239 1 0   0   8)
+
+
+    JOLLY_COLOR_PATH_SHORT=( ${JOLLY_COLOR_PATH_SHORT[@]+"${JOLLY_COLOR_PATH_SHORT[@]}"} )
+    [[ ${#JOLLY_COLOR_PATH_SHORT[@]} == 0 ]] && JOLLY_COLOR_PATH_SHORT=(252 239 0 0   0  15)
+
+    JOLLY_COLOR_PATH_VCS=( ${JOLLY_COLOR_PATH_VCS[@]+"${JOLLY_COLOR_PATH_VCS[@]}"} )
+    [[ ${#JOLLY_COLOR_PATH_VCS[@]} == 0 ]] && JOLLY_COLOR_PATH_VCS=(252 239 0 1   0  15)
+
+    JOLLY_COLOR_PATH_LAST=( ${JOLLY_COLOR_PATH_LAST[@]+"${JOLLY_COLOR_PATH_LAST[@]}"} )
+    [[ ${#JOLLY_COLOR_PATH_LAST[@]} == 0 ]] && JOLLY_COLOR_PATH_LAST=(15 239 1 0   0  15)
+
+
+    JOLLY_COLOR_LINE=( ${JOLLY_COLOR_LINE[@]+"${JOLLY_COLOR_LINE[@]}"} )
+    [[ ${#JOLLY_COLOR_LINE[@]} == 0 ]] && JOLLY_COLOR_LINE=(244 -1 0 0 15 -1)
+
+    JOLLY_COLOR_LINE_START=( ${JOLLY_COLOR_LINE_START[@]+"${JOLLY_COLOR_LINE_START[@]}"} )
+    [[ ${#JOLLY_COLOR_LINE_START[@]} == 0 ]] && JOLLY_COLOR_LINE_START=(255 -1 1 0 15 -1)
+
+    JOLLY_COLOR_LINE_END=( ${JOLLY_COLOR_LINE_END[@]+"${JOLLY_COLOR_LINE_END[@]}"} )
+    [[ ${#JOLLY_COLOR_LINE_END[@]} == 0 ]] && JOLLY_COLOR_LINE_END=(232 -1 1 0 15 -1)
+
+
+    JOLLY_COLOR_MARK=( ${JOLLY_COLOR_MARK[@]+"${JOLLY_COLOR_MARK[@]}"} )
+    [[ ${#JOLLY_COLOR_MARK[@]} == 0 ]] && JOLLY_COLOR_MARK=(15 -1 0 0 15 -1)
+
+    JOLLY_COLOR_SEP_DARK=( ${JOLLY_COLOR_SEP_DARK[@]+"${JOLLY_COLOR_SEP_DARK[@]}"} )
+    [[ ${#JOLLY_COLOR_SEP_DARK[@]} == 0 ]] && JOLLY_COLOR_SEP_DARK=(  0 -2 0 0  0 -2)
+
+    JOLLY_COLOR_SEP_FAIR=( ${JOLLY_COLOR_SEP_FAIR[@]+"${JOLLY_COLOR_SEP_FAIR[@]}"} )
+    [[ ${#JOLLY_COLOR_SEP_FAIR[@]} == 0 ]] && JOLLY_COLOR_SEP_FAIR=(244 -2 0 0  0 -2)
+
+    JOLLY_COLOR_SEP_LITE=( ${JOLLY_COLOR_SEP_LITE[@]+"${JOLLY_COLOR_SEP_LITE[@]}"} )
+    [[ ${#JOLLY_COLOR_SEP_LITE[@]} == 0 ]] && JOLLY_COLOR_SEP_LITE=( 15 -2 0 0 15 -2)
+
+    # Default line color for unset variables.
+    LP_COLOR_ENV_VARS_UNSET=${LP_COLOR_ENV_VARS_UNSET:-""}
+    # Use the background of notes as a foreground for set variables.
+    lp_terminal_format "${JOLLY_COLOR_NOTE[1]}"
+    LP_COLOR_ENV_VARS_SET=${LP_COLOR_ENV_VARS_SET:-"$lp_terminal_format"}
+
+    # LP_COLORMAP=( ${LP_COLORMAP[@]+"${LP_COLORMAP[@]}"} )
+    # if [[ ${#LP_COLORMAP[@]} == 0 ]]; then
+        local lp_terminal_format
+        lp_terminal_format ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+        local l1="$lp_terminal_format"
+        lp_terminal_format ${JOLLY_COLOR_NOTE[@]+"${JOLLY_COLOR_NOTE[@]}"}
+        local l2="$lp_terminal_format"
+        lp_terminal_format ${JOLLY_COLOR_WARN[@]+"${JOLLY_COLOR_WARN[@]}"}
+        local l3="$lp_terminal_format"
+        LP_COLORMAP=(
+            "" # l0
+            "$l1"
+            "$l2"
+            "$l3"
+        )
+    # fi
+
+    __jolly_activate_display
+    # __jolly_activate_shell
+    __jolly_activate_connection
+    __jolly_activate_user
+    __jolly_activate_multiplexer
+    __jolly_activate_hostname
+}
+
+
+_lp_jolly_theme_directory() {
+    lp_terminal_format ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+    __jolly_directory_FS
+    __jolly_directory_path
+}
+
+
+_lp_jolly_make_header() {
+
+    # Arguments: fg, bg, bold, underline, fallback_fg, fallback_bg
+    # Color codes can be any integer in 256 XTerm's system colors in [0–255].
+    # Special color codes:
+    #   -1 : no color
+    #   -2 : previously set color
+    #   -3 : swap fg and bg
+    local lp_terminal_format
+
+    ####################################################################
+    # HEADER (LEFT)
+    ####################################################################
+
+    _lp_jolly_make_header=""
+    _lp_jolly_make_header+="${_JOLLY_DISPLAY}"
+    _lp_jolly_make_header+="${_JOLLY_CONNECTION}"
+    _lp_jolly_make_header+="${_JOLLY_USER}"
+    _lp_jolly_make_header+="${_JOLLY_MULTIPLEXER}"
+    _lp_jolly_make_header+="${_JOLLY_HOSTNAME}"
+    _lp_jolly_make_header+="${_JOLLY_FS}"
+    _lp_jolly_make_header+="${_JOLLY_PATH} "
+
+    if _lp_dirstack; then
+        # Pseudo-recall the path section format.
+        lp_terminal_format ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+        __jolly_make_sep_plug ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+        _lp_jolly_make_header+="${jolly_sep}"
+        __jolly_make_field "$lp_dirstack" ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+        _lp_jolly_make_header+="${jolly_field}"
+    fi
+}
+
+_lp_jolly_make_side() {
+
+    ####################################################################
+    # HEADER SIDE (RIGHT)
+    ####################################################################
+
+    local _lp_jolly_has_notes=0
+    local _lp_jolly_has_warns=0
+
+    # JOLLY_COLOR_SEP_FAIR
+    __jolly_make_sep_side ""
+    _lp_jolly_make_side="${jolly_sep}"
+
+    # battery / load / temperature
+    local battery=
+    if _lp_battery_color ; then
+        if [[ $lp_battery -le "$JOLLY_BATTERY_THRESHOLD" ]]; then
+            __jolly_make_field "$lp_battery$_LP_PERCENT" ${JOLLY_COLOR_WARN[@]+"${JOLLY_COLOR_WARN[@]}"}
+            battery="${jolly_field}${LP_MARK_BATTERY}"
+            _lp_jolly_has_warns=$((_lp_jolly_has_warns+1))
+        else
+            __jolly_make_field "$lp_battery$_LP_PERCENT" ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+            battery="${jolly_field}${LP_MARK_BATTERY}"
+            _lp_jolly_has_notes=$((_lp_jolly_has_notes+1))
+        fi
+    fi
+
+    local load=
+    if _lp_load_color ; then
+        if [[ $lp_load_adjusted -ge "$JOLLY_LOAD_THRESHOLD" ]]; then
+            __jolly_make_field "$lp_load" ${JOLLY_COLOR_WARN[@]+"${JOLLY_COLOR_WARN[@]}"}
+            load="${jolly_field}${LP_MARK_LOAD}"
+            _lp_jolly_has_warns=$((_lp_jolly_has_warns+1))
+        else
+            __jolly_make_field "$lp_load" ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+            load="${jolly_field}${LP_MARK_LOAD}"
+            _lp_jolly_has_notes=$((_lp_jolly_has_notes+1))
+        fi
+    fi
+
+    local ram=
+    if _lp_ram_color ; then
+        if [[ $lp_ram_perc -le "$JOLLY_RAM_THRESHOLD" ]]; then
+            __jolly_make_field "$lp_ram_perc$_LP_PERCENT" ${JOLLY_COLOR_WARN[@]+"${JOLLY_COLOR_WARN[@]}"}
+            ram="${jolly_field}${LP_MARK_RAM}"
+            _lp_jolly_has_warns=$((_lp_jolly_has_warns+1))
+        else
+            __jolly_make_field "$lp_ram_perc$_LP_PERCENT" ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+            ram="${jolly_field}${LP_MARK_RAM}"
+            _lp_jolly_has_notes=$((_lp_jolly_has_notes+1))
+        fi
+    fi
+
+    local disk=
+    if _lp_disk_color ; then
+        if [[ $lp_disk_perc -le "$JOLLY_DISK_THRESHOLD" ]]; then
+            __jolly_make_field "$lp_disk_perc$_LP_PERCENT" ${JOLLY_COLOR_WARN[@]+"${JOLLY_COLOR_WARN[@]}"}
+            disk="${jolly_field}${LP_MARK_DISK}"
+            _lp_jolly_has_warns=$((_lp_jolly_has_warns+1))
+        else
+            __jolly_make_field "$lp_disk_perc$_LP_PERCENT" ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+            disk="${jolly_field}${LP_MARK_DISK}"
+            _lp_jolly_has_notes=$((_lp_jolly_has_notes+1))
+        fi
+    fi
+
+    local temperature=
+    if _lp_temperature_color ; then
+        if [[ $lp_temperature -ge "$JOLLY_TEMP_THRESHOLD" ]]; then
+            __jolly_make_field "$lp_temperature" ${JOLLY_COLOR_WARN[@]+"${JOLLY_COLOR_WARN[@]}"}
+            temperature="${jolly_field}${LP_MARK_TEMP}"
+            _lp_jolly_has_warns=$((_lp_jolly_has_warns+1))
+        else
+            __jolly_make_field "$lp_temperature" ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+            temperature="${jolly_field}${LP_MARK_TEMP}"
+            _lp_jolly_has_notes=$((_lp_jolly_has_notes+1))
+        fi
+    fi
+
+    __jolly_make_sep_soft ${JOLLY_COLOR_SEP_DARK[@]+"${JOLLY_COLOR_SEP_DARK[@]}"}
+    declare -a blt=($battery $load $ram $disk $temperature) # Unquoted on purpose.
+    if [[ ${#blt[@]} -gt 0 ]] ; then
+        _lp_join "$jolly_sep" ${blt[@]}
+        if [[ -n "$lp_join" ]] ; then
+
+            # Match the side sep
+            local  fg="${JOLLY_COLOR_SEP_FAIR[0]}"
+            local ffg="${JOLLY_COLOR_SEP_FAIR[4]}"
+            lp_terminal_format "$fg" -2 0 0 "$ffg" -2
+            # No space before sep.
+            _lp_jolly_make_side+="${lp_terminal_format}${JOLLY_SPACE_VOID}${lp_join}"
+
+        fi
+    else
+        lp_terminal_format ${JOLLY_COLOR_FAIR[@]+"${JOLLY_COLOR_FAIR[@]}"}
+        _lp_jolly_make_side+="${lp_terminal_format}"
+    fi
+
+    # jobs: detached / running / stopped
+
+    local detached_sessions=
+    if _lp_detached_sessions ; then
+        if [[ -n "${lp_detached_sessions}" && "${lp_detached_sessions}" -gt 0 ]] ; then
+            if [[ "${lp_detached_sessions}" -ge "${JOLLY_DETACHED_THRESHOLD}" ]]; then
+                __jolly_make_field "${lp_detached_sessions}d" ${JOLLY_COLOR_WARN[@]+"${JOLLY_COLOR_WARN[@]}"}
+                detached_sessions="${jolly_field}"
+                _lp_jolly_has_warns=$((_lp_jolly_has_warns+1))
+            else
+                __jolly_make_field "${lp_detached_sessions}d" ${JOLLY_COLOR_NOTE[@]+"${JOLLY_COLOR_NOTE[@]}"}
+                detached_sessions="${jolly_field}"
+                _lp_jolly_has_notes=$((_lp_jolly_has_notes+1))
+            fi
+        fi
+    fi
+
+    local running_jobs=
+    local stopped_jobs=
+    if _lp_jobcount ; then
+        if [[ -n "${lp_running_jobs}" && "${lp_running_jobs}" -gt 0  ]] ; then
+            if [[ "${lp_running_jobs}" -ge "${JOLLY_RUNNING_THRESHOLD}" ]]; then
+                __jolly_make_field "${lp_running_jobs}&" ${JOLLY_COLOR_WARN[@]+"${JOLLY_COLOR_WARN[@]}"}
+                running_jobs="${jolly_field}"
+                _lp_jolly_has_warns=$((_lp_jolly_has_warns+1))
+            else
+                __jolly_make_field "${lp_running_jobs}&" ${JOLLY_COLOR_NOTE[@]+"${JOLLY_COLOR_NOTE[@]}"}
+                running_jobs="${jolly_field}"
+                _lp_jolly_has_notes=$((_lp_jolly_has_notes+1))
+            fi
+        fi
+
+        if [[ -n "${lp_stopped_jobs}" && "${lp_stopped_jobs}" -gt 0  ]] ; then
+            if [[ "${lp_stopped_jobs}" -ge "${JOLLY_STOPPED_THRESHOLD}" ]]; then
+                __jolly_make_field "${lp_stopped_jobs}z" ${JOLLY_COLOR_WARN[@]+"${JOLLY_COLOR_WARN[@]}"}
+                stopped_jobs="${jolly_field}"
+                _lp_jolly_has_warns=$((_lp_jolly_has_warns+1))
+            else
+                __jolly_make_field "${lp_stopped_jobs}z" ${JOLLY_COLOR_NOTE[@]+"${JOLLY_COLOR_NOTE[@]}"}
+                stopped_jobs="${jolly_field}"
+                _lp_jolly_has_notes=$((_lp_jolly_has_notes+1))
+            fi
+        fi
+    fi
+
+    lp_terminal_format ${JOLLY_COLOR_FAIR[@]+"${JOLLY_COLOR_FAIR[@]}"}
+    if [[ $_lp_jolly_has_warns -gt 0 ]]; then
+        __jolly_make_sep_plug ${JOLLY_COLOR_WARN[@]+"${JOLLY_COLOR_WARN[@]}"}
+    else
+        __jolly_make_sep_plug ${JOLLY_COLOR_NOTE[@]+"${JOLLY_COLOR_NOTE[@]}"}
+    fi
+    local djc_plug="${jolly_sep}"
+
+    __jolly_make_sep_soft ${JOLLY_COLOR_SEP_LITE[@]+"${JOLLY_COLOR_SEP_LITE[@]}"}
+    declare -a drs=($detached_sessions $running_jobs $stopped_jobs) # Unquoted on purpose.
+    if [[ ${#drs[@]} -gt 0 ]] ; then
+        _lp_join "$jolly_sep" "${drs[@]}"
+        if [[ -n "$lp_join" ]] ; then
+            _lp_jolly_make_side+="${djc_plug}${lp_join}"
+        fi
+    else
+        lp_terminal_format ${JOLLY_COLOR_FAIR[@]+"${JOLLY_COLOR_FAIR[@]}"}
+        _lp_jolly_make_side+="${lp_terminal_format}"
+    fi
+
+    # Called here for an easy access to the configured color.
+    if __jolly_activate_shell ; then
+        _lp_jolly_make_side+="${_JOLLY_SHELL}"
+    fi
+
+    # clock
+    if _lp_time ; then
+        __jolly_make_sep_plug ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+        _lp_jolly_make_side+="${jolly_sep}"
+        if _lp_analog_time ; then
+            __jolly_make_field "$lp_analog_time" ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+            _lp_jolly_make_side+="$jolly_field"
+        else
+            __jolly_make_field "$lp_time" ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+            _lp_jolly_make_side+="$jolly_field"
+        fi
+    fi
+}
+
+_lp_jolly_make_env() {
+    ####################################################################
+    # IN LINE
+    ####################################################################
+
+    local color_line_end=""
+    if (( LP_ENABLE_SSH_COLORS )); then
+        local lp_hostname_hash
+        __lp_hostname_hash
+        __lp_foreground_color "$(( 1 + lp_hostname_hash % 6 ))"
+        color_line_end="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
+    fi
+    lp_terminal_format ${JOLLY_COLOR_LINE[@]+"${JOLLY_COLOR_LINE[@]}"}
+    color_line_start="$lp_terminal_format"
+    _lp_jolly_make_env_inline_left="${NO_COL}$LP_PS1_PREFIX${lp_terminal_format}${JOLLY_LINE}"
+
+    # Dev env section.
+    local ista="$_LP_FIRST_INDEX"
+    local imid=$((_LP_FIRST_INDEX+1))
+    local iend=$((_LP_FIRST_INDEX+2))
+    local d="${color_line_start}${JOLLY_ITEMS[ista]}${JOLLY_SPACE_LINE}"
+    local I="${color_line_start}${JOLLY_SPACE_LINE}${JOLLY_ITEMS[imid]}${JOLLY_SPACE_LINE}"
+    local b="${color_line_start}${JOLLY_SPACE_LINE}${JOLLY_ITEMS[iend]}${color_line_end}"
+    if _lp_env_vars "${LP_COLOR_ENV_VARS_SET}" "${LP_COLOR_ENV_VARS_UNSET}"; then
+        local lp_join
+        _lp_join "$I" ${lp_env_vars[@]}
+        _lp_jolly_make_env_inline_left+="$d${lp_join}$b"
+    fi
+    if _lp_software_collections ; then
+        _lp_jolly_make_env_inline_left+="$d${lp_software_collections}$b"
+    fi
+    if _lp_python_env ; then
+        _lp_jolly_make_env_inline_left+="$d${lp_python_env}$b"
+    fi
+    if _lp_node_env ; then
+        _lp_jolly_make_env_inline_left+="$d${lp_node_env}$b"
+    fi
+    if _lp_ruby_env ; then
+        _lp_jolly_make_env_inline_left+="$d${lp_ruby_env}$b"
+    fi
+    if _lp_container ; then
+        _lp_jolly_make_env_inline_left+="$d${lp_container}$b"
+    fi
+    if _lp_kubernetes_context ; then
+        _lp_jolly_make_env_inline_left+="$d${lp_kubernetes_context}$b"
+    fi
+    if _lp_terraform_env ; then
+        _lp_jolly_make_env_inline_left+="$d${lp_terraform_env}$b"
+    fi
+    if _lp_aws_profile ; then
+        _lp_jolly_make_env_inline_left+="$d${lp_aws_profile}$b"
+    fi
+    if _lp_cmake ; then
+        local lp_join
+        _lp_join "$I" ${lp_cmake_c_compiler} ${lp_cmake_cxx_compiler} ${lp_cmake_generator} ${lp_cmake_buildtype}
+        _lp_jolly_make_env_inline_left+="$d${lp_join}$b"
+    fi
+    if _lp_container; then
+        _lp_jolly_make_env_inline_left+="$d$lp_container$b"
+    fi
+    if _lp_modules; then
+        _lp_jolly_make_env_inline_left+="$d"
+        _lp_join "$I" "${lp_modules[@]}"
+        _lp_jolly_make_env_inline_left+="${lp_join}$b"
+    fi
+
+    # History section.
+    local _lp_jolly_make_env_inline_right=
+    if _lp_os; then
+        _lp_join "$I" ${lp_os_arch} ${lp_os_family} ${lp_os_kernel} ${lp_os_distrib} ${lp_os_version}
+        _lp_jolly_make_env_inline_right+="$d${lp_join}$b"
+    fi
+    if ((JOLLY_ENABLE_HISTORY)) ; then
+        local hist_max
+        hist_max=$((JOLLY_HISTORY_LAST_LEN-${#JOLLY_HISTORY_LAST_LEN_MARK}))
+        local hist_last
+        hist_last=$(history | tail -n 1 | cut -d" " -f5-)
+        if [[ ${#hist_last} -gt $hist_max ]] ; then
+            if (( _LP_SHELL_zsh )) ; then
+                hist_last="${hist_last[1,$hist_max]}${JOLLY_HISTORY_LAST_LEN_MARK}"
+            else # bash
+                hist_last="${hist_last:0:$hist_max}${JOLLY_HISTORY_LAST_LEN_MARK}"
+            fi
+        fi
+        local hist_most
+        hist_most=$(history | tail -n "${JOLLY_HISTORY_MOST_BACK}" | awk '{print $4}' | sort  | uniq --count | sort --numeric-sort --reverse | head -n 1 | awk '{print $2}')
+        __lp_escape "$hist_last"
+        local hlast="$ret"
+        __lp_escape "$hist_most"
+        local hmost="$ret"
+        _lp_jolly_make_env_inline_right="$d${hlast}$I${hmost}$b"
+    fi
+}
+
+_lp_jolly_make_vcs() {
+
+    _lp_jolly_make_vcs=""
+    lp_terminal_format ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+
+    if (( LP_ENABLE_WIFI_STRENGTH )) ; then
+        if _lp_wifi_signal_strength ; then
+            lp_terminal_format ${JOLLY_COLOR_WARN[@]+"${JOLLY_COLOR_WARN[@]}"}
+            _lp_jolly_make_vcs+="${lp_terminal_format}${LP_MARK_WIFI}"
+        else
+            _lp_jolly_make_vcs+="${lp_terminal_format}${LP_MARK_WIFI}"
+        fi
+    else
+        _lp_jolly_make_vcs+="${lp_terminal_format}·"
+    fi
+
+    if _lp_http_proxy ; then
+        __jolly_make_sep_link ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+        _lp_jolly_make_vcs+="${jolly_sep}"
+    else
+        __jolly_make_sep_plug ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+        _lp_jolly_make_vcs+="${jolly_sep}"
+    fi
+
+    if __jolly_prompt_vcs; then
+        _lp_jolly_make_vcs+="${_JOLLY_VCS}"
+    fi
+}
+
+_lp_jolly_make_input() {
+    ####################################################################
+    # PROMPT LINE
+    ####################################################################
+    _lp_jolly_make_input=
+
+    if _lp_runtime_format ; then
+        __jolly_make_sep_plug ${JOLLY_COLOR_NOTE[@]+"${JOLLY_COLOR_NOTE[@]}"}
+        __jolly_make_field "${lp_runtime_format}" ${JOLLY_COLOR_NOTE[@]+"${JOLLY_COLOR_NOTE[@]}"}
+        _lp_jolly_make_input+="${jolly_sep}${jolly_field}"
+    fi
+
+    if _lp_error ; then
+        local error_msg=
+        if _lp_error_meaning; then
+            error_msg="${lp_error_meaning}"
+        else
+            error_msg="${lp_error}"
+        fi
+        __jolly_make_sep_link ${JOLLY_COLOR_WARN[@]+"${JOLLY_COLOR_WARN[@]}"}
+        __jolly_make_field "${JOLLY_MARK_ERROR}${JOLLY_SPACE_VOID}${error_msg}" ${JOLLY_COLOR_WARN[@]+"${JOLLY_COLOR_WARN[@]}"}
+        _lp_jolly_make_input+="${jolly_sep}${jolly_field}"
+    fi
+
+    __jolly_make_sep_plug ${JOLLY_COLOR_MARK[@]+"${JOLLY_COLOR_MARK[@]}"}
+    _lp_jolly_make_input+="${jolly_sep}"
+    lp_terminal_format ${JOLLY_COLOR_MARK[@]+"${JOLLY_COLOR_MARK[@]}"}
+    local mark_color="$lp_terminal_format"
+
+    # No need to check LP_ENABLE_SHLVL, _lp_shell_level does it.
+    if _lp_shell_level ; then
+        local i
+        for ((i=0; i < lp_shell_level-1; i++)); do
+            _lp_jolly_make_input+="${mark_color}${JOLLY_MARK}"
+        done
+    fi
+
+    # Warning _lp_jolly_make_input mark if either root or sudo.
+    _lp_user
+    user="$?"
+    # No need to check LP_ENABLE_SUDO, _lp_sudo_active does it.
+    _lp_sudo_active
+    sudo="$?"
+    if [[ "$sudo" == 0 || "$user" == 2 ]] ; then
+        local dcwfg="${JOLLY_COLOR_WARN[_LP_FIRST_INDEX+1]}"
+        [[ -z $dcwfg ]] && dcwfg=-1
+        lp_terminal_format $dcwfg
+        _lp_jolly_make_input+="${lp_terminal_format}${JOLLY_MARK_SUDO}${JOLLY_MARK}"
+    else
+        _lp_jolly_make_input+="${mark_color}${JOLLY_MARK}"
+    fi
+
+    _lp_jolly_make_input+="${NO_COL}"
+}
+
+_lp_jolly_theme_prompt() {
+
+    local header side inline jolly_prompt
+
+    _lp_jolly_make_header
+    header+="$_lp_jolly_make_header"
+
+    _lp_jolly_make_side
+    side="$_lp_jolly_make_side"
+
+    # header/side assembling
+    if _lp_dirstack; then
+        lp_terminal_format ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+    else
+        # Recall a dark format to correctly reset sections history
+        # to match the path's section colors.
+        lp_terminal_format ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+    fi
+
+    __jolly_make_sep_last "$_lp_jolly_has_warns" "$_lp_jolly_has_notes"
+    header+="$jolly_sep"
+
+    # Right-align the $side with spaces.
+    _lp_fill "$header$NO_COL" "$side" " "
+    header="$lp_fill${NO_COL}"
+
+    _lp_jolly_make_env
+    local inline_left="$_lp_jolly_make_env_inline_left"
+    local inline_right="$_lp_jolly_make_env_inline_right"
+
+    _lp_jolly_inline_right+="${JOLLY_LINE}"
+
+    inline=
+    # FIXME deprecated
+    # # FIXME use _lp_fill-like function to handle multi-character line?
+    # if ((JOLLY_ENABLE_GRADIENT_LINE)); then
+    #     # Fill up the center section with a line colored as a gradient.
+    #     local ret
+    #     __lp_strip_escapes "$_lp_jolly_make_env_inline_left"
+    #     local left_as_text="$ret"
+    #     local line_width=$((${COLUMNS:-80}-${#left_as_text}))
+
+    #     local line="$_lp_jolly_make_env"
+    #     local i c f a b j
+    #     for ((i=0; i < line_width; i++)); do # For each character in the line.
+    #         local dash_colors=()
+    #         for ((c=_LP_FIRST_INDEX; c < 6+_LP_FIRST_INDEX; c++)); do # For each color parameter.
+    #             a="${JOLLY_COLOR_LINE_START[c]}"
+    #             b="${JOLLY_COLOR_LINE_END[c]}"
+    #             j=$((a+(b-a)*i/line_width))
+    #             dash_colors+=("$j")
+    #         done
+    #         lp_terminal_format "${dash_colors[@]}"
+    #         line+="${lp_terminal_format}${JOLLY_LINE}"
+    #         # line+="${lp_terminal_format}${i}(${dash_colors[@]}) "
+    #     done
+
+    #     _lp_jolly_make_env="${line}${NO_COL}"
+
+    # else
+        # Fill up the remaining space with a fixed-color line.
+        _lp_fill "$inline_left" "$inline_right" "$JOLLY_LINE"
+        # Format here is JOLLY_COLOR_LINE.
+        inline="${lp_terminal_format}${lp_fill}${NO_COL}"
+    # fi
+
+    _lp_jolly_make_vcs
+    jolly_prompt="$_lp_jolly_make_vcs"
+
+    _lp_jolly_make_input
+    jolly_prompt+="$_lp_jolly_make_input"
+
+    # Assemble and setup
+    local n=$'\n'
+    PS1="${n}${header}${n}${inline}${n}${jolly_prompt} "
+}
+
+
+
+########################################################################
+# DotVector theme
+########################################################################
+
+_lp_dotvector_theme_activate() {
+    _lp_jolly_theme_activate
+}
+
+_lp_dotvector_theme_directory() {
+    _lp_jolly_theme_directory
+}
+
+_lp_dotvector_theme_prompt() {
+    local header side inline input vcs main
+
+    _lp_jolly_make_header
+    header+="$_lp_jolly_make_header"
+
+    _lp_jolly_make_side
+    side="$_lp_jolly_make_side"
+
+    # header/side assembling
+    if _lp_dirstack; then
+        lp_terminal_format ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+    else
+        # Recall a dark format to correctly reset sections history
+        # to match the path's section colors.
+        lp_terminal_format ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+    fi
+
+    __jolly_make_sep_last "$_lp_jolly_has_warns" "$_lp_jolly_has_notes"
+    header+="$jolly_sep"
+
+    _lp_jolly_make_vcs
+
+    lp_terminal_format -3 -1
+    local last_color="$lp_terminal_format"
+
+    lp_terminal_format ${JOLLY_COLOR_LINE[@]}
+    local line_color="$lp_terminal_format"
+    lp_terminal_format ${JOLLY_COLOR_LITE[_LP_FIRST_INDEX+0]} -1 0 0
+    local before="${line_color}${JOLLY_LINE}${lp_terminal_format}${JOLLY_LINK[_LP_FIRST_INDEX+2]}"
+
+    local after="${JOLLY_SPACE_VOID}${last_color}${JOLLY_LINK_R[_LP_FIRST_INDEX+0]}"
+
+    vcs="${before}${_lp_jolly_make_vcs}${after}"
+
+    # Right-align the $side with spaces.
+    # _lp_fill "$header$NO_COL" "$side" " "
+    # header="$lp_fill${NO_COL}"
+
+    _lp_jolly_make_env
+    local inline_left="$_lp_jolly_make_env_inline_left"
+    local inline_right="$_lp_jolly_make_env_inline_right"
+
+    _lp_jolly_inline_right+="${JOLLY_LINE}"
+
+    _lp_fill "${header}${vcs}${inline_left}" "${inline_right}${side}" "$JOLLY_LINE"
+    main="${lp_terminal_format}${lp_fill}${NO_COL}"
+
+    lp_terminal_format ${JOLLY_COLOR_LITE[@]}
+    local start="${lp_terminal_format}"
+
+    _lp_jolly_make_input
+    input="$start$_lp_jolly_make_input"
+
+    # Assemble and setup
+    local n=$'\n'
+    PS1="${n}${main}${n}${input} "
+}
+
+
+########################################################################
+# Functions called at "activate" stage.
+########################################################################
+
+__jolly_activate_display() {
+    if _lp_connected_display ; then
+        __jolly_make_field "$JOLLY_DISPLAY_X11" ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+        _JOLLY_DISPLAY="$jolly_field"
+    else
+        __jolly_make_field "$JOLLY_DISPLAY_TEXT" ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+        _JOLLY_DISPLAY="$jolly_field"
+    fi
+}
+
+__jolly_activate_shell() {
+    ((JOLLY_ENABLE_SHELL)) || return 2
+
+    if ((_LP_SHELL_zsh)) ; then
+        __jolly_make_sep_plug ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+        __jolly_make_field "$JOLLY_SHELL_ZSH" ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+        _JOLLY_SHELL="${jolly_sep}${jolly_field}"
+    else
+        __jolly_make_sep_plug ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+        __jolly_make_field "$JOLLY_SHELL_BASH" ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+        _JOLLY_SHELL="${jolly_sep}${jolly_field}"
+    fi
+}
+
+
+__jolly_activate_connection() {
+    _lp_user
+    user_type="$?"
+    local user_color
+    case "$user_type" in
+        0) # logged-in user
+            user_color=(${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"})
+            ;;
+        1) # other user
+            user_color=(${JOLLY_COLOR_NOTE[@]+"${JOLLY_COLOR_NOTE[@]}"})
+            ;;
+        2) # root
+            user_color=(${JOLLY_COLOR_WARN[@]+"${JOLLY_COLOR_WARN[@]}"})
+            ;;
+    esac
+
+
+    local connection
+    _lp_connection
+        case "$lp_connection" in
+        lcl)
+            __jolly_make_sep_plug "${user_color[@]}"
+            connection="${jolly_sep}"
+            ;;
+        su)
+            __jolly_make_sep_link "${user_color[@]}"
+            connection="${jolly_sep}"
+            ;;
+        ssh)
+            __jolly_make_sep_open "${user_color[@]}"
+            connection="${jolly_sep}"
+            ;;
+        tel)
+            __jolly_make_sep_dang "${user_color[@]}"
+            connection="${jolly_sep}"
+            ;;
+        *)
+            __jolly_make_sep_plug "${user_color[@]}"
+            connection="${jolly_sep}"
+            ;;
+        esac
+
+    _JOLLY_CONNECTION="${connection}"
+}
+
+
+__jolly_activate_user() {
+    _lp_user
+    user_type="$?"
+    case "$user_type" in
+        0) # logged-in user
+            if [[ -z $lp_username ]] ; then # Honors LP_USER_ALWAYS
+                __jolly_make_field "$JOLLY_USER_LOCAL" ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+                _JOLLY_USER="$jolly_field"
+            else
+                __jolly_make_field "$lp_username" ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+                _JOLLY_USER="$jolly_field"
+            fi
+            ;;
+        1) # other user
+            _lp_username_color
+            __jolly_make_field "$lp_username_color" ${JOLLY_COLOR_NOTE[@]+"${JOLLY_COLOR_NOTE[@]}"}
+            _JOLLY_USER="$jolly_field"
+            ;;
+        2) # root
+            _lp_username
+            __jolly_make_field "$lp_username" ${JOLLY_COLOR_WARN[@]+"${JOLLY_COLOR_WARN[@]}"}
+            _JOLLY_USER="$jolly_field"
+            ;;
+    esac
+    return $user_type
+}
+
+
+__jolly_activate_hostname() {
+    local hostname
+    if _lp_hostname; then
+        case "$lp_connection" in
+        ssh)
+            local client_ip client_port server_ip server_port hostname=
+            IFS=" " read -r client_ip client_port server_ip server_port <<<"$SSH_CONNECTION"
+            local username=${USER:-${USERNAME:-${LOGNAME-}}}
+            if _lp_create_link "ssh://${username}@${server_ip}:${server_port}" "$lp_hostname"; then
+                hostname="$link"
+            else
+                hostname="$lp_hostname"
+            fi
+            # If we want a different color for each host
+            if (( LP_ENABLE_SSH_COLORS )); then
+                LP_COLOR_SSH="$LP_COLOR_HOST_HASH"
+                hostname="${LP_COLOR_SSH}${hostname}"
+            else
+                hostname="${hostname}"
+            fi
+            ;;
+        tel)
+            hostname="${lp_hostname}"
+            ;;
+        *)
+            hostname+="${JOLLY_HOST_LOCAL}"
+            ;;
+        esac
+    else
+        hostname="${JOLLY_HOST_LOCAL}"
+    fi
+
+    __jolly_make_field "$hostname" ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+    _JOLLY_HOSTNAME="${jolly_field}"
+}
+
+
+__jolly_activate_multiplexer() {
+    local lp_multiplexer multiplexer
+    if _lp_multiplexer ; then
+        case "$lp_multiplexer" in
+            tmux)
+                __jolly_make_sep_link ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+                multiplexer="${jolly_sep}"
+                ;;
+            screen)
+                __jolly_make_sep_link ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+                multiplexer="${jolly_sep}"
+                ;;
+            *)
+                __jolly_make_sep_link ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+                multiplexer="${jolly_sep}"
+                ;;
+        esac
+    else
+        __jolly_make_sep_plug ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+        multiplexer="${jolly_sep}"
+    fi
+
+    _JOLLY_MULTIPLEXER="${multiplexer}"
+}
+
+
+########################################################################
+# Functions called at directory change.
+########################################################################
+
+__jolly_directory_FS() {
+    local fs=
+    if (( LP_ENABLE_PERM )); then
+        if _lp_chroot ; then
+            if [[ -w "$PWD" ]]; then
+                __jolly_make_sep_open ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+                fs="$jolly_sep"
+            else
+                __jolly_make_sep_dang ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+                fs="$jolly_sep"
+            fi
+        else
+            if [[ -w "$PWD" ]]; then
+                __jolly_make_sep_plug ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+                fs="$jolly_sep"
+            else
+                __jolly_make_sep_link ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+                fs="$jolly_sep"
+            fi
+        fi
+    fi
+    _JOLLY_FS="$fs"
+}
+
+
+__jolly_directory_path() {
+    local lp_terminal_format
+
+    lp_terminal_format ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+    local path_format="${lp_terminal_format}"
+
+    lp_terminal_format ${JOLLY_COLOR_SEP_DARK[@]+"${JOLLY_COLOR_SEP_DARK[@]}"}
+    local separator_format=$lp_terminal_format
+
+    lp_terminal_format ${JOLLY_COLOR_PATH_SHORT[@]+"${JOLLY_COLOR_PATH_SHORT[@]}"}
+    local shortened_format=$lp_terminal_format
+
+    lp_terminal_format ${JOLLY_COLOR_PATH_VCS[@]+"${JOLLY_COLOR_PATH_VCS[@]}"}
+    local vcs_format=$lp_terminal_format
+
+    lp_terminal_format ${JOLLY_COLOR_PATH_LAST[@]+"${JOLLY_COLOR_PATH_LAST[@]}"}
+    local last_dir_format=$lp_terminal_format
+
+    local lp_path_format
+    _lp_path_format "$path_format" "$last_dir_format" "$vcs_format" "$shortened_format" \
+        "${JOLLY_SPACE_PATH}${JOLLY_SOFT}${JOLLY_SPACE_PATH}" "$separator_format"
+
+    _JOLLY_PATH=${lp_path_format}
+}
+
+
+########################################################################
+# Functions called at jolly_prompt update.
+########################################################################
+
+__jolly_prompt_vcs() {
+    if _lp_find_vcs ; then
+        declare -a color color_behind color_ahead
+
+        _lp_smart_mark
+
+        _JOLLY_VCS=""
+
+        # Mark & commits off remote
+        if _lp_vcs_commits_off_remote; then # There is remote-space-[local].
+            _lp_vcs_remote # Get remote name.
+            if [[ "$lp_vcs_remote" == "origin" ]]; then
+                lp_vcs_remote="$JOLLY_VCS_REMOTE_ORIGIN"
+            fi
+
+            # Remote segment.
+            if [[ "$lp_vcs_commit_behind" -ne "0" ]]; then # NOTE remote segment.
+                if [[ "$lp_vcs_commit_behind" -ge "${JOLLY_VCS_BEHIND_THRESHOLD}" ]]; then
+                    color_behind=(${JOLLY_COLOR_WARN[@]+"${JOLLY_COLOR_WARN[@]}"})
+                else
+                    color_behind=(${JOLLY_COLOR_NOTE[@]+"${JOLLY_COLOR_NOTE[@]}"})
+                fi
+                if (( LP_ENABLE_VCS_DIFFSTATS )) ; then
+                    __jolly_make_field "${lp_smart_mark}" "${color_behind[@]}"
+                    _JOLLY_VCS+="$jolly_field"
+                    __jolly_make_sep_soft ${JOLLY_COLOR_SEP_LITE[@]+"${JOLLY_COLOR_SEP_LITE[@]}"}
+                    _JOLLY_VCS+="$jolly_sep"
+                    __jolly_make_field "${lp_vcs_remote} ${lp_vcs_commit_behind}" "${color_behind[@]}"
+                    _JOLLY_VCS+="$jolly_field"
+                else
+                    __jolly_make_field "${lp_smart_mark}" "${color_behind[@]}"
+                    _JOLLY_VCS+="$jolly_field"
+                    __jolly_make_sep_soft ${JOLLY_COLOR_SEP_LITE[@]+"${JOLLY_COLOR_SEP_LITE[@]}"}
+                    _JOLLY_VCS+="$jolly_sep"
+                    __jolly_make_field "${lp_vcs_remote} ${JOLLY_DIFF}" "${color_behind[@]}"
+                    _JOLLY_VCS+="$jolly_field"
+                fi
+
+            else # LITE remote segment.
+                __jolly_make_field "${lp_smart_mark}" ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+                _JOLLY_VCS+="$jolly_field"
+                __jolly_make_sep_soft ${JOLLY_COLOR_SEP_LITE[@]+"${JOLLY_COLOR_SEP_LITE[@]}"}
+                _JOLLY_VCS+="$jolly_sep"
+                __jolly_make_field "${lp_vcs_remote}" ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+                _JOLLY_VCS+="$jolly_field"
+            fi
+
+            # Link between remote and local.
+            # We already have `color_behind`.
+            if [[ "$lp_vcs_commit_ahead" -ne "0" ]]; then # NOTE local segment.
+                if [[ "$lp_vcs_commit_ahead" -ge "${JOLLY_VCS_AHEAD_THRESHOLD}" ]]; then
+                    color_ahead=(${JOLLY_COLOR_WARN[@]+"${JOLLY_COLOR_WARN[@]}"})
+                else
+                    color_ahead=(${JOLLY_COLOR_NOTE[@]+"${JOLLY_COLOR_NOTE[@]}"})
+                fi
+            else # No commit ahead.
+                color_ahead=(${JOLLY_COLOR_GLOW[@]+"${JOLLY_COLOR_GLOW[@]}"})
+            fi
+
+            # Choice of link type.
+            # Both remote and local have commits.
+            if [[ "$lp_vcs_commit_behind" -ne "0" && "$lp_vcs_commit_ahead" -ne "0" ]]; then
+                __jolly_make_sep_link_opposed "${color_ahead[@]}"
+            # Only remote have commit.
+            elif [[ "$lp_vcs_commit_behind" -ne "0" && "$lp_vcs_commit_ahead" -eq "0" ]]; then
+                __jolly_make_sep_link_reverse "${color_ahead[@]}"
+            # Only local have commits.
+            else
+                __jolly_make_sep_link "${color_ahead[@]}"
+            fi
+            _JOLLY_VCS+="$jolly_sep"
+
+            # Local segment.
+            if [[ "$lp_vcs_commit_ahead" -ne "0" ]]; then # NOTE local segment.
+                # We already have `color_ahead`.
+                if (( LP_ENABLE_VCS_DIFFSTATS )) ; then
+                    __jolly_make_field "$lp_vcs_commit_ahead" "${color_ahead[@]}"
+                    _JOLLY_VCS+="$jolly_field"
+                else
+                    __jolly_make_field "$JOLLY_DIFF" "${color_ahead[@]}"
+                    _JOLLY_VCS+="$jolly_field"
+                fi
+                __jolly_make_sep_plug ${JOLLY_COLOR_GLOW[@]+"${JOLLY_COLOR_GLOW[@]}"}
+                _JOLLY_VCS+="$jolly_sep"
+            # else # 0 commit ahead => direct segment.
+            fi
+
+        else # No commits off remote => There is no space between remote and branch, and no remote name.
+            __jolly_make_field "${lp_smart_mark}" ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+            _JOLLY_VCS+="$jolly_field"
+            __jolly_make_sep_plug ${JOLLY_COLOR_GLOW[@]+"${JOLLY_COLOR_GLOW[@]}"}
+            _JOLLY_VCS+="$jolly_sep"
+            # No local commit segment.
+        fi
+
+        # Branch:bookmark/tag
+        if _lp_vcs_branch; then
+            __jolly_make_field "$lp_vcs_branch" ${JOLLY_COLOR_GLOW[@]+"${JOLLY_COLOR_GLOW[@]}"}
+            _JOLLY_VCS+="$jolly_field"
+
+            if _lp_vcs_bookmark; then
+                __jolly_make_field ":${lp_vcs_bookmark}" ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+                _JOLLY_VCS+="$jolly_field"
+            fi
+            if _lp_vcs_tag; then
+                __jolly_make_sep_soft ${JOLLY_COLOR_SEP_DARK[@]+"${JOLLY_COLOR_SEP_DARK[@]}"}
+                __jolly_make_field "$lp_vcs_tag" ${JOLLY_COLOR_DARK[@]+"${JOLLY_COLOR_DARK[@]}"}
+                _JOLLY_VCS+="${jolly_sep}${jolly_field}"
+            fi
+
+        elif _lp_vcs_bookmark; then
+            __jolly_make_field "$lp_vcs_bookmark" ${JOLLY_COLOR_GLOW[@]+"${JOLLY_COLOR_GLOW[@]}"}
+            _JOLLY_VCS+="$jolly_field"
+        elif _lp_vcs_tag; then
+            __jolly_make_field "$lp_vcs_tag" ${JOLLY_COLOR_GLOW[@]+"${JOLLY_COLOR_GLOW[@]}"}
+            _JOLLY_VCS+="$jolly_field"
+        else
+            _lp_vcs_commit_id
+            __jolly_make_field "${lp_vcs_commit_id:0:7}" ${JOLLY_COLOR_GLOW[@]+"${JOLLY_COLOR_GLOW[@]}"}
+            _JOLLY_VCS+="$jolly_field"
+        fi # vcs branch
+
+        # Diff stats
+        local ret has_lines=
+        if _lp_vcs_uncommitted_files; then
+            _lp_vcs_unstaged_lines; ret=$?
+            _lp_vcs_uncommitted_lines
+            if [[ $((ret+lp_vcs_uncommitted_i_lines+lp_vcs_uncommitted_d_lines)) -gt "${JOLLY_VCS_DIFF_THRESHOLD}"   ]]; then
+                color=(${JOLLY_COLOR_WARN[@]+"${JOLLY_COLOR_WARN[@]}"})
+            else
+                color=(${JOLLY_COLOR_NOTE[@]+"${JOLLY_COLOR_NOTE[@]}"})
+            fi
+            __jolly_make_sep_link "${color[@]}"
+            _JOLLY_VCS+="$jolly_sep"
+
+            # Only show unstaged changes if the VCS supports staging, otherwise
+            # show uncommitted changes
+            if (( ret == 0 )); then
+                if [[ "$lp_vcs_unstaged_i_lines" == "$lp_vcs_unstaged_d_lines" ]] ; then
+                    # If same number of lines inserted and deleted: display a single number.
+                    __jolly_make_field "±$lp_vcs_unstaged_i_lines" "${color[@]}"
+                    has_lines="$jolly_field"
+                else
+                    __jolly_make_field "+$lp_vcs_unstaged_i_lines" "${color[@]}"
+                    has_lines="$jolly_field"
+                    __jolly_make_sep_soft ${JOLLY_COLOR_SEP_LITE[@]+"${JOLLY_COLOR_SEP_LITE[@]}"}
+                    has_lines+="$jolly_sep"
+                    __jolly_make_field "-$lp_vcs_unstaged_d_lines" "${color[@]}"
+                    has_lines+="$jolly_field"
+                fi
+
+            elif (( ret == 1 )); then
+                # Maybe just removed a file, in which case no line is reported to be impacted,
+                # but this is still a change.
+                __jolly_make_field "±0" ${JOLLY_COLOR_DARK[@]+"${color[@]}"}
+                has_lines="${jolly_field}"
+            else
+                if [[ "$lp_vcs_uncommitted_i_lines" == "$lp_vcs_uncommitted_d_lines" ]] ; then
+                    __jolly_make_field "±$lp_vcs_uncommitted_i_lines" "${color[@]}"
+                    has_lines="$jolly_field"
+                else
+                    __jolly_make_field "+$lp_vcs_uncommitted_i_lines" "${color[@]}"
+                    has_lines="$jolly_field"
+                    __jolly_make_sep_soft ${JOLLY_COLOR_SEP_LITE[@]+"${JOLLY_COLOR_SEP_LITE[@]}"}
+                    has_lines+="$jolly_sep"
+                    __jolly_make_field "-$lp_vcs_uncommitted_d_lines" "${color[@]}"
+                    has_lines+="$jolly_field"
+                fi
+            fi
+            if (( LP_ENABLE_VCS_DIFFSTATS )) ; then
+                _JOLLY_VCS+="$has_lines"
+            else
+                __jolly_make_field "$JOLLY_DIFF" "${color[@]}"
+                _JOLLY_VCS+="$jolly_field"
+            fi # LP_ENABLE_VCS_DIFFSTATS
+        fi # uncommitted files
+
+        # Stash / untracked / head
+        local stash="" untracked="" head=""
+        if _lp_vcs_stash_count; then
+            stash="$JOLLY_MARK_STASH"
+        fi
+        if _lp_vcs_untracked_files; then
+            untracked="$JOLLY_MARK_UNTRACKED"
+        fi
+        if _lp_vcs_head_status; then
+            head="$lp_vcs_head_status"
+            # if [[ -n "${lp_vcs_head_details-}" ]]; then
+            # pass
+            # fi
+        fi
+        if [[ -n "$stash" || -n "$untracked" || -n "$head" ]] ; then
+            __jolly_make_sep_plug ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+            _JOLLY_VCS+="$jolly_sep"
+        fi
+
+        if [[ -n "$stash" ]] ; then
+            __jolly_make_field "$stash" ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+            _JOLLY_VCS+="$jolly_field"
+            if [[ -n "$untracked" ]] ; then
+                __jolly_make_field "$untracked" ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+                __jolly_make_sep_soft ${JOLLY_COLOR_SEP_LITE[@]+"${JOLLY_COLOR_SEP_LITE[@]}"}
+                _JOLLY_VCS+="${jolly_sep}${jolly_field}"
+            fi
+            if [[ -n "$head" ]] ; then
+                __jolly_make_field "$head" ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+                __jolly_make_sep_soft ${JOLLY_COLOR_SEP_LITE[@]+"${JOLLY_COLOR_SEP_LITE[@]}"}
+                _JOLLY_VCS+="${jolly_sep}${jolly_field}"
+            fi
+        else # no stash
+            if [[ -n "$untracked" ]] ; then
+                __jolly_make_field "$untracked" ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+                _JOLLY_VCS+="$jolly_field"
+                if [[ -n "$head" ]] ; then
+                    __jolly_make_field "$head" ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+                    __jolly_make_sep_soft ${JOLLY_COLOR_SEP_LITE[@]+"${JOLLY_COLOR_SEP_LITE[@]}"}
+                    _JOLLY_VCS+="${jolly_sep}${jolly_field}"
+                fi
+            else # no untracked
+                if [[ -n "$head" ]] ; then
+                    __jolly_make_field "$head" ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+                    _JOLLY_VCS+="$jolly_field"
+                fi
+            fi
+        fi # stash
+        return 0
+    else
+        _JOLLY_VCS=""
+        return 1
+    fi # find_vcs
+}
+
+########################################################################
+# Helper functions
+########################################################################
+
+__jolly_join_fields() {
+    jolly_join_fields=""
+    local sep="${1-}"
+    shift
+    if [[ -n "$*" ]] ; then
+        local first_field="${1-}"
+        shift
+        jolly_join_fields="${first_field}"
+        for f in "$@"; do
+            [[ -z $f ]] && continue
+            jolly_join_fields+="${sep}${f}"
+        done
+    fi
+}
+
+__jolly_make_field() { # string, color_array
+    local lp_terminal_format string="${1-}"
+    [[ -z $string ]] && return 1
+
+    shift
+    lp_terminal_format "$@"
+
+    jolly_field="${lp_terminal_format}${JOLLY_SPACE_FIELD}${string}${JOLLY_SPACE_FIELD}"
+}
+
+__jolly_make_sep_plug() { # color
+    # fg, bg, bold, underline, fallback_fg, fallback_bg
+    #  0 = set last color to current color
+    # -1 = set color to last color
+    # -2 = keep last color
+    # -3 = set last fg to last bg (and conversely)
+    local lp_terminal_format sep
+
+    local bg="${2-}"
+    [[ -z $bg ]] && bg=-1
+    local fbg="${6-}"
+    [[ -z $fbg ]] && fbg=-1
+
+    sep="${JOLLY_PLUG}"
+    if [[ "${_lp_last_ab_color-}" == "$bg" ]] ; then
+        sep="${JOLLY_MEAN}"
+    fi
+
+    lp_terminal_format -3 "$bg" 0 0 -3 "$fbg"
+    jolly_sep="${JOLLY_SPACE_VOID}${lp_terminal_format}${sep}${JOLLY_SPACE_VOID}"
+}
+
+__jolly_make_sep_link() { # color
+    local lp_terminal_format
+    jolly_sep=""
+
+    local fg="${2-}"
+    [[ -z $fg ]] && fg=-1
+    local fbg="${6-}"
+    [[ -z $fbg ]] && fbg=-1
+
+    lp_terminal_format -3 -1 0 0 -1 "$fbg"
+    jolly_sep+="${JOLLY_SPACE_VOID}${lp_terminal_format}${JOLLY_LINK[_LP_FIRST_INDEX]}"
+
+    local dsfg="${JOLLY_COLOR_SEP_FAIR[_LP_FIRST_INDEX]}"
+    [[ -z $dsfg ]] && dsfg=-1
+    lp_terminal_format "$dsfg" -1 0 0 -1 "$fbg"
+    jolly_sep+="${lp_terminal_format}${JOLLY_LINK[_LP_FIRST_INDEX+1]}"
+
+    lp_terminal_format "$fg" -1 0 0 -1 "$fbg"
+    jolly_sep+="${lp_terminal_format}${JOLLY_LINK[_LP_FIRST_INDEX+2]}${JOLLY_SPACE_FILL}"
+}
+
+__jolly_make_sep_link_reverse() { # color
+    local lp_terminal_format
+    jolly_sep=""
+
+    local fg="${2-}"
+    [[ -z $fg ]] && fg=-1
+    local fbg="${6-}"
+    [[ -z $fbg ]] && fbg=-1
+
+    lp_terminal_format -3 -1 0 0 -1 "$fbg"
+    jolly_sep+="${JOLLY_SPACE_VOID}${lp_terminal_format}${JOLLY_LINK_R[_LP_FIRST_INDEX]}"
+
+    local dsfg="${JOLLY_COLOR_SEP_FAIR[_LP_FIRST_INDEX]}"
+    [[ -z $dsfg ]] && dsfg=-1
+    lp_terminal_format "$dsfg" -1 0 0 -1 "$fbg"
+    jolly_sep+="${lp_terminal_format}${JOLLY_LINK_R[_LP_FIRST_INDEX+1]}"
+
+    lp_terminal_format "$fg" -1 0 0 -1 "$fbg"
+    jolly_sep+="${lp_terminal_format}${JOLLY_LINK_R[_LP_FIRST_INDEX+2]}${JOLLY_SPACE_FILL}"
+}
+
+__jolly_make_sep_link_opposed() { # color
+    local lp_terminal_format
+    jolly_sep=""
+
+    local fg="${2-}"
+    [[ -z $fg ]] && fg=-1
+    local fbg="${6-}"
+    [[ -z $fbg ]] && fbg=-1
+
+    lp_terminal_format -3 -1 0 0 -1 "$fbg"
+    jolly_sep+="${JOLLY_SPACE_VOID}${lp_terminal_format}${JOLLY_LINK_R[_LP_FIRST_INDEX]}"
+
+    local dsfg="${JOLLY_COLOR_SEP_FAIR[_LP_FIRST_INDEX]}"
+    [[ -z $dsfg ]] && dsfg=-1
+    lp_terminal_format "$dsfg" -1 0 0 -1 "$fbg"
+    jolly_sep+="${lp_terminal_format}${JOLLY_LINK[_LP_FIRST_INDEX+1]}"
+
+    lp_terminal_format "$fg" -1 0 0 -1 "$fbg"
+    jolly_sep+="${lp_terminal_format}${JOLLY_LINK[_LP_FIRST_INDEX+2]}${JOLLY_SPACE_FILL}"
+}
+
+
+__jolly_make_sep_open() { # color
+    local lp_terminal_format
+
+    local fg="${2-}"
+    [[ -z $fg ]] && fg=-1
+    local fbg="${6-}"
+    [[ -z $fbg ]] && fbg=-1
+
+    lp_terminal_format -3 -1 0 0 -1 "$fbg"
+    jolly_sep+="${JOLLY_SPACE_VOID}${lp_terminal_format}${JOLLY_OPEN[_LP_FIRST_INDEX]}"
+
+    local dsfg="${JOLLY_COLOR_SEP_FAIR[_LP_FIRST_INDEX]}"
+    [[ -z $dsfg ]] && dsfg=-1
+    lp_terminal_format "$dsfg" -1 0 0 -1 "$fbg"
+    jolly_sep+="${lp_terminal_format}${JOLLY_OPEN[_LP_FIRST_INDEX+1]}"
+
+    lp_terminal_format "$fg" -1 0 0 -1 "$fbg"
+    jolly_sep+="${lp_terminal_format}${JOLLY_OPEN[_LP_FIRST_INDEX+2]}${JOLLY_SPACE_FILL}"
+}
+
+__jolly_make_sep_dang() { # color
+    local lp_terminal_format
+
+    local fg="${2-}"
+    [[ -z $fg ]] && fg=-1
+    local fbg="${6-}"
+    [[ -z $fbg ]] && fbg=-1
+
+    lp_terminal_format -3 -1 0 0 -1 "$fbg"
+    jolly_sep+="${JOLLY_SPACE_VOID}${lp_terminal_format}${JOLLY_DANG[_LP_FIRST_INDEX]}"
+
+    local dcwfg="${JOLLY_COLOR_WARN[_LP_FIRST_INDEX+1]}"
+    [[ -z $dcwfg ]] && dcwfg=-1
+    lp_terminal_format "$dcwfg" -1 0 0 -1 "$fbg"
+    jolly_sep+="${lp_terminal_format}${JOLLY_DANG[_LP_FIRST_INDEX+1]}"
+
+    lp_terminal_format "$fg" -1 0 0 -1 "$fbg"
+    jolly_sep+="${lp_terminal_format}${JOLLY_DANG[_LP_FIRST_INDEX+2]}${JOLLY_SPACE_FILL}"
+}
+
+__jolly_make_sep_soft() { # color
+    local lp_terminal_format
+
+    local fg="${1-}"
+    [[ -z $fg ]] && fg=-1
+    local fbg="${5-}"
+    [[ -z $fbg ]] && fbg=-1
+
+    lp_terminal_format "$fg" -2 0 0 "$fbg"
+    jolly_sep="${lp_terminal_format}${JOLLY_SOFT}"
+}
+
+__jolly_make_sep_mid() { # color
+    local lp_terminal_format
+
+    local fg="${1-}"
+    [[ -z $fg ]] && fg=-1
+    local fbg="${5-}"
+    [[ -z $fbg ]] && fbg=-1
+
+    lp_terminal_format "$fg" -2 0 0 "$fbg"
+    jolly_sep="${lp_terminal_format}${JOLLY_SPACE_VOID}${JOLLY_MEAN}${JOLLY_SPACE_VOID}"
+}
+
+__jolly_make_sep_last() { # [has_warns [has_notes]]
+    local lp_terminal_format
+    local has_warns="${1:-0}"
+    local has_notes="${2:-0}"
+    lp_terminal_format -3 -1 0 0 -3 -1
+    jolly_sep="${lp_terminal_format}${JOLLY_ENDS[_LP_FIRST_INDEX+0]}${NO_COL}"
+    if [[ $has_warns -eq 0 && $has_notes -gt 0 ]] ; then
+        # Use the background of COLOR_NOTE as a foreground here.
+        lp_terminal_format "${JOLLY_COLOR_NOTE[1]}"
+        jolly_sep+="${lp_terminal_format}${JOLLY_ENDS[_LP_FIRST_INDEX+1]}${NO_COL}"
+    else
+        if [[ $has_warns -gt 0 ]]; then
+            # Use the background of COLOR_WARN as a foreground here.
+            lp_terminal_format "${JOLLY_COLOR_WARN[1]}"
+            jolly_sep+="${lp_terminal_format}${JOLLY_ENDS[_LP_FIRST_INDEX+1]}${JOLLY_ENDS[_LP_FIRST_INDEX+1]}${NO_COL}"
+        else
+            jolly_sep="${lp_terminal_format}${JOLLY_ENDS[_LP_FIRST_INDEX+0]}${NO_COL}"
+        fi
+    fi
+}
+
+__jolly_make_sep_side() { # no arg
+    local lp_terminal_format
+    lp_terminal_format -3 -1 0 0 -3 -1 # Reset to no background.
+    local dsf=(${JOLLY_COLOR_SEP_FAIR[@]+"${JOLLY_COLOR_SEP_FAIR[@]}"})
+    [[ -z "${dsf[*]}" ]] && dsf=(-1)
+    lp_terminal_format "${dsf[@]}"
+    jolly_sep="${lp_terminal_format}${JOLLY_ENDS[_LP_FIRST_INDEX+2]}"
+}
+

@@ -1,7 +1,7 @@
-DotMatrix — A Liquid Prompt Theme
+Jolly — A Liquid Prompt Theme
 =================================
 
-DotMatrix is a theme for [Liquid Prompt](https://github.com/nojhan/liquidprompt).
+Jolly is a theme for [Liquid Prompt](https://github.com/nojhan/liquidprompt).
 
 It is an original prompt design, very carefully designed,
 that will completely changes the way you imagine the prompt.
@@ -21,7 +21,7 @@ Using the (recommended) "chevron" preset:
 
 ![](screenshots/variant-chevron.png)
 
-The DotMatrix theme also comes as several variants, changing the shape of the segments separators,
+The Jolly theme also comes as several variants, changing the shape of the segments separators,
 like the "slant" variant:
 
 ![](screenshots/variant-slant.png)
@@ -32,7 +32,7 @@ Design
 
 ### Rationale
 
-The DotMatrix theme use a couple of design principles:
+The Jolly theme use a couple of design principles:
 
 * It is accessible to colorblind people, hence it uses:
     * only four colors: dark grey, white, blue and yellow (different color pairs are available as presets for people having blue-yellow colorblindess).
@@ -73,18 +73,18 @@ for the default login user ("", a figure), on localhost ("", an island), i
 
 ### Full description
 
-The following diagram shows almost all the possible states of a DotMatrix Liquid Prompt
+The following diagram shows almost all the possible states of a Jolly Liquid Prompt
 
-![](liquidprompt_dotmatrix_design.png)
+![](liquidprompt_jolly_design.png)
 
-The diagram is available [in a vector format](liquidprompt_dotmatrix_design.svg) (note: you need a browser/viewer configured to use a [nerd-font](https://www.nerdfonts.com) to see it correctly).
+The diagram is available [in a vector format](liquidprompt_jolly_design.svg) (note: you need a browser/viewer configured to use a [nerd-font](https://www.nerdfonts.com) to see it correctly).
 
 
 
 Setup
 -----
 
-To actually use the DotMatrix theme, you need to add a few configuration commands to the script that loads Liquid Prompt.
+To actually use the Jolly theme, you need to add a few configuration commands to the script that loads Liquid Prompt.
 For example:
 
 ```sh
@@ -92,14 +92,14 @@ For example:
    # Load Liquid Prompt.
    source ~/liquidprompt/liquidprompt
    # Configure the desired variant (or colors, etc.).
-   source ~/lp-dotmatrix/presets/variant-chevron.conf
+   source ~/lp-jolly/presets/variant-chevron.conf
    # Load the theme.
-   source ~/lp-dotmatrix/dotmatrix.theme && lp_theme dotmatrix
+   source ~/lp-jolly/jolly.theme && lp_theme jolly
 ```
 
 NOTE: The recommended segment markers (the "chevron" variant) uses characters in the private section of unicode
 that are defined by the "Nerd-fonts" project.
-You will either need a compatible font, or use a variant that does not need them, like "text" and "dotmatrix".
+You will either need a compatible font, or use a variant that does not need them, like "text" and "jolly".
 
 See the [Nerd-fonts Fonts installation docs](https://www.nerdfonts.com) for help on installing this kind of fonts.
 
@@ -129,7 +129,7 @@ Variants needing a Nerd-fonts font:
 
 Variants available with a regular font:
 
-- "dotmatrix" (the default):
+- "jolly" (the default):
 
 ![](screenshots/variant-dots.png)
 
@@ -143,7 +143,7 @@ Configuration
 
 ### Liquid Prompt Configuration
 
-The DotMatrix theme honors Liquid Prompt configuration options,
+The Jolly theme honors Liquid Prompt configuration options,
 except for the ones defining colors, specific marks and disabling some features.
 
 The following options are honored:
@@ -190,7 +190,7 @@ A second set changes the colors:
 
 #### High-level
 
-**DOTMATRIX_SPACED** *boolean = 1*
+**JOLLY_SPACED** *boolean = 1*
 
 If set to false, this flag will configure a compact prompt,
 showing segments without extra spaces around their joints.
@@ -198,85 +198,85 @@ showing segments without extra spaces around their joints.
 
 #### Specific features
 
-**DOTMATRIX_VCS_AHEAD_THRESHOLD** *integer = 5*
+**JOLLY_VCS_AHEAD_THRESHOLD** *integer = 5*
 
 Number of unpushed local commits above which the prompt should use the warning color to display the "push" section.
 
 
-**DOTMATRIX_VCS_BEHIND_THRESHOLD** *integer = 5*
+**JOLLY_VCS_BEHIND_THRESHOLD** *integer = 5*
 
 Number of unpulled remote commits above which the prompt should use the warning color to display the "pull" section.
 
 
-**DOTMATRIX_VCS_DIFF_THRESHOLD** *integer = 300*
+**JOLLY_VCS_DIFF_THRESHOLD** *integer = 300*
 
 Number of modified lines above which the prompt should use the warning color to display the "commit" section.
 
-**DOTMATRIX_VCS_REMOTE_ORIGIN** *string* = "🖈"
+**JOLLY_VCS_REMOTE_ORIGIN** *string* = "🖈"
 
 String used as a shorten VCS remote name, if it is "origin".
 
-**DOTMATRIX_DETACHED_THRESHOLD** *integer = 3*
+**JOLLY_DETACHED_THRESHOLD** *integer = 3*
 
 Number of detached jobs above which the prompt should use the warning color.
 
 
-**DOTMATRIX_RUNNING_THRESHOLD** *integer = 3*
+**JOLLY_RUNNING_THRESHOLD** *integer = 3*
 
 Number of running jobs above which the prompt should use the warning color.
 
 
-**DOTMATRIX_STOPPED_THRESHOLD** *integer = 3*
+**JOLLY_STOPPED_THRESHOLD** *integer = 3*
 
 Number of stopped jobs above which the prompt should use the warning color.
 
 
-**DOTMATRIX_BATTERY_THRESHOLD** *integer = $((LP_BATTERY_THRESHOLD/2))*
+**JOLLY_BATTERY_THRESHOLD** *integer = $((LP_BATTERY_THRESHOLD/2))*
 
 Percentage below which the prompt should use the warning color.
 
 
-**DOTMATRIX_TEMP_THRESHOLD** *integer = $((LP_TEMP_THRESHOLD*2))*
+**JOLLY_TEMP_THRESHOLD** *integer = $((LP_TEMP_THRESHOLD*2))*
 
 Temperature above which the prompt should use the warning color.
 
 
-**DOTMATRIX_LOAD_THRESHOLD** *integer = $((_LP_LOAD_THRESHOLD+(_LP_LOAD_CAP-_LP_LOAD_THRESHOLD)/2))*
+**JOLLY_LOAD_THRESHOLD** *integer = $((_LP_LOAD_THRESHOLD+(_LP_LOAD_CAP-_LP_LOAD_THRESHOLD)/2))*
 
 Load percentage above which the prompt should use the warning color.
 
 
-**DOTMATRIX_ENABLE_HISTORY** *boolean = 1*
+**JOLLY_ENABLE_HISTORY** *boolean = 1*
 
 Enable the history sections displayed on the right side of the middle line.
 
 
-**DOTMATRIX_HISTORY_MOST_BACK** *integer = 100*
+**JOLLY_HISTORY_MOST_BACK** *integer = 100*
 
 Number of the last history events to take into account when looking for the most used command.
 
 
-**DOTMATRIX_HISTORY_LAST_LEN** *integer = $((COLUMNS/4))*
+**JOLLY_HISTORY_LAST_LEN** *integer = $((COLUMNS/4))*
 
-Maximum length of the *last* command used (counting the `DOTMATRIX_HISTORY_LAST_LEN_MARK` length).
+Maximum length of the *last* command used (counting the `JOLLY_HISTORY_LAST_LEN_MARK` length).
 
 
-**DOTMATRIX_HISTORY_LAST_LEN_MARK** *integer = "[…]"*
+**JOLLY_HISTORY_LAST_LEN_MARK** *integer = "[…]"*
 
 Mark to display when the last command string is shortened.
 
 
-**DOTMATRIX_ENABLE_SHELL** *boolean = 0*
+**JOLLY_ENABLE_SHELL** *boolean = 0*
 
 Display the current shell in the top-right section.
 
 
-**DOTMATRIX_SHELL_ZSH** *string = "z"*
+**JOLLY_SHELL_ZSH** *string = "z"*
 
 The mark indicating a *zsh* shell.
 
 
-**DOTMATRIX_SHELL_BASH** *string = "b"*
+**JOLLY_SHELL_BASH** *string = "b"*
 
 The mark indicating a *bash* shell.
 
@@ -285,72 +285,72 @@ The mark indicating a *bash* shell.
 
 The following options configure some marks that will be used across all variants of the theme.
 
-**DOTMATRIX_DISPLAY_TEXT** *string = "T"*
+**JOLLY_DISPLAY_TEXT** *string = "T"*
 
 The marker used to indicates that the shell is in text mode,
 i.e. that does not have a graphical display
 (more rigorously: there is no X11 `DISPLAY` environment variable).
 
 
-**DOTMATRIX_DISPLAY_X11** *string = "X"*
+**JOLLY_DISPLAY_X11** *string = "X"*
 
 The marker used to indicates that the shell does have access to a graphical server
 (more rigorously: there is a X11 `DISPLAY` environment variable).
 
 
-**DOTMATRIX_HOST_LOCAL** *string = "⌂"*
+**JOLLY_HOST_LOCAL** *string = "⌂"*
 
 The marker used to indicate that the hostname is `localhost`.
 
-**DOTMATRIX_USER_LOCAL** *string = "♟"*
+**JOLLY_USER_LOCAL** *string = "♟"*
 
 The marker used to indicate that the user is the same than the login one.
 
 
-**DOTMATRIX_MARK_STASH** *string = "✝"*
+**JOLLY_MARK_STASH** *string = "✝"*
 
 The marker used to indicate that the VCS stash is not empty.
 
 
-**DOTMATRIX_MARK_UNTRACKED** *string = "?"*
+**JOLLY_MARK_UNTRACKED** *string = "?"*
 
 The marker used to indicate that there are some files that are untracked
 by the VCS in the current repository.
 
 
-**DOTMATRIX_DIFF** *string = "≠"*
+**JOLLY_DIFF** *string = "≠"*
 
 The marker used to indicate that there is some change in the VCS state
 (either changes needed to be committed, or commits needed to be pushed).
 
 
-**DOTMATRIX_VCS** *string = "╟┘"*
+**JOLLY_VCS** *string = "╟┘"*
 
 The marker used to indicate that there is a VCS involved in the current directory.
 
 
-**DOTMATRIX_MARK** *string = "⯀"*
+**JOLLY_MARK** *string = "⯀"*
 
 The actual prompt marker, right where the user type text.
 
 
-**DOTMATRIX_MARK_SUDO** *string = "⋮"*
+**JOLLY_MARK_SUDO** *string = "⋮"*
 
 An additional character displayed before the last prompt mark
 when the user has sudo rights.
 
-**DOTMATRIX_ENABLE_GRADIENT_LINE** *boolean = 0*
+**JOLLY_ENABLE_GRADIENT_LINE** *boolean = 0*
 
 If set to 0 (the default),  will draw the line of the middle section
-as a sequence of `DOTMATRIX_LINE` characters,
-using the `DOTMATRIX_COLOR_LINE` color.
+as a sequence of `JOLLY_LINE` characters,
+using the `JOLLY_COLOR_LINE` color.
 
 If set to 1, will draw the same line with a gradient of color
-interpolated from `DOTMATRIX_COLOR_LINE_START`
-to `DOTMATRIX_COLOR_LINE_END`.
+interpolated from `JOLLY_COLOR_LINE_START`
+to `JOLLY_COLOR_LINE_END`.
 
 
-**DOTMATRIX_MARK_ERROR** *string = " "*
+**JOLLY_MARK_ERROR** *string = " "*
 
 Icon displayed in front of the last exit error code.
 
@@ -360,48 +360,48 @@ Icon displayed in front of the last exit error code.
 These options are the one used to actually define the theme variants.
 You may overcome them with your own configuration.
 
-**DOTMATRIX_LINE** *string = "━"*
+**JOLLY_LINE** *string = "━"*
 
 The character used to draw the middle line.
 
 
-**DOTMATRIX_PLUG** *string = "▛"*
+**JOLLY_PLUG** *string = "▛"*
 
 The character for joined segments limits.
 
 
-**DOTMATRIX_SOFT** *string = "╱"*
+**JOLLY_SOFT** *string = "╱"*
 
 The character for "soft" separation (e.g. path elements, branch details, jobs, etc.)
 
 
-**DOTMATRIX_MEAN** *string = "▞"*
+**JOLLY_MEAN** *string = "▞"*
 
 The character for "mean" separation
 (used when two segments of the same color are joint).
 
 
-**DOTMATRIX_LINK** *array<string> = ("▙" " "   "▜")*
+**JOLLY_LINK** *array<string> = ("▙" " "   "▜")*
 
 Characters used for showing a small gap.
 
 
-**DOTMATRIX_OPEN** *array<string> = ("▙" " ▚ " "▜")*
+**JOLLY_OPEN** *array<string> = ("▙" " ▚ " "▜")*
 
 Characters used for showing a large gap.
 
 
-**DOTMATRIX_DANG** *array<string> = ("▙" " □ " "▜")*
+**JOLLY_DANG** *array<string> = ("▙" " □ " "▜")*
 
 Characters used for showing a very lareg gap (i.e. a dangerous state).
 
 
-**DOTMATRIX_ENDS** *array<string> = ("▛▞▗ ▝" "▖ ▘▞▟")*
+**JOLLY_ENDS** *array<string> = ("▛▞▗ ▝" "▖ ▘▞▟")*
 
 Characters marking the ends of the right and left parts of the first line.
 
 
-**DOTMATRIX_ITEMS** *array<string> = ("┫" "┃" "┣")*
+**JOLLY_ITEMS** *array<string> = ("┫" "┃" "┣")*
 
 Characters used to separate keywords in the middle line.
 The middle character separates keywords of the same type (e.g. every Software Collection).
@@ -411,27 +411,27 @@ The middle character separates keywords of the same type (e.g. every Software Co
 
 You may overcome the spacing details with these options.
 
-**DOTMATRIX_SPACE_VOID** *string = " "*
+**JOLLY_SPACE_VOID** *string = " "*
 
 Spacing character around segments joints marker.
 
 
-**DOTMATRIX_SPACE_PATH** *string = " "*
+**JOLLY_SPACE_PATH** *string = " "*
 
 Spacing character specifically for the "current path" section.
 
 
-**DOTMATRIX_SPACE_FIELD** *string = ""*
+**JOLLY_SPACE_FIELD** *string = ""*
 
 Spacing character around the content of the segments themselves.
 
 
-**DOTMATRIX_SPACE_LINE** *string = " "*
+**JOLLY_SPACE_LINE** *string = " "*
 
 Spacing character around the keywords of the middle line.
 
 
-**DOTMATRIX_SPACE_FILL** *string = "█"*
+**JOLLY_SPACE_FILL** *string = "█"*
 
 Spacing character for filled sections.
 You probably don't want to touch this.
@@ -440,91 +440,91 @@ You probably don't want to touch this.
 #### Colors
 
 
-**DOTMATRIX_COLOR_DARK** *array<int> = (252 239 0 0  15   0)*
+**JOLLY_COLOR_DARK** *array<int> = (252 239 0 0  15   0)*
 
 The color of dark segments.
 
 
-**DOTMATRIX_COLOR_LITE** *array<int> = (239 252 0 0   0  15)*
+**JOLLY_COLOR_LITE** *array<int> = (239 252 0 0   0  15)*
 
 The color of light segments.
 
 
-**DOTMATRIX_COLOR_GLOW** *array<int> = (  0 252 1 0   0  15)*
+**JOLLY_COLOR_GLOW** *array<int> = (  0 252 1 0   0  15)*
 
 The color for bright elements.
 
 
-**DOTMATRIX_COLOR_NOTE** *array<int> = ( 15  33 0 0  15  12)*
+**JOLLY_COLOR_NOTE** *array<int> = ( 15  33 0 0  15  12)*
 
 The color for notable elements.
 
 
-**DOTMATRIX_COLOR_WARN** *array<int> = (196 220 1 0   0  11)*
+**JOLLY_COLOR_WARN** *array<int> = (196 220 1 0   0  11)*
 
 The color for elements related to a warning.
 
 
-**DOTMATRIX_COLOR_FAIR** *array<int> = (  0 244 0 0   0   8)*
+**JOLLY_COLOR_FAIR** *array<int> = (  0 244 0 0   0   8)*
 
 The color for elements that are not very important.
 
 
-**DOTMATRIX_COLOR_PATH_SHORT** *array<int> = (252 239 0 0   0  15)*
+**JOLLY_COLOR_PATH_SHORT** *array<int> = (252 239 0 0   0  15)*
 
 The color of the shorten path marker.
 
 
-**DOTMATRIX_COLOR_PATH_VCS** *array<int> = (252 239 0 1   0  15)*
+**JOLLY_COLOR_PATH_VCS** *array<int> = (252 239 0 1   0  15)*
 
 The color of the VCS repository in the path.
 
 
-**DOTMATRIX_COLOR_PATH_LAST** *array<int> = (15 239 1 0   0  15)*
+**JOLLY_COLOR_PATH_LAST** *array<int> = (15 239 1 0   0  15)*
 
 The color of the current directory.
 
 
-**DOTMATRIX_COLOR_LINE** *array<int> = (244 -1 0 0 15 -1)*
+**JOLLY_COLOR_LINE** *array<int> = (244 -1 0 0 15 -1)*
 
 The color of the middle line.
 
 
-**DOTMATRIX_COLOR_MARK** *array<int> = (15 -1 0 0 15 -1)*
+**JOLLY_COLOR_MARK** *array<int> = (15 -1 0 0 15 -1)*
 
 The color of the actual prompt mark.
 
 
-**DOTMATRIX_COLOR_SEP_DARK** *array<int> = (  0 -2 0 0  0 -2)*
+**JOLLY_COLOR_SEP_DARK** *array<int> = (  0 -2 0 0  0 -2)*
 
 The color for dark separators.
 
 
-**DOTMATRIX_COLOR_SEP_FAIR** *array<int> = (244 -2 0 0  0 -2)*
+**JOLLY_COLOR_SEP_FAIR** *array<int> = (244 -2 0 0  0 -2)*
 
 The color for fair separators.
 
 
-**DOTMATRIX_COLOR_SEP_LITE** *array<int> = ( 15 -2 0 0 15 -2)*
+**JOLLY_COLOR_SEP_LITE** *array<int> = ( 15 -2 0 0 15 -2)*
 
 The color for light separators.
 
 
-**DOTMATRIX_COLOR_LINE_START** *array<int> = (255 -1 1 0 15 -1)*
+**JOLLY_COLOR_LINE_START** *array<int> = (255 -1 1 0 15 -1)*
 
 The color starting the gradient of the line of the middle section.
 Default is white.
 
-Valus being linearly interpolated up to `DOTMATRIX_COLOR_LINE_END`,
+Valus being linearly interpolated up to `JOLLY_COLOR_LINE_END`,
 it is recommended to stick to aligned ANSI values (i.e. greys)
 
 
-**DOTMATRIX_COLOR_LINE_END** *array<int> = (232 -1 1 0 15 -1)*
+**JOLLY_COLOR_LINE_END** *array<int> = (232 -1 1 0 15 -1)*
 
 The color ending the gradient of the line of the middle section.
 Default is black.
 
-Valus being linearly interpolated from `DOTMATRIX_COLOR_LINE_START`,
+Valus being linearly interpolated from `JOLLY_COLOR_LINE_START`,
 it is recommended to stick to aligned ANSI values (i.e. greys).
 
 
