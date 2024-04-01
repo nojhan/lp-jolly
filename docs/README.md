@@ -149,6 +149,13 @@ States that rarely change or evolve slowly are less important.
 Each aspect of theming should have a related configuration variable.
 
 
+## More details
+
+If you want to know more, check our
+[opinionated prompt systems comparison](https://github.com/liquidprompt/liquidprompt/wiki/Why)
+that goes into more details and give examples across various other prompt systems.
+
+
 # Jolly's Design Principles
 
 ## Stability
@@ -163,6 +170,8 @@ change too much the location of information previously displayed.
 > The less stable section is the VCS one, which often changes after each command when the user is working on their repository.
 > Sections are thus organized from left to right, in decreasing order of stability.
 > Jolly always displays important segments, even in their default state, so that they are always located where the user expect them to be.
+
+![](../screenshots/variant-chevron.png)
 
 
 ## Sectioning
