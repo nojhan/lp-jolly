@@ -471,7 +471,12 @@ The color for elements related to a warning.
 The color for elements that are not very important.
 
 
-**JOLLY_COLOR_PATH_SHORT** *array<int> = (252 239 0 0   0  15)*
+**JOLLY_COLOR_HOSTNAME** *array<int> = ( ${JOLLY_COLOR_LITE[@]} )*
+
+The color for the hostname segment. By default initialized from JOLLY_COLOR_LITE.
+
+
+**JOLLY_COLOR_PATH_SHORT** *array<int> = (252 239 0 0   0   7)*
 
 The color of the shorten path marker.
 

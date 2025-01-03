@@ -164,6 +164,9 @@ _lp_jolly_theme_activate() {
     JOLLY_COLOR_SEP_LITE=( ${JOLLY_COLOR_SEP_LITE[@]+"${JOLLY_COLOR_SEP_LITE[@]}"} )
     [[ ${#JOLLY_COLOR_SEP_LITE[@]} == 0 ]] && JOLLY_COLOR_SEP_LITE=( 15 -2 0 0 15 -2)
 
+    JOLLY_COLOR_HOSTNAME=( ${JOLLY_COLOR_HOSTNAME[@]+"${JOLLY_COLOR_HOSTNAME[@]}"} )
+    [[ ${#JOLLY_COLOR_HOSTNAME[@]} == 0 ]] && JOLLY_COLOR_HOSTNAME=( ${JOLLY_COLOR_LITE[@]} )
+
     # Default line color for unset variables.
     LP_COLOR_ENV_VARS_UNSET=${LP_COLOR_ENV_VARS_UNSET:-""}
     # Use the background of notes as a foreground for set variables.
@@ -197,7 +200,7 @@ _lp_jolly_theme_activate() {
 
 
 _lp_jolly_theme_directory() {
-    lp_terminal_format ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+    lp_terminal_format ${JOLLY_COLOR_HOSTNAME[@]+"${JOLLY_COLOR_HOSTNAME[@]}"}
     __jolly_directory_FS
     __jolly_directory_path
 }
@@ -880,10 +883,10 @@ __jolly_activate_hostname() {
         hostname="${JOLLY_HOST_LOCAL}"
     fi
 
-    if __jolly_make_field "$hostname" ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"} ; then
+    if __jolly_make_field "$hostname" ${JOLLY_COLOR_HOSTNAME[@]+"${JOLLY_COLOR_HOSTNAME[@]}"} ; then
         _JOLLY_HOSTNAME="${jolly_field}"
     else
-        if __jolly_make_field "$lp_hostname" ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"} ; then
+        if __jolly_make_field "$lp_hostname" ${JOLLY_COLOR_HOSTNAME[@]+"${JOLLY_COLOR_HOSTNAME[@]}"} ; then
             _JOLLY_HOSTNAME="${jolly_field}"
         else
             _JOLLY_HOSTNAME="${lp_hostname}"
@@ -897,20 +900,20 @@ __jolly_activate_multiplexer() {
     if _lp_multiplexer ; then
         case "$lp_multiplexer" in
             tmux)
-                __jolly_make_sep_link ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+                __jolly_make_sep_link ${JOLLY_COLOR_HOSTNAME[@]+"${JOLLY_COLOR_HOSTNAME[@]}"}
                 multiplexer="${jolly_sep}"
                 ;;
             screen)
-                __jolly_make_sep_link ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+                __jolly_make_sep_link ${JOLLY_COLOR_HOSTNAME[@]+"${JOLLY_COLOR_HOSTNAME[@]}"}
                 multiplexer="${jolly_sep}"
                 ;;
             *)
-                __jolly_make_sep_link ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+                __jolly_make_sep_link ${JOLLY_COLOR_HOSTNAME[@]+"${JOLLY_COLOR_HOSTNAME[@]}"}
                 multiplexer="${jolly_sep}"
                 ;;
         esac
     else
-        __jolly_make_sep_plug ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
+        __jolly_make_sep_plug ${JOLLY_COLOR_HOSTNAME[@]+"${JOLLY_COLOR_HOSTNAME[@]}"}
         multiplexer="${jolly_sep}"
     fi
 
