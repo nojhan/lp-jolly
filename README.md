@@ -7,7 +7,7 @@ It is an original prompt design, very carefully designed,
 that will completely changes the way you imagine the prompt.
 
 It is focused on *improving the user experience*,
-by vastly improving the ability of the user to immediatly spot
+by vastly improving the ability of the user to immediately spot
 what she should do following her system's state changes.
 
 Has such, you may find it a little bit disconcerting at first.
@@ -63,7 +63,7 @@ The prompt itself is designed in three lines:
 ### Example
 
 For instance, in the following prompt, you can see that the user is in a Git repository and has some action waiting to be done:
-- the rightmost blue "≠" indicates that there are some modifications waiting to be commited (hence the directional hint, from a diff to the branch).
+- the rightmost blue "≠" indicates that there are some modifications waiting to be committed (hence the directional hint, from a diff to the branch).
 - the leftmost blue segment indicates that there are some commits that may be pushed to the remote (hence the directional hint, from the branch to the VCS symbol).
 
 ![](screenshots/variant-chevron.png)
@@ -100,7 +100,7 @@ For example:
    source ~/lp-jolly/jolly.theme && lp_theme jolly
 ```
 
-NOTE: The recommended segment markers (the "chevron" variant) uses characters in the private section of unicode
+NOTE: The recommended segment markers (the "chevron" variant) uses characters in the private section of Unicode
 that are defined by the "Nerd-fonts" project.
 You will either need a compatible font, or use a variant that does not need them, like "text" and "jolly".
 
@@ -152,8 +152,6 @@ except for the ones defining colors, specific marks and disabling some features.
 The following options are honored:
 
 - [`LP_ENABLE_PERM`](https://liquidprompt.readthedocs.io/en/stable/config.html#LP_ENABLE_PERM),
-- [`LP_ENABLE_VCS_DIFFSTATS`](https://liquidprompt.readthedocs.io/en/stable/config.html#LP_ENABLE_VCS_DIFFSTATS),
-- [`LP_ENABLE_UNCOMMITED`](https://liquidprompt.readthedocs.io/en/stable/config.html#LP_ENABLE_UNCOMMITED),
 - [`LP_MARK_BATTERY`](https://liquidprompt.readthedocs.io/en/stable/config.html#LP_MARK_BATTERY),
 - [`LP_MARK_LOAD`](https://liquidprompt.readthedocs.io/en/stable/config.html#LP_MARK_LOAD),
 - [`LP_MARK_TEMP`](https://liquidprompt.readthedocs.io/en/stable/config.html#LP_MARK_TEMP),
@@ -176,13 +174,13 @@ Note: the order in which you load the presets may be important.
 When changing the colors of the first line, presets needs to be loaded
 from your shell configuration and not just sourced in the prompt.
 
-A first set is are called "variants" and mainly change the segment joints,
+A first set is called "variants" and mainly change the segment joints,
 but can also impact the icons on some variants:
 
-- `source presets/variant-chevron.conf" (the *recommended*, need a Nerd-fonts font),
-- `source presets/variant-slant.conf" (need a Nerd-fonts font),
-- `source presets/variant-round.conf" (need a Nerd-fonts font),
-- `source presets/variant-text.conf" (the one that works anywhere).
+- `source presets/variant-chevron.conf` (the *recommended*, need a Nerd-fonts font),
+- `source presets/variant-slant.conf` (need a Nerd-fonts font),
+- `source presets/variant-round.conf` (need a Nerd-fonts font),
+- `source presets/variant-text.conf` (the one that works anywhere).
 
 A second set changes the colors:
 
@@ -519,6 +517,7 @@ The color starting the gradient of the line of the middle section.
 Default is white.
 
 Valus being linearly interpolated up to `JOLLY_COLOR_LINE_END`,
+
 it is recommended to stick to aligned ANSI values (i.e. greys)
 
 
@@ -527,7 +526,9 @@ it is recommended to stick to aligned ANSI values (i.e. greys)
 The color ending the gradient of the line of the middle section.
 Default is black.
 
+
 Valus being linearly interpolated from `JOLLY_COLOR_LINE_START`,
+
 it is recommended to stick to aligned ANSI values (i.e. greys).
 
 
