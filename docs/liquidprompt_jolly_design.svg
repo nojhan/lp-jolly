@@ -8,9 +8,9 @@
    width="793.66663"
    height="725.40625"
    viewBox="0 0 793.66663 725.40628"
-   sodipodi:docname="liquidprompt_dotmatrix_design.svg"
+   sodipodi:docname="liquidprompt_jolly_design.svg"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   inkscape:export-filename="/home/nojhan/code/lp-dotmatrix/liquidprompt_dotmatrix_design.png"
+   inkscape:export-filename="liquidprompt_jolly_design.png"
    inkscape:export-xdpi="123.86"
    inkscape:export-ydpi="123.86"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -41,7 +41,7 @@
      inkscape:current-layer="g12" /><g
      id="g8"
      inkscape:groupmode="layer"
-     inkscape:label="liquidprompt_dotmatrix_design"
+     inkscape:label="liquidprompt_jolly_design"
      transform="matrix(1.3333333,0,0,-1.3333333,0,1122.5186)"><g
        id="g10"><g
          id="g12"
@@ -487,7 +487,7 @@
                x="0 4.8000002 9.6000004 14.4 19.200001 24 28.799999 33.695999 38.495998 43.296001"
                y="0"
                sodipodi:role="line"
-               id="tspan362">dotmatrix </tspan></text></g><path
+               id="tspan362">jolly </tspan></text></g><path
            d="M 322.6,670.239 H 327.35 V 680.289 H 322.6 Z"
            style="fill:#d0d0d0;fill-opacity:1;fill-rule:evenodd;stroke:none"
            id="path366" /><g
@@ -2276,7 +2276,7 @@
                x="0 4.8000002 9.6000004 14.4 19.200001 24 28.799999 33.695999 38.495998 43.296001"
                y="0"
                sodipodi:role="line"
-               id="tspan1776">dotmatrix </tspan></text></g><g
+               id="tspan1776">jolly </tspan></text></g><g
            id="g1780"><text
              transform="matrix(1,0,0,-1,269.7,329.089)"
              style="font-variant:normal;font-weight:normal;font-size:8px;font-family:'MesloLGS NF';-inkscape-font-specification:MesloLGS-NF-Regular;writing-mode:lr-tb;fill:#4c4c4c;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -2464,7 +2464,7 @@
                x="0 4.8000002 9.6000004 14.4 19.200001 24 28.799999 33.695999 38.495998"
                y="0"
                sodipodi:role="line"
-               id="tspan1926">dotmatrix</tspan></text></g><path
+               id="tspan1926">jolly</tspan></text></g><path
            d="M 109.1,306.639 H 113.85 V 316.689 H 109.1 Z"
            style="fill:#d0d0d0;fill-opacity:1;fill-rule:evenodd;stroke:none"
            id="path1930" /><g
