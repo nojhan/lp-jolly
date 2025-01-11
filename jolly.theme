@@ -883,7 +883,11 @@ __jolly_activate_hostname() {
     if __jolly_make_field "$hostname" ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"} ; then
         _JOLLY_HOSTNAME="${jolly_field}"
     else
-        _JOLLY_HOSTNAME="${lp_hostname}"
+        if __jolly_make_field "$lp_hostname" ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"} ; then
+            _JOLLY_HOSTNAME="${jolly_field}"
+        else
+            _JOLLY_HOSTNAME="${lp_hostname}"
+        fi
     fi
 }
 
