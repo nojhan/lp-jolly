@@ -444,39 +444,36 @@ _lp_jolly_make_env() {
     if _lp_env_vars "${LP_COLOR_ENV_VARS_SET}" "${LP_COLOR_ENV_VARS_UNSET}"; then
         local lp_join
         _lp_join "$I" ${lp_env_vars[@]}
-        _lp_jolly_make_env_inline_left+="$d${lp_join}$b"
+        _lp_jolly_make_env_inline_left+="${d}${lp_join}$b"
     fi
     if _lp_software_collections ; then
-        _lp_jolly_make_env_inline_left+="$d${lp_software_collections}$b"
+        _lp_jolly_make_env_inline_left+="${d}sc:${lp_software_collections}$b"
     fi
     if _lp_python_env ; then
-        _lp_jolly_make_env_inline_left+="$d${lp_python_env}$b"
+        _lp_jolly_make_env_inline_left+="${d}py:${lp_python_env}$b"
     fi
     if _lp_node_env ; then
-        _lp_jolly_make_env_inline_left+="$d${lp_node_env}$b"
+        _lp_jolly_make_env_inline_left+="${d}node:${lp_node_env}$b"
     fi
     if _lp_ruby_env ; then
-        _lp_jolly_make_env_inline_left+="$d${lp_ruby_env}$b"
+        _lp_jolly_make_env_inline_left+="${d}ruby:${lp_ruby_env}$b"
     fi
     if _lp_container ; then
-        _lp_jolly_make_env_inline_left+="$d${lp_container}$b"
+        _lp_jolly_make_env_inline_left+="${d}c:${lp_container}$b"
     fi
     if _lp_kubernetes_context ; then
-        _lp_jolly_make_env_inline_left+="$d${lp_kubernetes_context}$b"
+        _lp_jolly_make_env_inline_left+="${d}kub:${lp_kubernetes_context}$b"
     fi
     if _lp_terraform_env ; then
-        _lp_jolly_make_env_inline_left+="$d${lp_terraform_env}$b"
+        _lp_jolly_make_env_inline_left+="${d}tf:${lp_terraform_env}$b"
     fi
     if _lp_aws_profile ; then
-        _lp_jolly_make_env_inline_left+="$d${lp_aws_profile}$b"
+        _lp_jolly_make_env_inline_left+="${d}aws:${lp_aws_profile}$b"
     fi
     if _lp_cmake ; then
         local lp_join
         _lp_join "$I" ${lp_cmake_c_compiler} ${lp_cmake_cxx_compiler} ${lp_cmake_generator} ${lp_cmake_buildtype}
         _lp_jolly_make_env_inline_left+="$d${lp_join}$b"
-    fi
-    if _lp_container; then
-        _lp_jolly_make_env_inline_left+="$d$lp_container$b"
     fi
     if _lp_modules; then
         _lp_jolly_make_env_inline_left+="$d"
