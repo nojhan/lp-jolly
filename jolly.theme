@@ -851,17 +851,18 @@ __jolly_activate_user() {
 
 
 __jolly_activate_hostname() {
-    local hostname
+    local hostname=
     if _lp_hostname; then
         case "$lp_connection" in
         ssh)
-            local client_ip client_port server_ip server_port hostname=
+            hostname="$lp_hostname"
+            local client_ip client_port server_ip server_port
             IFS=" " read -r client_ip client_port server_ip server_port <<<"$SSH_CONNECTION"
             local username=${USER:-${USERNAME:-${LOGNAME-}}}
-            if _lp_create_link "ssh://${username}@${server_ip}:${server_port}" "$lp_hostname"; then
+            if _lp_create_link "ssh://${username}@${server_ip}:${server_port}" "$hostname"; then
                 hostname="$link"
             else
-                hostname="$lp_hostname"
+                hostname="$hostname"
             fi
             # If we want a different color for each host
             if (( LP_ENABLE_SSH_COLORS )); then
@@ -882,8 +883,11 @@ __jolly_activate_hostname() {
         hostname="${JOLLY_HOST_LOCAL}"
     fi
 
-    __jolly_make_field "$hostname" ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"}
-    _JOLLY_HOSTNAME="${jolly_field}"
+    if __jolly_make_field "$hostname" ${JOLLY_COLOR_LITE[@]+"${JOLLY_COLOR_LITE[@]}"} ; then
+        _JOLLY_HOSTNAME="${jolly_field}"
+    else
+        _JOLLY_HOSTNAME="${lp_hostname}"
+    fi
 }
 
 
@@ -1224,7 +1228,8 @@ __jolly_join_fields() {
 }
 
 __jolly_make_field() { # string, color_array
-    local lp_terminal_format string="${1-}"
+    local string="${1-}"
+    local lp_terminal_format
     [[ -z $string ]] && return 1
 
     shift
